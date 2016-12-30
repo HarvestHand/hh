@@ -1,0 +1,73 @@
+<style>
+    h2, .title {
+        margin-top: 22px;
+        text-align: center;
+    }
+    .title > p {
+        margin: 0;
+    }
+    h3 {
+        margin-bottom: 2px;
+    }
+    dt, dd {
+        padding: 0 0 10px 0;
+        margin: 0 !important;
+        font-weight: bold;
+    }
+    textarea {
+        resize: none;
+    }
+    .btn {
+        padding: 8px 0;
+    }
+    .btn, .duncan, .ray {
+        width: 100%;
+        margin: 6px;
+    }
+    .video {
+        text-align: center;
+        margin: auto;
+    }
+</style>
+
+<div class="container_12">
+<div class="grid_12">
+    <div class="grid_7">
+        <h2><?php echo $this->title; ?></h2>
+
+        <?php if(!empty($this->form)){ ?>
+            <?php if(!empty($this->messages)){ ?>
+                <section class="info ui-widget ui-state-highlight ui-corner-all">
+                    <div>
+                        <i class="fa fa-info-circle"></i>
+                        <strong><?= $this->translate('Hey!'); ?></strong>
+                        <?php echo $this->translate($this->messages); ?>
+                    </div>
+                </section>
+            <?php } ?>
+
+            <?php echo $this->form; ?>
+        <?php } elseif(!empty($this->video)){ ?>
+            <div class="video">
+                <iframe width="560" height="315"
+                    src="http://www.youtube.com/embed/<?php echo $this->video; ?>?vq=hd1080&modestbranding=1&autoplay=1&fs=0&rel=0&showinfo=0&theme=light&autohide=0"
+                    frameborder="0"></iframe>
+            </div>
+        <?php } ?>
+    </div>
+    <div class="grid_4" style="padding-left: 16px;">
+        <h2>Support Options</h2>
+        <a href="/admin/default/support" class="btn">Report an Issue</a>
+        <h2>Tutorial Videos</h2>
+        <a href="/admin/default/support?video=general_setup" class="btn">General Setup</a>
+        <a href="/admin/default/support?video=website" class="btn">Setup a Website</a>
+        <a href="/admin/default/support?video=shares_locations" class="btn">Shares and Pickup Locations</a>
+        <a href="/admin/default/support?video=packing_list" class="btn">Delivery/Packing List</a>
+
+        <div class="title">
+            <h3>The Team</h3>
+            <p><small>team@harvesthand.com<br>902-542-3277</small></p>
+        </div>
+    </div>
+</div>
+</div>

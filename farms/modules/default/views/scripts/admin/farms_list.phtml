@@ -1,0 +1,118 @@
+<?php
+$title = $this->translate('List of Farms');
+
+$this->headTitle($title);
+
+$this->loader()
+    ->append('jquery_dataTables')
+    ->append('jquery_dropdown');
+?>
+
+<h2>
+    <span class="icon-menu icon-menu-dashboard" style="float: left; margin: -10px 7px 0 0;"></span>
+    <?= $title ?>
+</h2>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+    $(function() {
+        // Make table interactive.
+        var table = $("#farms").dataTable({
+            bJQueryUI: true,
+            bAutoWidth: true,
+            bDeferRender: true,
+            bLengthChange: false,
+            bProcessing: true,
+            bPaginate: false,
+            aaSorting: [[0, "asc"]],
+            aoColumns: [
+                {},
+                {},
+                {},
+                {
+                    // Actions column.
+                    bSortable: false,
+                    bSearchable: false
+                }
+            ]
+        });
+
+        // Hover effects.
+        table.delegate("tbody tr", "mouseover mouseout", function(e) {
+            if (e.type == "mouseover") {
+                $(e.currentTarget).addClass('hover');
+            } else {
+                $(e.currentTarget).removeClass('hover');
+            }
+        });
+
+        // Static table header.
+        new FixedHeader(table);
+    });
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<section class="container_12">
+    <article class="grid_11">
+
+        <?php if (!empty($this->messages)) { ?>
+            <section class="info ui-widget ui-state-highlight ui-corner-all">
+                <div>
+                    <i class="fa fa-info-circle"></i>
+                    <strong><?= $this->translate('Hey!'); ?></strong>
+                    <?= $this->escape(implode('; ', $this->messages)); ?>
+                </div>
+            </section>
+        <?php } ?>
+
+        <?php if (count($this->farms)) { ?>
+            <table id="farms" class="display">
+                <thead>
+                    <tr>
+                        <th title="<?= $this->translate('Farm Name') ?>">
+                            <?= $this->translate('Name'); ?>
+                        </th>
+                        <th title="<?= $this->translate('Farm Status') ?>">
+                            <?= $this->translate('Status'); ?>
+                        </th>
+                        <th title="<?= $this->translate('Farm Email') ?>">
+                            <?= $this->translate('Email'); ?>
+                        </th>
+                        <th title="<?= $this->translate('Farm Actions') ?>">
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($this->farms as $farm) { ?>
+                    <tr>
+                        <td>
+                            <?= $this->escape($farm->name); ?>
+                        </td>
+                        <td>
+                            <?= $this->escape($farm->status); ?>
+                            <?php if ($farm->isMasterFarm()) { ?>
+                                (<?= $this->translate('Master farm'); ?>)
+                            <?php } ?>
+                        </td>
+                        <td>
+                            <a href="mailto:<?= $this->escape($farm->email); ?>">
+                                <?= $this->escape($farm->email); ?>
+                            </a>
+                        </td>
+                        <td class="right">
+                            <a href="/admin/default/farm_info?id=<?= (int) $farm->id ?>"
+                               title="<?= $this->translate('View farm info') ?>"
+                               class="btn">
+                                <?= $this->translate('Info') ?>
+                            </a>
+                        </td>
+                    </tr>
+                <?php } ?>
+                </tbody>
+            </table>
+        <?php } else { ?>
+            <p><?= $this->translate('No farms available.'); ?></p>
+        <?php } ?>
+
+    </article>
+</section>

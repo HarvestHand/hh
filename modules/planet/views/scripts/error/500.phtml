@@ -1,0 +1,30 @@
+<?php
+    $this->headTitle($this->translate('Smoked!'));
+?>
+
+<h1><?= $this->translate('Something Wrong!'); ?></h1>
+
+<p><?= $this->translate("Well, this is embarrassing.  Something went boom.  We've recorded what's happened and have just dispatched the clean up crew."); ?></p>
+
+<figure style="display: block; width: 384px; margin: 0 auto; margin-top: 20px;">
+    <img src="<?= $this->images ?>500.png" alt="500" width="384" height="341" />
+</figure>
+
+<?php if (getenv('APPLICATION_ENV') == 'development') { ?>
+    <script>
+        var exception = <?php
+            $exception = array();
+        
+            foreach (get_class_methods($this->exception) as $method) {
+                if ($method == '__call') {
+                    continue;
+                }
+                $exception[ltrim($method, 'get')] = call_user_func(array($this->exception, $method));
+                
+            }
+            echo json_encode($exception);
+        ?>;
+
+        console.error(exception);
+    </script>
+<?php } ?>

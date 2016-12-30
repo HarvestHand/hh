@@ -1,0 +1,86 @@
+<?php
+    $this->headTitle($this->translate('Login'));
+
+    $this->loader()->append('jquery_validate');
+?>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+    $(document).ready(function(){
+        if (top.location != self.location) {
+            top.location = self.location;
+        }
+        
+        $("#login").validate();
+    });
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<h2><?= $this->translate('Login'); ?></h2>
+
+<form id="login" 
+      action="<?php echo $this->escape($this->Url()); ?>" 
+      method="post" 
+      class="cmxform"
+      accept-charset="utf-8">
+    
+    <?php if ($this->errors !== false) { ?>
+    <section id="formError" class="error ui-widget ui-state-error ui-corner-all" style="<?= (!empty($this->errors)) ? '' : 'display:none;' ?>">
+        <div>
+            <i class="fa fa-exclamation-triangle"></i>
+            <strong><?= $this->escape($this->errors['title']); ?>:</strong>
+            <?= $this->escape($this->errors['body']); ?>
+        </div>
+    </section>
+    
+    <?php } ?>
+
+    <p>
+        <label for="userName" class="required"><?= $this->translate('User Name'); ?></label>
+        <input 
+            id="userName"
+            type="text"
+            name="userName"
+            maxlength="50"
+            title="<?= $this->translate('Please enter your user name'); ?>"
+            value="<?= (!empty($_POST['userName'])) ? $this->escape($_POST['userName']) : null; ?>"
+            class="<?= (!empty($this->errorMessages['userName'])) ? 'required error' : 'required'; ?>" />
+
+        <?php if (!empty($this->errorMessages['userName'])) { ?>
+        <label class="error" for="userName" style="display: block;">
+            <?php echo $this->escape(implode('; ', $this->errorMessages['userName'])); ?>
+        </label>
+        <?php } ?>
+    </p>
+    <p>
+        <label for="password" class="required"><?= $this->translate('Password'); ?></label>
+        <input 
+            id="password"
+            type="password"
+            name="password"
+            maxlength="30"
+            title="<?= $this->translate('Please enter your password'); ?>"
+            class="<?= (!empty($this->errorMessages['password'])) ? 'required error' : 'required'; ?>" />
+
+        <?php if (!empty($this->errorMessages['password'])) { ?>
+        <label class="error" for="password" style="display: block;">
+            <?= $this->escape(implode('; ', $this->errorMessages['password'])); ?>
+        </label>
+        <?php } ?>
+    </p>
+
+    <p>
+        <button type="submit" class="submit ui-button ui-widget ui-corner-all ui-button-text-only ui-state-default">
+            <span class="ui-button-text">
+                <i class="fa fa-key"></i>
+                <?= $this->translate('Login'); ?>
+            </span>
+        </button>
+    </p>
+    <p>
+        <?= $this->translate('Lost your password?') ?>
+        <a href="/customers/password_reset">
+            <?= $this->translate('Lets reset it.') ?>
+        </a>
+    </p>
+</form>

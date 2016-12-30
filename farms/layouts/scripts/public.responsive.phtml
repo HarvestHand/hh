@@ -1,0 +1,254 @@
+<?php
+$facebookPageLink = $this->farm->getPreferences()->get('pageLink', 'facebook');
+$twitterScreenName = $this->farm->getPreferences()->get('screenName', 'twitter');
+$blogEnabled = $this->farm->getPreferences()->get('blogEnabled', 'website', true);
+$disclaimer = $this->farm->getPreferences()->get('disclaimer', 'website', '');
+$piwikId = $this->farm->getPreferences()->get('piwikId', 'website', false);
+
+$this->headLink()->headLink(
+    array(
+        'rel' => 'alternate',
+        'href' => '/shares?format=rss',
+        'type' => 'application/rss+xml',
+        'title' => $this->translate(
+                '%s Shares RSS Feed',
+                $this->farm->name
+            )
+    )
+);
+$this->headLink()->headLink(
+    array(
+        'rel' => 'alternate',
+        'href' => '/shares?format=atom',
+        'type' => 'application/atom+xml',
+        'title' => $this->translate(
+                '%s Shares Atom Feed',
+                $this->farm->name
+            )
+    )
+);
+
+if ($blogEnabled) {
+
+    $this->headLink()->headLink(
+        array(
+            'rel' => 'alternate',
+            'href' => '/blog?format=rss',
+            'type' => 'application/rss+xml',
+            'title' => $this->translate('%s Blog', $this->farm->name)
+        )
+    );
+    $this->headLink()->headLink(
+        array(
+            'rel' => 'alternate',
+            'href' => '/blog?format=atom',
+            'type' => 'application/atom+xml',
+            'title' => $this->translate('%s Blog', $this->farm->name)
+        )
+    );
+}
+?>
+<!DOCTYPE html>
+<!--[if lt IE 7 ]> <html class="no-js ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]>    <html class="no-js ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]>    <html class="no-js ie8" lang="en"> <![endif]-->
+<!--[if IE 9 ]>    <html class="no-js ie9" lang="en"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+<head>
+    <!--Responsive-->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <?php echo $this->headTitle() ?>
+
+    <link rel="shortcut icon" href="/_images/favicon.png">
+
+    <?php echo $this->headStyle() ?>
+
+    <script src="/_js/modernizr.js"></script>
+    <?php echo $this->headLink() ?>
+    <?php echo $this->placeholder('head'); ?>
+</head>
+<body>
+<!--[if lt IE 8]>
+<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+<![endif]-->
+
+<header id="header">
+    <div class="navbar" id="header-nav" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-nav">
+                    <span class="sr-only"><?= $this->translate('Toggle navigation') ?></span>
+                    <i class="fa fa-bars"></i>
+                </button>
+                <a class="navbar-brand" href="/"><?= $this->escape($this->farm->name) ?></a>
+            </div>
+            <div class="collapse navbar-collapse" id="main-nav">
+                <?php
+                $pages = Bootstrap::get('Zend_Navigation')->getPages();
+
+                echo '<ul class="nav navbar-nav">';
+
+                foreach ($pages as $page) {
+                    /* @var $page Zend_Navigation_Page_Uri  */
+
+                    if ($page->hasChildren()) {
+                        echo '<li class="dropdown">';
+
+                        echo '<a href="#" class="dropdown-toggle" data-toggle="dropdown">' . $this->escape($page->getLabel()) . ' <b class="caret"></b></a>';
+
+                        echo '<ul class="dropdown-menu">';
+
+                        echo '<li class="' . ($page->isActive() ? 'active' : null) . '">';
+                        echo '<a href="'. $this->escape($page->getHref()) . '">' . $this->escape($page->getLabel()) . '</a>';
+                        echo '</li>';
+
+                        foreach ($page->getPages() as $child) {
+                            echo '<li class="' . ($child->isActive() ? 'active' : null) . '">';
+                            echo '<a href="'. $this->escape($child->getHref()) . '">' . $this->escape($child->getLabel()) . '</a>';
+                            echo '</li>';
+                        }
+
+                        echo '</ul>';
+
+                        echo '</li>';
+
+
+                    } else {
+                        echo '<li class="' . ($page->isActive() ? 'active' : null) . '">';
+                        echo '<a href="'. $this->escape($page->getHref()) . '">' . $this->escape($page->getLabel()) . '</a>';
+                        echo '</li>';
+                    }
+                }
+
+                echo '</ul>';
+
+                ?>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div id="body-content" class="container">
+
+    <?php $sideBar = $this->layout()->sideBar; ?>
+    <?php if (!empty($sideBar)) { ?>
+
+        <section id="<?= $this->contentId ?>" class="row">
+            <div class="col-md-9 main-content">
+                <?php echo $this->layout()->content ?>
+            </div>
+            <nav id="body-subnav" class="col-md-3">
+                <?= $sideBar ?>
+            </nav>
+        </section>
+
+    <?php } else { ?>
+
+        <section id="<?= $this->contentId ?>" class="row">
+            <div class="col-md-12 main-content" id="<?= $this->contentId ?>">
+                <?php echo $this->layout()->content ?>
+            </div>
+        </section>
+    <?php } ?>
+</div>
+
+<footer id="footer">
+    <div class="container">
+        <div class="row">
+            <div id="footer-company" class="col-md-4 vcard">
+                <h3 class="org"><?= $this->farm->name ?></h3>
+                <div class="adr">
+                    <div class="street-address">
+                        <?= $this->escape($this->farm->address) ?>
+                        <?php if (!empty($this->farm->address2)) { ?>
+                            <br /><?= $this->escape($this->farm->address2) ?>
+                        <?php } ?>
+                    </div>
+                    <span class="locality"><?= $this->escape($this->farm->city) ?></span>,
+                    <span class="region"><?= $this->escape($this->farm->state) ?></span>,
+                    <span class="postal-code"><?= $this->escape($this->farm->zipCode) ?></span>
+                </div>
+                <?php if (!empty($this->farm->telephone)) { ?>
+                    <div class="tel"><?= $this->escape($this->farm->telephone) ?></div>
+                <?php } ?>
+            </div>
+            <div id="footer-contact" class="col-md-4">
+                <h3><?= $this->translate('Stay in Touch'); ?></h3>
+
+                <ul>
+                    <?php if (!empty($this->farm->email)) { ?>
+                        <li><a href="/contact" title="<?= $this->translate('Email') ?>"><i class="fa fa-envelope-o"></i></a></li>
+                    <?php } ?>
+                    <?php if ($blogEnabled) { ?>
+                        <li><a href="/blog?format=rss" title="<?= $this->translate('RSS'); ?>"><i class="fa fa-rss-square"></i></a></li>
+                    <?php } ?>
+                    <?php if (!empty($facebookPageLink)) { ?>
+                        <li><a href="<?= $this->escape($facebookPageLink); ?>" title="<?= $this->translate('Facebook'); ?>"><i class="fa fa-facebook-square"></i></a></li>
+                    <?php } ?>
+                    <?php if (!empty($twitterScreenName)) { ?>
+                        <li><a href="http://twitter.com/<?= $this->escape($twitterScreenName) ?>" title="<?= $this->translate('Twitter'); ?>"><i class="fa fa-twitter"></i></a></li>
+                    <?php } ?>
+                </ul>
+            </div>
+            <div id="footer-support" class="col-md-4">
+                <h3><?= $this->translate('HarvestHand') ?></h3>
+
+                <?php if (!empty($disclaimer)) { ?>
+                    <a href="/disclaimer" title="<?= $this->translate('Website Disclaimer') ?>">
+                        <?= $this->translate('Disclaimer') ?></a>
+
+                    |
+                <?php } ?>
+
+                <a href="/admin" title="<?= $this->translate('Go To My Farm Dashboard') ?>">
+                    <?= $this->translate('Admin Dashboard'); ?></a>
+
+                |
+
+                <a href="http://www.<?= Bootstrap::$rootDomain ?>/" title="<?= $this->translate('This site is powered by local food communities and HarvestHand') ?>">
+                    <?= $this->translate('HarvestHand') ?></a>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+<?php
+echo $this->loader()->prepend(
+    array(
+        'jquery1111',
+        'jquery_ui1110',
+        'jquery_bootstrap',
+        'hh'
+    )
+)->toString(HH_View_Helper_Loader::JS);
+?>
+<?php echo $this->headScript() ?>
+<?php echo $this->placeholder('foot'); ?>
+
+<?php if (!empty($piwikId)) { ?>
+    <script type="text/javascript">
+        document.write(unescape("%3Cscript src='/_stats/piwik.js' type='text/javascript'%3E%3C/script%3E"));
+    </script><script type="text/javascript">
+        try {
+            var piwikTracker = Piwik.getTracker("/_stats/piwik.php", <?= (int) $piwikId ?>);
+            piwikTracker.trackPageView();
+            piwikTracker.enableLinkTracking();
+        } catch( err ) {}
+    </script><noscript><p><img src="/_stats/piwik.php?idsite=<?= (int) $piwikId ?>" style="border:0" alt="" /></p></noscript>
+<?php } ?>
+<?php if (!empty($this->farm->domain) && !empty($_SESSION['session']['transfer'])) { ?>
+    <img width="1"
+         height="1"
+         alt="t"
+         border="0"
+         style="border: 0"
+         src="http://www.<?= Bootstrap::$rootDomain ?>/service/default/sync/i.gif?i=<?= urlencode(HH_Crypto::encrypt(Zend_Session::getId())); ?>" />
+<?php } ?>
+
+</body>
+</html>

@@ -1,0 +1,69 @@
+<?php
+    while (ob_get_level()) {
+        ob_end_clean();
+    }
+
+    header('Content-Type: application/vnd.ms-excel');
+    header('Content-Disposition: attachment; filename="addons.csv"');
+
+    $displayedHeader = false;
+    
+    function filter (&$data) {
+        str_replace(
+            array(
+                "\t",
+                "\r\n",
+                "\r",
+                "\n",
+                '"'
+            ),
+            array(
+                '\t',
+                '\n',
+                '\n',
+                '\n',
+                '""'
+            ),
+            $data
+        );
+
+        $data = '"' . $data . '"';
+    };
+    
+    foreach ($this->addons as $addon) {
+        
+        $row = array(
+            'id' => $addon->id,
+            'customerId' => $addon->customerId,
+            'customerFirstName' => $addon->customerFirstName,
+            'customerLastName' => $addon->customerLastName,
+            'customerAddress' => $addon->customerAddress,
+            'customerAddress2' => $addon->customerAddress2,
+            'customerCity' => $addon->customerCity,
+            'customerTelephone' => $addon->customerTelephone,
+            'customerEmail' => $addon->customerEmail,
+            'customerSecondaryEmail' => $addon->customerSecondaryEmail,
+            'addonId' => $addon->addonId,
+            'addonName' => $addon->addonName,
+            'week' => $addon->week,
+            'quantity' => $addon->quantity,
+            'payment' => $addon->payment,
+            'paidInFull' => $addon->paidInFull,
+            'addedDatetime' => $addon->addedDatetime,
+            'updatedDatetime' => $addon->updatedDatetime
+        );
+        
+        if ($displayedHeader == false) {
+            $rowHeaderArray = array_keys($row);
+            array_walk($rowHeaderArray, 'filter');
+            echo implode(',', $rowHeaderArray) . "\r\n";
+            $displayedHeader = true;
+        }
+        
+        array_walk($row, 'filter');
+        
+        echo implode(',', $row) . "\r\n";
+    }
+
+    exit();
+?>

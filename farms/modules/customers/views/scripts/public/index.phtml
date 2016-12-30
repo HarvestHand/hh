@@ -1,0 +1,13 @@
+<?php $this->headTitle($this->translate('Members')); ?>
+
+<h2><?= $this->translate('Members'); ?></h2>
+
+<?php if (!empty($this->messages)) { ?>
+    <section class="info ui-widget ui-state-highlight ui-corner-all">
+        <div>
+            <i class="fa fa-info-circle"></i>
+            <strong><?= $this->translate('Hey!'); ?></strong>
+            <?= $this->escape(implode('; ', $this->messages)); ?>
+        </div>
+    </section>
+<?php } ?>

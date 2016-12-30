@@ -1,0 +1,105 @@
+<?php
+$feed = new Zend_Feed_Writer_Feed();
+
+$title = $this->translate('%s Blog', $this->farm->name);
+$title .= (!empty($this->subTitle)) ?  ' - ' . $this->subTitle : '';
+
+$feed->setTitle($title);
+
+$feed->setDescription(
+    $this->translate(
+        '%s blog posts',
+        $this->farm->name
+    )
+);
+$feed->setLink($this->farm->getBaseUri());
+$feed->setFeedLink(
+    $this->farm->getBaseUri() . 'blog?format=atom',
+    'atom'
+);
+$feed->setFeedLink(
+    $this->farm->getBaseUri() . 'blog?format=rss',
+    'rss'
+);
+$feed->addAuthor(
+    $this->farm->name,
+    $this->farm->email,
+    $this->farm->getBaseUri()
+);
+
+if (!empty($this->categoryToken)) {
+    $feed->addCategory(array('term' => $this->categoryToken));
+}
+
+$feed->setIcon(
+    array(
+        'uri' => $this->farm->getBaseUri() . '_images/favicon.png'
+    )
+);
+$feed->setImage(
+    array(
+        'uri' => $this->farm->getBaseUri() . '_images/apple-touch-icon.png',
+        'title' => $this->farm->name,
+        'link' => $this->farm->getBaseUri(),
+        'width' => 129,
+        'height' => 129
+    )
+);
+$feed->setGenerator('HarvestHand');
+
+$currentYear = null;
+$currentWeek = null;
+$entry = null;
+$body = null;
+$date = new Zend_Date();
+$first = null;
+
+if ($this->posts->count()) {
+    foreach ($this->posts as $post) { 
+    
+        if ($first === null) {
+            $feed->setDateModified($post->updatedDatetime);
+            $feed->setDateCreated($post->addedDatetime);
+            $first = false;
+        }
+        
+        $entry = $feed->createEntry();
+        
+        $entry->setTitle($post->title);
+        $entry->setDateModified($post->updatedDatetime);
+        $entry->setDateCreated($post->publishedDatetime);
+        $entry->setLink(
+            $this->farm->getBaseUri() . 'blog/post/' . $post->token
+        );
+        $entry->addAuthor(
+            $this->farm->name,
+            $this->farm->email,
+            $this->farm->getBaseUri()
+        );
+        
+        $body =<<<EOD
+<article>
+
+    {$post->content}
+
+    <footer>
+        <p>
+            {$this->translate('Category')}: 
+            <a href="/blog/category/{$this->escape($post->categoryToken)}">
+                {$this->escape($post->category)}
+            </a>
+        </p>
+    </footer>
+</article>
+EOD;
+        
+        $entry->setDescription($body);
+        $feed->addEntry($entry);
+    } 
+} else {
+    $feed->setDateModified(Zend_Date::now());
+    $feed->setDateCreated(Zend_Date::now());
+}
+
+
+echo $feed->export($this->format);

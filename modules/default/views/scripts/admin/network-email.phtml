@@ -1,0 +1,36 @@
+<p><?= $this->translate('Hi %s,', $this->escape($this->farm->name)) ?></p>
+
+<p><?= $this->translate('%s has requested to join your distribution network.', $this->escape($this->relation->name)) ?></p>
+
+<p><strong><?= $this->translate('To approve or close, <a href="%s">click here</a>.', $this->farm->getBaseUri() . 'admin/default/options_general#parent-network') ?></strong></p>
+
+<h3><?=  $this->translate('About the Vendor') ?></h3>
+
+<dl>
+    <dt><?= $this->translate('Name'); ?></dt>
+    <dd><?= $this->escape($this->relation->name); ?></dd>
+
+    <dt><?= $this->translate('Address'); ?></dt>
+    <dd>
+        <?= $this->escape($this->relation->address); ?>,
+        <?php if (!empty($this->relation->address2)) { ?><br />
+            <?= $this->escape($this->relation->address2); ?><br />
+        <?php } ?>
+        <?= $this->escape($this->relation->city); ?>, <?= $this->escape($this->relation->state); ?>  <?= $this->escape($this->relation->zipCode); ?><br />
+        <?= $this->escape($this->relation->country) ?>
+    </dd>
+</dl>
+
+<h3><?= $this->translate('Vendor Contact') ?></h3>
+
+<dl>
+    <dt><?= $this->translate('Name'); ?></dt>
+    <dd><?= $this->escape($this->relation->getPrimaryFarmer()->firstName); ?> <?= $this->escape($this->relation->getPrimaryFarmer()->lastName); ?></dd>
+
+    <?php if (!empty($this->relation->getPrimaryFarmer()->email)) { ?>
+        <dt><?= $this->translate('Email'); ?></dt>
+        <dd><?= $this->escape($this->relation->getPrimaryFarmer()->email); ?></dd>
+    <?php } ?>
+</dl>
+
+<p><strong><?= $this->translate('To approve or close, <a href="%s">click here</a>.', $this->farm->getBaseUri() . 'admin/default/options_general#parent-network') ?></strong></p>

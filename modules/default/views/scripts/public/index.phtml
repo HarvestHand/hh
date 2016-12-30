@@ -1,0 +1,221 @@
+<?php
+    $this->headTitle('Web CSA Farm Management Platform');
+
+    $this->loader()->append('jquery_validate');
+    $this->loader()->append('jquery_cookie');
+    $this->loader()->append('jquery_form');
+    $this->loader()->append('jquery_qtip');
+?>
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+    var rotate = true,
+        intervalID = null;
+    
+    $(document).ready(function(){
+        if (top.location != self.location) {
+            top.location = self.location;
+        }
+        
+        $("#notify").validate({
+            submitHandler: function(form) {
+                jQuery(form).ajaxSubmit(function() {
+                    $("#notify").slideUp("slow", function(){
+                        alert("We'll be in touch " + $("#name").val());
+                    })
+                });
+            }
+        });
+
+        $("#overview").delegate("nav a", "click", function(event){
+            event.preventDefault();
+        
+            rotateOverview($(this), true);
+        });
+
+        $(".tooltip").qtip({
+           style: {
+               classes: 'ui-tooltip-shadow ui-tooltip-rounded',
+               widget: true
+           },
+           position: {
+              my: 'bottom center',
+              at: 'top center'
+           }
+        });
+
+        if (!$.cookie("geo")) {
+            $.getScript("http://j.maxmind.com/app/geoip.js", function(){
+                var geo = geoip_country_code() + "|" +
+                    geoip_region() + "|" +
+                    geoip_city() + "|" +
+                    geoip_latitude() + "|" +
+                    geoip_longitude();
+                
+                $.cookie(
+                    "geo", 
+                    geo, 
+                    { 
+                        expires: 15, 
+                        path: '/', 
+                        domain: '.<?= Bootstrap::$rootDomain ?>'
+                    }
+                );
+            });
+        }
+        
+        intervalID = window.setInterval(function() {
+            var links = $("#overview nav a"),
+                index = 0;
+            
+            links.each(function(i){
+                if ($(this).hasClass("focus")) {
+                    index = i;
+                }
+            });
+            
+            index++;
+            
+            if (index >= links.length) {
+                index = 0;
+            }
+            
+            rotateOverview($(links[index]));
+        }, 8000);
+        
+        $(".share-management h3").after('<img src="/_images/shares.png" align="right" width="496" height="332" alt="Share Management" style="position: relative; top: -140px; margin: 0 0 -120px 20px; padding: 20px;" />');
+        $(".membership-management h3").after('<img src="/_images/members.png" align="right" width="450" height="299" alt="Membership Management" style="position: relative; top: -140px; margin: 0 0 -120px 20px; padding: 20px;" />');
+        $(".marketing-website h3").after('<img src="/_images/home.png" align="right" width="450" height="322" alt="Marketing Website" style="position: relative; top: -140px; margin: 0 0 -120px 20px; padding: 20px;" />');
+        $(".social-media h3").after('<img src="/_images/facebook.png" align="right" width="488" height="332" alt="Social Media" style="position: relative; top: -140px; margin: 0 0 -120px 20px; padding: 20px;" />');
+    });
+    
+    function rotateOverview(that, killInterval) {
+        var target = that.data("target");
+        
+        if (killInterval) {
+            if (intervalID !== null) {
+                window.clearInterval(intervalID);
+                intervalID = null;
+            }
+        }
+            
+        $("#overview nav a").removeClass("focus");
+        that.addClass("focus");
+
+        $("#overview article:visible").fadeOut("slow", function(){
+            $("#overview article." + target).fadeIn("slow");
+        });
+    }
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+    <section id="overview">
+
+        <article class="local-food">
+            <h3>Local Food &amp; Communities</h3>
+            
+            <img src="/_images/harvesthand.png" 
+                 align="right" 
+                 width="339" 
+                 height="332"
+                 alt="Local Food &amp; Communities"
+                 style="position: relative; top: -140px; margin: 0 0 -120px 20px; padding: 20px;" />
+            
+            <p>Community Supported Agriculture (CSA) is a member based model of food
+                production and distribution that unites communities with local
+                farms and food producers.  HarvestHand is an Internet platform for CSA businesses to
+                communicate with and manage their community of members.</p>
+        </article>
+        
+        <article class="share-management" style="display: none;">
+            <h3>Share Management</h3>
+            
+            <p>HarvestHand allows you to service your customers 24/7 with online share sign up, 
+                payment processing, and share content listings.  
+                Diversify revenue streams by adding a HarvestHand managed share add-ons service.
+            </p>
+
+        </article>
+        
+        <article class="membership-management" style="display: none;">
+            <h3>Membership Management</h3>
+            
+            <p>With HarvestHand, running a membership based program becomes easy, 
+                allowing farmers to spend more time growing their crops and growing
+                relationships with the community that supports them.</p>
+            
+        </article>
+        
+        <article class="marketing-website" style="display: none;">
+            <h3>Marketing Website</h3>
+            
+            <p>Create your custom CSA marketing website in a jiffy, and deploy your own blog to communicate
+                with your members.  All this under one roof which includes member sign in, and share purchasing.</p>
+            
+        </article>
+        
+        <article class="social-media" style="display: none;">
+            <h3>Social Media</h3>
+            
+            <p>Extend your marketing reach by leveraging social media sites like Facebook and Twitter.  
+                HarvestHand automates significant parts of a social media marketing program by keeping 
+                your Facebook page and Twitter feed up-to-date for you.</p>
+            
+        </article>
+        
+        <nav>
+            <ol>
+                <li>
+                    <a href="" data-target="local-food" class="focus tooltip" title="Local Food &amp; Communities">
+                        <span class="icon-menu icon-menu-hh" style="float: left; margin: 1px;"></span>
+                    </a>
+                </li>
+                <li>
+                    <a href="" data-target="share-management" class="tooltip" title="Share Management">
+                        <span class="icon-menu icon-menu-shares" style="float: left; margin: 1px;"></span>
+                    </a>
+                </li>
+                <li>
+                    <a href="" data-target="membership-management" class="tooltip" title="Membership Management">
+                        <span class="icon-menu icon-menu-members" style="float: left; margin: 1px;"></span>
+                    </a>
+                </li>
+                <li>
+                    <a href="" data-target="marketing-website" class="tooltip" title="Marketing Website">
+                        <span class="icon-menu icon-menu-website" style="float: left; margin: 1px;"></span>
+                    </a>
+                </li>
+                <li>
+                    <a href="" data-target="social-media" class="tooltip" title="Social Media">
+                        <span class="icon-menu icon-menu-users" style="float: left; margin: 1px;"></span>
+                    </a>
+                </li>
+            </ol>
+        </nav>
+    </section>
+
+    <br clear="all" />
+
+    <form action="/" method="post" id="notify" class="cmxform">
+    <fieldset>
+        <legend>Notify Me!</legend>
+        <p>HarvestHand is not yet publicly available.  Send us your name and
+            email and we will let you know when our doors are open.
+        </p>
+        <p>
+            <label>Name:</label>
+            <input id="name" name="name" type="text" class="required" title="Your name" />
+        </p>
+        <p>
+            <label>Email:</label>
+            <input id="email" type="text" name="email" class="required email" title="Your email" />
+        </p>
+        <p>
+            <button type="submit" class="submit ui-button ui-widget ui-corner-all ui-button-text-icon-primary ui-state-default">
+                <span class="ui-button-icon-primary ui-icon ui-icon-mail-closed"></span>
+                <span class="ui-button-text">
+                    Go!
+                </span>
+            </button>
+        </p>
+    </fieldset>
+</form>

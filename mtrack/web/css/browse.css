@@ -1,0 +1,86 @@
+/* Styles for tabular listings such as those used for displaying directory
+   contents and report results. */
+table.listing {
+ clear: both;
+ border-bottom: 1px solid #d7d7d7;
+ border-collapse: collapse;
+ border-spacing: 0;
+ margin-top: 1em;
+ width: 100%;
+}
+table.listing th { text-align: left; padding: 0 1em .1em 0; font-size: 12px }
+table.listing thead { background: #f7f7f0 }
+table.listing thead th {
+ border: 1px solid #d7d7d7;
+ border-bottom-color: #999;
+ font-size: 11px;
+ font-weight: bold;
+ padding: 2px .5em;
+ vertical-align: bottom;
+}
+table.listing thead th a { border: none; padding-right: 12px }
+table.listing th.asc a, table.listing th.desc a { font-weight: bold }
+table.listing th.asc a, table.listing th.desc a {
+ background-position: 100% 50%;
+ background-repeat: no-repeat;
+}
+table.listing th.asc a { }
+table.listing th.desc a { }
+table.listing tbody td, table.listing tbody th {
+ border: 1px dotted #ddd;
+ padding: .33em .5em;
+ vertical-align: top;
+}
+table.listing tbody tr { border-top: 1px solid #ddd }
+table.listing tbody tr.even { background-color: #fcfcfc }
+table.listing tbody tr.odd { background-color: #f7f7f7 }
+
+/* Styles for the directory entries table
+   (extends the styles for "table.listing") */
+#dirlist { margin-top: 0 }
+#dirlist td.rev, #dirlist td.age, #dirlist td.change, #dirlist td.size {
+ color: #888;
+ white-space: nowrap;
+}
+#dirlist td.size { text-align: right; }
+#dirlist td.name {
+  white-space: nowrap;
+}
+#dirlist td.name a, #dirlist td.name span {
+ background-position: 0% 50%;
+ background-repeat: no-repeat;
+ padding-left: 20px;
+}
+#dirlist td.name a.parent { background-image: url(../images/parent.png) }
+#dirlist td.name a.dir { background-image: url(../images/treeview/folder-closed.gif) }
+#dirlist td.name span.dir { background-image: url(../images/treeview/folder-closed.gif) }
+#dirlist td.name a.file { background-image: url(../images/file.png) }
+#dirlist td.name span.file { background-image: url(../images/filedeny.png) }
+#dirlist td.name a, #dirlist td.rev a { display: block }
+#dirlist td.change {
+  white-space: normal;
+}
+
+#dirlist td.change p {
+	margin: 0px;
+	display: inline;
+	padding: 0px;
+}
+
+div.browselocation {
+	padding-top: 1em;
+}
+
+div#repobuttons {
+	width: 9em;
+	position: absolute;
+	right: 0px;
+	top: 4em;
+	background: white;
+	padding-left: 0.3em;
+}
+
+div#repobuttons button {
+	width: 8em;
+}
+

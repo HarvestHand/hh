@@ -1,0 +1,112 @@
+<?php $helper = $this->vacationHelper(); ?>
+
+<style>
+    #all-vacations select,
+    #all-vacations .btn {
+        margin: 2px;
+        float: right;
+    }
+
+    #all-vacations .btn {
+        padding: 8px;
+    }
+
+    #all-vacations div > div {
+        border: 1px solid #000000;
+    }
+
+    #all-vacations table {
+        width: 100%;
+    }
+
+    #all-vacations td {
+        padding: 0 12px;
+    }
+
+    #all-vacations legend {
+        margin-bottom: 12px;
+    }
+
+    #all-vacations fieldset {
+        margin-bottom: 0;
+    }
+
+    #all-vacations input[type=submit] {
+        margin-top: 12px;
+        padding: 12px;
+        float: none;
+    }
+</style>
+
+<h2><?= $this->translate('Edit Vacations'); ?></h2>
+<?php if(count($this->vacations) > 0){ ?>
+    <p><?= $this->translate('Do not expect to receive deliveries on, or between the Monday of the beginning
+    week, and the Sunday of the week following the last week of a vacation. Also, you must enter vacations before the Monday
+    of the beginning week to give your farm adequate notice.'); ?></p>
+<?php } ?>
+
+<?php
+if(isset($this->valid)){
+    if($this->valid){
+        echo $helper->buildMessage('info', $this->translate('Nice.'),
+                                   $this->translate('Vacation options have been saved.'));
+    } else{
+        echo $helper->buildMessage('error', $this->translate('Oops.'),
+                                   $this->translate('The beginning date must occur before the ending date.'));
+    }
+}
+?>
+
+<form id="all-vacations" method="POST" action="/customers/vacations">
+    <?php foreach($this->vacations as $data){
+        $share = $data['share'];
+        $vacations = $data['vacations'];
+        $options = $data['options']; ?>
+
+        <fieldset name="<?= $this->escape($share->getShare()->name); ?>">
+            <legend><h3>&nbsp;<?= $this->escape($share->getShare()->name); ?></h3></legend>
+
+            <div id="share-<?= $this->escape($share->id); ?>">
+                <div id="share-<?= $this->escape($share->id); ?>-vacations">
+                    <?php foreach($vacations as $vacation){
+                        echo $helper->buildForm($share, $options, $vacation->id, $vacation);
+                    } ?>
+                </div>
+                <input name="hidden" type="hidden"/>
+                <button id="add-vacation"
+                        data-share="<?= $this->escape($share->id); ?>"
+                        class="btn">Add
+                </button>
+            </div>
+        </fieldset>
+    <?php } ?>
+    <?php if(count($this->vacations) > 0){ ?>
+        <input class="btn" type="submit" value="Submit">
+    <?php } else{ ?>
+        <p>You need to purchase shares in order to take vacations.</p>
+    <?php } ?>
+</form>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script>
+    var nextId = <?= $this->escape((int)$vacation->id + 1); ?>;
+
+    $('#all-vacations').on('click', '#remove-vacation', function () {
+        var id = $(this).data("vacation");
+        $('#vacation-' + id).remove();
+        return false;
+    });
+
+    $('#all-vacations').on('click', '#add-vacation', function () {
+        var shareId = $(this).data("share");
+        $.ajax({
+            url: '/customers/vacations',
+            data: 'shareId=' + shareId + '&nextId=' + nextId
+        })
+            .done(function (data) {
+                $('#share-' + shareId + '-vacations').append(data);
+                nextId++;
+            });
+        return false;
+    });
+</script>

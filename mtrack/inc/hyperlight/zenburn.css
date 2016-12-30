@@ -1,0 +1,64 @@
+/*
+ * Copyright 2008 Konrad Rudolph
+ * All rights reserved.
+ *
+ * Color scheme for code is a simplified version of the VIM Zenburn scheme:
+ * http://slinky.imukuppi.org/zenburn/
+ */
+
+.source-code.zenburn {
+    background: #3F3F3F;
+    color: #DCDCCC;
+}
+
+.source-code.zenburn .comment {
+    color: #7F9F7F;
+    font-style: italic;
+}
+
+.source-code.zenburn .comment .todo {
+    color: #DFDFDF;
+    font-weight: bold;
+}
+
+.source-code.zenburn .tag {
+    color: #EFEF8F;
+}
+
+.source-code.zenburn .identifier {
+    color: #EFDCBC;
+}
+
+.source-code.zenburn .keyword {
+    color: #F0DFAF;
+    font-weight: bold;
+}
+
+.source-code.zenburn .keyword.builtin {
+    color: #EFEF8F;
+    font-weight: normal;
+}
+
+.source-code.zenburn .keyword.operator {
+    color: #FFCFAF;
+}
+
+.source-code.zenburn .number {
+    color: #8CD0D3;
+}
+
+.source-code.zenburn .string {
+    color: #CC9393;
+}
+
+.source-code.zenburn::-moz-selection,
+.source-code.zenburn span::-moz-selection {
+    background: #70D2B3;
+    color: #233322;
+}
+
+.source-code.zenburn::selection,
+.source-code.zenburn span::selection {
+    background: yellow;
+    color: black;
+}

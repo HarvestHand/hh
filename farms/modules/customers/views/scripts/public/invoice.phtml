@@ -1,0 +1,80 @@
+<?php if (empty($this->invoice) || $this->invoice->isEmpty()) { ?>
+    <?= $this->translate('Invoice Not Found') ?>
+<?php } else { ?>
+    <table class="invoice">
+        <thead>
+        <tr>
+            <th>
+                <?= $this->translate('Desc.') ?>
+            </th>
+            <th>
+                <?= $this->translate('Price') ?>
+            </th>
+            <th>
+                <?= $this->translate('Qty') ?>
+            </th>
+            <th>
+                <?= $this->translate('Total') ?>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($this->invoice->getLines() as $line) { ?>
+            <tr>
+                <td>
+                    <?php if ($line['type'] == 'SHARE') { ?>
+                        <?= $this->escape($line['description']) ?>
+                    <?php } else if ($line['type'] == 'ADDON') { ?>
+                        <?= $this->escape($line['description']) ?>
+                    <?php } else { ?>
+                        <?= $this->escape($line['description']) ?>
+                    <?php } ?>
+                </td>
+                <td><?= $this->escape($line['unitPrice']) ?></td>
+                <td><?= $this->escape($line['quantity']) ?></td>
+                <td><?= $this->escape($line['total']) ?></td>
+            </tr>
+        <?php } ?>
+        </tbody>
+        <tfoot>
+        <tr style="border-top: 1px solid #444;">
+            <td colspan="3">
+                <?= $this->translate('Sub-Total') ?>
+            </td>
+            <td>
+                <?= $this->escape($this->invoice['subTotal']) ?>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <?= $this->translate('Tax') ?>
+            </td>
+            <td>
+                <?= $this->escape($this->invoice['tax']) ?>
+            </td>
+        </tr>
+        <tr style="<?= ($this->invoice['total'] == $this->invoice['outstandingAmount']) ? 'font-weight: bold;' : '' ?>">
+            <td colspan="3">
+                <?= $this->translate(
+                    'Total (Due %s)',
+                    $this->escape($this->invoice->dueDate->get('yyyy-MM-dd'))
+                ) ?>
+            </td>
+            <td>
+                <?= $this->escape($this->invoice['total']) ?>
+            </td>
+        </tr>
+
+        <?php if ($this->object['total'] != $this->invoice['outstandingAmount']) { ?>
+            <tr style="font-weight: bold;">
+                <td colspan="3">
+                    <?= $this->translate('Outstanding Amount Due') ?>
+                </td>
+                <td>
+                    <?= $this->escape($this->invoice['outstandingAmount']) ?>
+                </td>
+            </tr>
+        <?php } ?>
+        </tfoot>
+    </table>
+<?php } ?>

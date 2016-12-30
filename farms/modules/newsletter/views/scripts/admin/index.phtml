@@ -1,0 +1,31 @@
+<?php $this->headTitle($this->translate('Newsletter')); ?>
+
+<h2>
+    <span class="icon-menu icon-menu-newsletter" style="float: left; margin: -10px 7px 0 0;"></span>
+    <?= $this->translate('Newsletter'); ?>
+</h2>
+
+<section class="container_12">
+    <article class="grid_9">
+        <div class="ui-widget-content ui-corner-all" style="padding: 0.4em; position: relative;">
+            <h3 class="ui-widget-header ui-corner-all" style="margin: 0 0 0.8em 0; padding: 0.4em; text-align: center;">
+                <?= $this->translate('Summary') ?>
+            </h3>
+            
+            <dl>
+                <dt style="font-weight: bold">
+                    <?= $this->translate('Newsletter Issues On File'); ?>:
+                </dt>
+                <dd>
+                    <a href="/admin/newsletter/issues">
+                        <?= $this->escape($this->issues['count']); ?>
+                    </a>
+                </dd>                
+            </dl>
+            
+        </div>
+        
+    </article>
+
+    <?= $this->render('admin-sub-nav.phtml'); ?>
+</section>

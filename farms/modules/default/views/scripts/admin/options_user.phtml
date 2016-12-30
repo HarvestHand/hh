@@ -1,0 +1,205 @@
+<?php
+    if (empty($this->farmer)) {
+        $title = $this->translate('New Administrative User');
+
+    } else {
+        $title = $this->translate('Edit Administrative User');
+    }
+
+    $this->headTitle($title);
+
+    $this->loader()->append('jquery_validate');
+?>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#customer").validate({
+            rules: {
+                "password" : {
+                    minlength : 4
+                },
+                "userName" : {
+                    remote : "/admin/default/usernameunique?<?= http_build_query($_GET) ?>"
+                },
+                "passwordConfirm" : {
+                    equalTo : "#password"
+                }
+            },
+            messages : {
+                "userName" : {
+                    remote : function() {
+                        return $.format(
+                            "<?= $this->translate('The user name {0} is already in use'); ?>",
+                            $("#userName").val()
+                        );
+                    }
+                },
+                "passwordConfirm" : {
+                    equalTo : "<?= $this->translate('Your passwords are not the same'); ?>"
+                }
+            },
+            errorContainer: $("#formError")
+        });
+    });
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<h2>
+    <span class="icon-menu icon-menu-users" style="float: left; margin: -10px 7px 0 0;"></span>
+    <?= $title ?>
+</h2>
+
+<section class="container_12">
+    <article class="grid_11">
+
+        <form id="customer" 
+              action="/admin/default/options_user?<?= http_build_query($_GET) ?>" 
+              method="post" 
+              accept-charset="utf-8" 
+              class="cmxform large">
+
+            <section id="formError" 
+                     class="error ui-widget ui-state-error ui-corner-all" 
+                     style="<?= (!empty($this->errors)) ? '' : 'display:none;' ?>">
+                <div>
+                    <i class="fa fa-exclamation-triangle"></i>
+                    <strong><?= $this->translate('Oh No!'); ?></strong>
+                    <?= $this->translate('Something is not right with what you entered.  Check below for hints on how to fix things up.'); ?>
+                </div>
+            </section>            
+
+            <fieldset>
+                <legend><?= $this->translate('Login Details') ?></legend>
+
+                <p>
+                    <label for="firstName" class="required" title="<?= $this->translate('Please enter the first name of your customer'); ?>">
+                        <?= $this->translate('First Name'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+                    <input
+                        id="firstName"
+                        name="firstName"
+                        type="text"
+                        title="<?= $this->translate('Please enter the first name of your customer'); ?>"
+                        value="<?= $this->getFormValue('firstName'); ?>"
+                        class="required large"
+                        maxlength="100" />
+
+                    <?php if (!empty($this->errors['firstName'])) { ?>
+                    <label for="firstName" class="error">
+                        <?= implode('; ', $this->errors['firstName']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="lastName" class="required" title="<?= $this->translate('Please enter the last name of your customer'); ?>">
+                        <?= $this->translate('Last Name'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+                    <input
+                        id="lastName"
+                        name="lastName"
+                        type="text"
+                        title="<?= $this->translate('Please enter the last name of your customer'); ?>"
+                        value="<?= $this->getFormValue('lastName'); ?>"
+                        class="required large"
+                        maxlength="100" />
+
+                    <?php if (!empty($this->errors['lastName'])) { ?>
+                    <label for="lastName" class="error">
+                        <?= implode('; ', $this->errors['lastName']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="email" title="<?= $this->translate('Please enter the customer\'s email'); ?>">
+                        <?= $this->translate('Email'); ?>:
+                    </label>
+                    <input
+                        id="email"
+                        name="email"
+                        type="text"
+                        title="<?= $this->translate('Please enter the customer\'s email'); ?>"
+                        value="<?= $this->getFormValue('email'); ?>"
+                        class="email"
+                        maxlength="255" />
+
+                    <?php if (!empty($this->errors['email'])) { ?>
+                    <label for="email" class="error">
+                        <?= implode('; ', $this->errors['email']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+                
+                <p>
+                    <label for="userName" title="<?= $this->translate('Please enter a user name to log in with'); ?>">
+                        <?= $this->translate('User Name'); ?>:
+                    </label>
+                    <input
+                        id="userName"
+                        name="userName"
+                        type="text"
+                        title="<?= $this->translate('Please enter a user name to log in with'); ?>"
+                        value="<?= $this->getFormValue('userName'); ?>"
+                        class=""
+                        maxlength="50" />
+
+                    <?php if (!empty($this->errors['userName'])) { ?>
+                    <label for="userName" class="error">
+                        <?= implode('; ', $this->errors['userName']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="password" title="<?= $this->translate('Please enter a password to log in with'); ?>">
+                        <?= $this->translate('Password'); ?>:
+                    </label>
+                    <input
+                        id="password"
+                        name="password"
+                        type="password"
+                        title="<?= $this->translate('Please enter a password to log in with'); ?>"
+                        value="<?= $this->getFormValue('password'); ?>"
+                        class=""
+                        maxlength="32"
+                        autocomplete="off" />
+
+                    <?php if (!empty($this->errors['password'])) { ?>
+                    <label for="password" class="error">
+                        <?= implode('; ', $this->errors['password']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="passwordConfirm" title="<?= $this->translate('Please confirm your password'); ?>">
+                        <?= $this->translate('Confirm Password'); ?>:
+                    </label>
+                    <input
+                        id="passwordConfirm"
+                        name="passwordConfirm"
+                        type="password"
+                        title="<?= $this->translate('Please confirm your password'); ?>"
+                        value="<?= $this->getFormValue('passwordConfirm'); ?>"
+                        class=""
+                        maxlength="32"
+                        autocomplete="off" />
+                </p>
+
+            </fieldset>
+            
+            <p>
+                <button type="submit" class="submit fieldset-align ui-button ui-widget ui-corner-all ui-button-text-only ui-state-default">
+                    <span class="ui-button-text">
+                        <i class="fa fa-check"></i>
+                        <?= $this->translate('Save!'); ?>
+                    </span>
+                </button>
+            </p>
+        </form>
+    </article>
+</section>

@@ -1,0 +1,13 @@
+<%
+_.each(value, function (label, id) {
+  if (_.isObject(label) && label.label) {
+%>
+    <%- label.label %>
+<%
+  } else {
+%>
+  <%- label %>
+<%
+  }
+});
+%>

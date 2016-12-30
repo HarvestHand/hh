@@ -1,0 +1,217 @@
+<?php
+$facebookPageLink = $this->farm->getPreferences()->get('pageLink', 'facebook');
+$twitterScreenName = $this->farm->getPreferences()->get('screenName', 'twitter');
+$blogEnabled = $this->farm->getPreferences()->get('blogEnabled', 'website', true);
+
+$this->headLink()->headLink(
+    array(
+        'rel' => 'alternate',
+        'href' => '/shares?format=rss',
+        'type' => 'application/rss+xml',
+        'title' => $this->translate(
+                '%s Shares RSS Feed',
+                $this->farm->name
+            )
+    )
+);
+$this->headLink()->headLink(
+    array(
+        'rel' => 'alternate',
+        'href' => '/shares?format=atom',
+        'type' => 'application/atom+xml',
+        'title' => $this->translate(
+                '%s Shares Atom Feed',
+                $this->farm->name
+            )
+    )
+);
+
+if ($blogEnabled) {
+
+    $this->headLink()->headLink(
+        array(
+            'rel' => 'alternate',
+            'href' => '/blog?format=rss',
+            'type' => 'application/rss+xml',
+            'title' => $this->translate('%s Blog', $this->farm->name)
+        )
+    );
+    $this->headLink()->headLink(
+        array(
+            'rel' => 'alternate',
+            'href' => '/blog?format=atom',
+            'type' => 'application/atom+xml',
+            'title' => $this->translate('%s Blog', $this->farm->name)
+        )
+    );
+}
+?>
+<!doctype html>
+<!--[if lt IE 7 ]> <html class="no-js ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]>    <html class="no-js ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]>    <html class="no-js ie8" lang="en"> <![endif]-->
+<!--[if IE 9 ]>    <html class="no-js ie9" lang="en"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+<head>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta charset="utf-8">
+    <?php echo $this->headTitle() ?>
+    <link rel="shortcut icon" href="/_images/favicon.png">
+    <?php echo $this->headStyle() ?>
+    <script src="/_js/modernizr.js"></script>
+    <?php echo $this->headLink() ?>
+    <?php echo $this->placeholder('head'); ?>
+    <style type="text/css">
+        #body, #body-content-content, #body-content-left, #body-content-right { background: #ffffff; }
+    </style>
+</head>
+
+<?php if ($this->farm->id == 5) { ?>
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-42628849-1', 'strawberryhillfarm.ca');
+        ga('send', 'pageview');
+    </script>
+<?php } ?>
+
+<body>
+<div id="body">
+    <div id="body-content" class="container_12">
+        <div id="body-content-left" class="grid_12 ">
+            <div id="body-content-right">
+                <div id="body-content-content">
+                    <?php echo $this->layout()->content ?>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br class="clear"/>
+</div>
+
+<?php
+echo $this->loader()->prepend(
+    array(
+        'jquery',
+        'jquery_ui',
+        'hh'
+    )
+)->toString(HH_View_Helper_Loader::JS);
+?>
+<?php echo $this->headScript() ?>
+<?php echo $this->placeholder('foot'); ?>
+<script type="text/javascript">
+    var openSubmenu = null;
+
+    function openSubnav(parentNav) {
+        var $nav  = $("#masthead .navigation a");
+        var top = $nav.outerHeight() + $nav.position().top;
+
+        openSubmenu = $(parentNav).find("ul");
+        openSubmenu.css("top", top);
+
+        $("#masthead .navigation ul").each(function(i, e){
+            var $this = $(e);
+            if ($this.css("display") != "none") {
+                $this.stop(true, true).hide();
+            };
+        });
+
+        openSubmenu.stop(true, true).slideDown();
+    }
+
+    function isSubnavOpen(parentNav) {
+
+        return ($(parentNav).find("ul").css("display") != "none") ? true : false;
+    }
+
+    $(document).ready(function(){
+        $("#masthead .navigation li").mouseover(function() {
+            if ($(this).children('ul').length == 0) {
+                return;
+            }
+            if (openSubmenu != null && openSubmenu.length) {
+                if (!isSubnavOpen(this)) {
+                    var parentNav = this;
+
+                    openSubmenu.stop(true, true).slideUp(400, function() {
+                        openSubmenu = null;
+                        openSubnav(parentNav);
+                    });
+                }
+            } else {
+                openSubnav(this);
+            }
+        });
+
+        $('#masthead .navigation ul').mouseover(function(event) {
+            agent = jQuery.browser;
+            if(agent.msie) {
+                event.cancelBubble = true;
+            } else {
+                event.stopPropagation();
+            }
+        });
+        $("body").click(function() {
+
+            openSubmenu = null;
+
+            $("#masthead .navigation ul").each(function(i, e){
+                var $this = $(e);
+                if ($this.css("display") != "none") {
+                    $this.stop(true, true).slideUp();
+                };
+            });
+        });
+    });
+</script>
+<?php
+$piwikId = $this->farm->getPreferences()->get('piwikId', 'website', false);
+?>
+<?php if (!empty($piwikId)) { ?>
+    <script type="text/javascript">
+        document.write(unescape("%3Cscript src='/_stats/piwik.js' type='text/javascript'%3E%3C/script%3E"));
+    </script><script type="text/javascript">
+        try {
+            var piwikTracker = Piwik.getTracker("/_stats/piwik.php", <?= (int) $piwikId ?>);
+            piwikTracker.trackPageView();
+            piwikTracker.enableLinkTracking();
+        } catch( err ) {}
+    </script><noscript><p><img src="/_stats/piwik.php?idsite=<?= (int) $piwikId ?>" style="border:0" alt="" /></p></noscript>
+<?php } ?>
+<?php if (!empty($this->farm->domain) && !empty($_SESSION['session']['transfer'])) { ?>
+    <img width="1"
+         height="1"
+         alt="t"
+         border="0"
+         style="border: 0"
+         src="http://www.<?= Bootstrap::$rootDomain ?>/service/default/sync/i.gif?i=<?= urlencode(HH_Crypto::encrypt(Zend_Session::getId())); ?>" />
+<?php } ?>
+
+<?php if ($this->farm->id == 5) { ?>
+    <!-- Google Code for Remarketing Tag -->
+    <!--------------------------------------------------
+    Remarketing tags may not be associated with personally identifiable information or placed on pages related to sensitive categories. See more information and instructions on how to setup the tag on: http://google.com/ads/remarketingsetup
+    --------------------------------------------------->
+    <script type="text/javascript">
+        /* <![CDATA[ */
+        var google_conversion_id = 979870194;
+        var google_custom_params = window.google_tag_params;
+        var google_remarketing_only = true;
+        /* ]]> */
+    </script>
+    <script type="text/javascript" src="//www.googleadservices.com/pagead/conversion.js">
+    </script>
+    <noscript>
+        <div style="display:inline;">
+            <img height="1" width="1" style="border-style:none;" alt="" src="//googleads.g.doubleclick.net/pagead/viewthroughconversion/979870194/?value=0&amp;guid=ON&amp;script=0"/>
+        </div>
+    </noscript>
+<?php } ?>
+</body>
+</html>

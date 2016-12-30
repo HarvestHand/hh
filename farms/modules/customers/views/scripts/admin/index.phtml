@@ -1,0 +1,147 @@
+<?php
+    $this->headTitle($this->translate('Customers'));
+
+    $widgets = 1;
+
+    if (count($this->invoicesPending)) {
+        ++$widgets;
+    }
+
+    if (count($this->transactionsPending)) {
+        ++$widgets;
+    }
+?>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+    var customerList = <?= Zend_Json::encode($this->customerList); ?>;
+    
+    $(document).ready(function(){
+        $("#search input").autocomplete({
+			source: customerList,
+            select: function( event, ui ) {
+				window.location = '/admin/customers/customer?id=' + ui.item.id;
+
+				return false;
+			}
+		})
+    });
+</script>
+<style>
+.ui-autocomplete {
+max-height: 100px;
+overflow-y: auto;
+overflow-x: hidden;
+padding-right: 20px;
+}
+* html .ui-autocomplete {
+height: 100px;
+}
+</style>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<h2>
+    <span class="icon-menu icon-menu-members" style="float: left; margin: -10px 7px 0 0;"></span>
+    <?= $this->escape($this->translate('Customers')); ?>
+</h2>
+
+<section class="container_12">
+    <article class="grid_9" style="padding-bottom: 20px;">
+
+        <?php if (count($this->invoicesPending)) { ?>
+        <article class="grid_4">
+
+
+            <div class="ui-widget-content ui-corner-all" style="padding: 0.4em; position: relative;">
+                <h3 class="ui-widget-header ui-corner-all"
+                    style="margin: 0 0 0.8em 0; padding: 0.4em; text-align: center;"
+                    title="<?= $this->translate('These orders are marked as pending and needs to be approved before the invoices can be finalized.') ?>">
+                    <?= $this->translate('Pending Invoices') ?>
+                </h3>
+
+                <div style="height: 300px; overflow-y: auto">
+                    <ol style="margin: 7px; ">
+                    <?php foreach ($this->invoicesPending as $invoice) { ?>
+                        <li style="padding-bottom: 10px; list-style: disc inside">
+                            <a href="/admin/customers/invoice?id=<?= (int) $invoice['id'] ?>&a=edit">
+                                <?= $this->translate(
+                                    'Invoice #%d for %s',
+                                    $invoice['id'],
+                                    $invoice['customerFirstName'] . ' ' . $invoice['customerLastName']
+                                ) ?>
+                            </a>
+                        </li>
+                    <?php } ?>
+                    </ol>
+                </div>
+            </div>
+        </article>
+        <?php } ?>
+
+        <?php if (count($this->transactionsPending)) { ?>
+        <article class="grid_4">
+
+
+            <div class="ui-widget-content ui-corner-all" style="padding: 0.4em; position: relative; <?= ($widgets == 3) ? 'width: 360px;' : '' ?>">
+                <h3 class="ui-widget-header ui-corner-all"
+                    style="margin: 0 0 0.8em 0; padding: 0.4em; text-align: center;"
+                    title="<?= $this->translate('These payments need to be finalized by pairing them with an invoice.') ?>">
+                    <?= $this->translate('Payments To Reconcile') ?>
+                </h3>
+
+                <div style="height: 300px; overflow-y: auto">
+                    <ol style="margin: 7px; ">
+                    <?php foreach ($this->transactionsPending as $transaction) { ?>
+                        <li style="padding-bottom: 10px; list-style: disc inside">
+                            <a href="/admin/customers/transaction?id=<?= (int) $transaction['id'] ?>">
+                                <?php if (!empty($transaction['customerFirstName']) || !empty($transaction['customerLastName'])) { ?>
+
+                                    <?= $this->translate(
+                                        'Payment of %s from %s',
+                                        $this->currency($transaction['remainingToApply']),
+                                        $transaction['customerFirstName'] . ' ' . $transaction['customerLastName']
+                                    ) ?>
+
+                                <?php } else { ?>
+
+                                    <?= $this->translate(
+                                        'Payment of %s',
+                                        $this->currency($transaction['remainingToApply'])
+                                    ) ?>
+
+                                <?php } ?>
+                            </a>
+                        </li>
+                    <?php } ?>
+                    </ol>
+                </div>
+            </div>
+        </article>
+        <?php } ?>
+
+
+        <article class="<?= (($widgets % 2) == 0) ? 'grid_4' : 'grid_9' ?>" style="<?= ($widgets == 3) ? 'padding-top: 7px;' : '' ?>">
+
+
+            <div class="ui-widget-content ui-corner-all" style="padding: 0.4em; position: relative;">
+                <h3 class="ui-widget-header ui-corner-all" style="margin: 0 0 0.8em 0; padding: 0.4em; text-align: center;">
+                    <?= $this->translate('Summary') ?>
+                </h3>
+
+                <dl style="height: 280px; overflow-y: auto">
+                    <dt style="font-weight: bold">
+                        <?= $this->translate('On File'); ?>:
+                    </dt>
+                    <dd>
+                        <a href="/admin/customers/customers">
+                            <?= $this->escape($this->count); ?>
+                        </a>
+                    </dd>
+                </dl>
+            </div>
+        </article>
+    </article>
+
+
+    <?= $this->render('admin-sub-nav.phtml'); ?>
+</section>

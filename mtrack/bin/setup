@@ -1,0 +1,17 @@
+#!/bin/sh
+
+if test -z "$PHP" ; then
+	PHP=`which php`
+fi
+
+if test ! -x "$PHP" ; then
+	echo "Could not find PHP; please install PHP 5.2 or later"
+	exit 1
+fi
+
+if test ! -f bin/setup ; then
+	echo "You must run me from the top-level mtrack dir"
+	exit 1
+fi
+
+exec $PHP bin/init.php $*

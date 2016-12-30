@@ -1,0 +1,76 @@
+<?php $this->headTitle($this->translate('Newsletter Options')); ?>
+
+<h2>
+    <span class="icon-menu icon-menu-options" style="float: left; margin: -10px 7px 0 0;"></span>
+    <?= $this->translate('Newsletter Options') ?>
+</h2>
+
+<section class="container_12">
+    <article class="grid_11">
+        <form id="location" action="/admin/newsletter/options?<?= http_build_query($_GET) ?>" method="post" accept-charset="utf-8" class="cmxform large">
+            <section id="formError" class="error ui-widget ui-state-error ui-corner-all" style="<?= (!empty($this->errors)) ? '' : 'display:none;' ?>">
+                <div>
+                    <i class="fa fa-exclamation-triangle"></i>
+                    <strong><?= $this->translate('Oh No!'); ?></strong>
+                    <?= $this->translate('Something is not right with what you entered.  Check below for hints on how to fix things up.'); ?>
+                </div>
+            </section>
+
+            <fieldset>
+                <legend><?= $this->translate('General') ?></legend>
+                
+                <p>
+                    <label for="newsletter-enabled_1" class="required" title="<?= $this->translate('Should your HarvestHand website be disabled?'); ?>">
+                        <?= $this->translate('Enable?'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+
+                    <input
+                        id="newsletter-enabled_0"
+                        type="radio"
+                        name="newsletter-enabled"
+                        value="0"
+                        class="required"
+                        title="<?= $this->translate('Don\'t enabled your HarvestHand website'); ?>"
+                        <?php echo (($this->getFormValue('newsletter-enabled') == '0') ? 'checked="checked"' : '') ?> />
+                        <label for="newsletter-enabled_0" class="radio" title="<?= $this->translate('Don\'t enabled your HarvestHand website'); ?>">
+                            <?= $this->translate('Disable'); ?>
+                        </label>
+                    <input
+                        id="newsletter-enabled_1"
+                        type="radio"
+                        name="newsletter-enabled"
+                        value="1"
+                        title="<?= $this->translate('HarvestHand website should be enabled'); ?>"
+                        <?php
+                            $value = $this->getFormValue('newsletter-enabled');
+                            if ($value === null) {
+                                echo 'checked="checked"';
+                            } else if ($value == 1) {
+                                echo 'checked="checked"';
+                            }
+                        ?> />
+                        <label for="newsletter-enabled_1" class="radio" title="<?= $this->translate('HarvestHand website should be enabled'); ?>">
+                            <?= $this->translate('Enable'); ?>
+                        </label>
+
+                    <?php if (!empty($this->errors['newsletter-enabled'])) { ?>
+                        <label for="enabled" class="error">
+                            <?= implode('; ', $this->errors['newsletter-enabled']) ?>
+                        </label>
+                    <?php } ?>
+                </p>
+                
+            </fieldset>
+            
+            <p>
+                <button type="submit" class="submit fieldset-align ui-button ui-widget ui-corner-all ui-button-text-only ui-state-default">
+                    <span class="ui-button-text">
+                        <i class="fa fa-check"></i>
+                        <?= $this->translate('Save!'); ?>
+                    </span>
+                </button>
+            </p>
+        </form>
+    </article>
+</section>

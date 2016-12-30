@@ -1,0 +1,49 @@
+SELECT
+   pri.value as __color__,
+   (case when t.nsident is null then t.tid else t.nsident end) as ticket,
+   summary,
+   classification as type,
+   (select mtrack_group_concat(name) from
+      ticket_components tcm
+      left join components c on (tcm.compid = c.compid)
+      where tcm.tid = t.tid) as component,
+   (select min(duedate) from
+      ticket_milestones tm
+      left join milestones m on (tm.mid = m.mid)
+      where
+       tm.tid = t.tid
+       and m.duedate is not null
+      ) as due,
+   (select mtrack_group_concat(name) from
+      ticket_milestones tm
+      left join milestones m on (tm.mid = m.mid)
+      where
+       tm.tid = t.tid
+      ) as milestone,
+   severity,
+   priority,
+   (select sum(remaining) from effort e where e.tid = t.tid) as remaining
+FROM
+   tickets t
+   left join priorities pri on (t.priority = pri.priorityname)
+   left join severities sev on (t.severity = sev.sevname)
+WHERE
+ t.status <> 'closed'
+ AND owner = $USER
+ORDER BY
+ case when (select count(duedate) from
+ 	ticket_milestones tm
+	left join milestones m on (tm.mid = m.mid)
+	where tm.tid = t.tid and m.duedate is not null) > 0 then 1 else 0 end,
+ pri.value, sev.ordinal,
+ due,
+ t.created
+
+
+# My tickets
+
+This report shows tickets assigned to the logged-in user with the highest
+priority items listed first.
+
+This report is run as part of the [wiki:Today] page, and any changes made here
+will affect that page.

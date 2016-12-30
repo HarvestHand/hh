@@ -1,0 +1,781 @@
+<?php
+
+    if (empty($this->share)) {
+        $title = $this->translate('New Delivery');
+
+    } else {
+        $title = $this->translate('Edit Delivery');
+    }
+
+    $this->headTitle($title);
+
+    $this->loadDatejs(Bootstrap::$locale);
+
+    $this->loader()->append('jquery_validate')
+        ->append('jquery_metadata')
+        ->append('jquery_tmpl');
+
+    $items = $this->getFormValue(null, 'items');
+    $items = count($items);
+    if ($items == 0) {
+        $items = 1;
+    }
+
+    $sharesSelect = array('' => '');
+    $sharesData = array();
+
+    foreach ($this->shares as $share) {
+        if ($share['enabled'] && $share->isInSeason()) {
+
+            $sharesSelect[$share['id']] = $share['name'] . ' ' . $share['year'];
+
+            $parentDuration = $share->getParentDuration();
+
+            $quantity_1 = true;
+            $quantity_0_5 = false;
+            $quantity_2 = false;
+
+            foreach ($share['sizes'] as $size) {
+                if ($size['size'] == 0.5) {
+                    $quantity_0_5 = true;
+                } else if ($size['size'] == 2.0) {
+                    $quantity_2 = true;
+                }
+            }
+
+            $sharesData[$share['id']] = array(
+                'deliverySchedule' => $share['deliverySchedule'],
+                'year' => $share['year'],
+                'startWeek' => $parentDuration->startWeek,
+                'iterations' => $parentDuration->iterations,
+                'quantity_1' => $quantity_1,
+                'quantity_0_5' => $quantity_0_5,
+                'quantity_2' => $quantity_2
+            );
+        }
+    }
+?>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+
+    var shares = <?= Zend_Json::encode($sharesData) ?>;
+
+    $(document).ready(function(){
+
+        $("#delivery").validate({
+            errorContainer: $("#formError")
+        });
+
+        $("button.item-add").click(function(){
+            var $this = $(this), items = $("div.item"),
+                count = 0, maxId = 0, shareId = $("#shareId").val(), data = [],
+                quantity_1 = true, quantity_0_5 = false, quantity_2 = false;
+
+            count = items.length;
+
+            items.each(function(){
+                if ($(this).data("id") > maxId) {
+                    maxId = $(this).data("id");
+                }
+            });
+
+            if (shares.hasOwnProperty(shareId)) {
+                quantity_1 = shares[shareId].quantity_1;
+                quantity_0_5 = shares[shareId].quantity_0_5;
+                quantity_2 = shares[shareId].quantity_2;
+            }
+
+            data = [{
+                i : maxId + 1,
+                quantity_1: quantity_1,
+                quantity_0_5: quantity_0_5,
+                quantity_2: quantity_2
+            }];
+
+            if (count > 0) {
+                var tmpl = $("#itemTemplate").tmpl(data);
+
+                tmpl.hide().insertAfter(items.last());
+            } else {
+                var tmpl = $("#itemTemplate").tmpl(data);
+                tmpl.find("button.item-remove").parent("p").hide();
+                tmpl.hide();
+                tmpl.insertAfter("#items-container legend");
+            }
+
+            tmpl.show("normal", function() {
+                $('#items_' + (maxId + 1) + '_item').focus();
+            })
+        });
+
+        $("button.item-remove").live("click", function () {
+            var $this = $(this), id = $this.data("id"), item = false, count = 0;
+            $("div.item").each(function(){
+                if ($(this).data("id") == id) {
+                    item = $(this);
+                }
+                ++count;
+            });
+
+            if (item !== false) {
+                item.hide("normal", function () {
+                    $(this).remove();
+                })
+            }
+        });
+
+        $("#shareId").change(function() {
+            updateWeeks();
+            updateQuantity();
+        });
+
+        updateWeeks();
+    });
+
+    function updateQuantity() {
+        var shareId = $("#shareId").val(), items = $("div.item"),
+            quantity_0_5 = false, quantity_2 = false;
+
+        if (shares.hasOwnProperty(shareId)) {
+            quantity_0_5 = shares[shareId].quantity_0_5;
+            quantity_2 = shares[shareId].quantity_2;
+        }
+
+        items.each(function(){
+            var $this = $(this);
+
+            if (quantity_0_5) {
+                $this.find(".quantity_0_5").show();
+                $this.find(".quantity_0_5 input").removeClass().addClass('required');
+            } else {
+                $this.find(".quantity_0_5").hide();
+                $this.find(".quantity_0_5 input").removeClass().val('');
+            }
+
+            if (quantity_2) {
+                $this.find(".quantity_2").show();
+                $this.find(".quantity_2 input").removeClass().addClass('required');
+            } else {
+                $this.find(".quantity_2").hide();
+                $this.find(".quantity_2 input").removeClass().val('');
+            }
+
+        });
+    }
+
+    Date.prototype.getWeekYear = function ()
+    {
+        // Create a new date object for the thursday of this week
+        var target  = new Date(this.valueOf());
+        target.setDate(target.getDate() - ((this.getDay() + 6) % 7) + 3);
+
+        return target.getFullYear();
+    }
+
+    function updateWeeks() {
+
+        var weeks = $("#week"),
+            deliverySchedule = '',
+            shareId = $("#shareId").val(),
+            weekOptions = [],
+            selected = '';
+
+        if (shares.hasOwnProperty(shareId)) {
+            deliverySchedule = shares[shareId].deliverySchedule;
+            selected = weeks.val();
+
+            if (selected === null || selected.length == 0) {
+                var today = Date.today();
+
+                selected = today.toString('yyyy') + 'W' + zeroFill(today.getWeek());
+            }
+
+            var startDate = new Date(2000, 1, 6),
+                range = '';
+
+            startDate.setYear(shares[shareId].year);
+            startDate.setWeek(shares[shareId].startWeek);
+
+            for (var x = 1; x <= shares[shareId].iterations; ++x) {
+
+                var week = startDate.getISOWeek();
+                var copiedDate = new Date(startDate.getTime());
+
+                if (copiedDate.getDay() > 1) {
+                    copiedDate.setDate(copiedDate.getDate() - (copiedDate.getDay() - 1));
+                } else if (copiedDate.getDay() < 1) {
+                    copiedDate.setDate(copiedDate.getDate() + 1);
+                }
+
+                range = '<?= addslashes($this->translate('Week')) ?> ' + x + ' (' + copiedDate.toString("yyyy-MM-dd") + " - ";
+
+                copiedDate.setDate(copiedDate.getDate() + 6);
+
+                range += copiedDate.toString("yyyy-MM-dd") + ')';
+
+                weekOptions.push({
+                    value: startDate.getWeekYear() + "W" + week,
+                    range: range,
+                    selected: selected
+                });
+
+                switch (deliverySchedule) {
+
+                    case 'WEEKLY' :
+                        startDate.addWeeks(1);
+                        break;
+                    case 'SEMI_MONTHLY' :
+                        startDate.addWeeks(1);
+                        startDate.addWeeks(1);
+                        break;
+                    case 'MONTHLY' :
+
+                        if (startDate.getMonth() == 11) {
+                            startDate.setMonth(0);
+                            startDate.setFullYear(startDate.getFullYear() + 1);
+                        } else {
+                            startDate.setMonth(startDate.getMonth() + 1);
+                        }
+                        break;
+                }
+            }
+
+            weeks.empty();
+            weeks.append($("#itemOptionTemplate").tmpl(weekOptions));
+            weeks.parent('p').show('normal');
+        } else {
+            weeks.parent('p').hide();
+        }
+    }
+
+    function zeroFill(number, width) {
+      width -= number.toString().length;
+      if ( width > 0 )
+      {
+        return new Array( width + (/\./.test( number ) ? 2 : 1) ).join( '0' ) + number;
+      }
+      return number;
+    }
+</script>
+<script id="itemOptionTemplate" type="text/x-jquery-tmpl">
+    <option value="${value}"{{if value == selected}} selected="selected"{{/if}} label="${range}">${range}</option>
+</script>
+<script id="itemTemplate" type="text/x-jquery-tmpl">
+    <div class="item box" data-id="${i}">
+        <p>
+            <label for="items_${i}_item" class="required" title="<?= $this->translate('Please enter the name of the delivery item'); ?>">
+                <?= $this->translate('Item'); ?>:
+                <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+            </label>
+
+            <input
+                id="items_${i}_item"
+                name="items[${i}][item]"
+                type="text"
+                title="<?= $this->translate('Please enter the name of the delivery item'); ?>"
+                value=""
+                class="required"
+                maxlength="255" />
+        </p>
+
+        <p>
+            <label for="items_${i}_source" title="<?= $this->translate('Please enter the source of this item, if it is not from your farm'); ?>">
+                <?= $this->translate('Source'); ?>:
+            </label>
+
+            <input
+                id="items_${i}_source"
+                name="items[${i}][source]"
+                type="text"
+                title="<?= $this->translate('Please enter the source of this item, if it is not from your farm'); ?>"
+                value=""
+                class=""
+                maxlength="255" />
+        </p>
+
+        <p>
+            <label for="items_${i}_certification" class="required" title="<?= $this->translate('Please the include how this item was grown'); ?>">
+                <?= $this->translate('Type'); ?>:
+                <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+            </label>
+
+            <?php
+                $certifications = HHF_Domain_Certification::getSelectOptions();
+
+                echo $this->formSelect(
+                    'items[${i}][certification]',
+                    null,
+                    array(
+                        'id' => 'items_${i}_certification',
+                        'class' => 'required',
+                        'title' => $this->translate('Please the include how this item was grown')
+                    ),
+                    $certifications
+                );
+            ?>
+        </p>
+
+        <p class="quantity_1">
+            <label for="items_${i}_quantity_1" class="required" title="<?= $this->translate('Please enter the quantity of this item for a full share'); ?>">
+                <?= $this->translate('Share Quantity'); ?>:
+                <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+            </label>
+
+            <input
+                id="items_${i}_quantity_1"
+                name="items[${i}][quantity_1]"
+                type="text"
+                title="<?= $this->translate('Please enter the quantity of this item for a full share'); ?>"
+                value=""
+                class="required"
+                maxlength="45" />
+        </p>
+
+        <p class="quantity_0_5" style="{{if quantity_0_5 == false}}display: none;{{/if}}">
+            <label for="items_${i}_quantity_0_5" class="required" title="<?= $this->translate('Please enter the quantity of this item for a half share'); ?>">
+                <?= $this->translate('1/2 Share Quantity'); ?>:
+                <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+            </label>
+
+            <input
+                id="items_${i}_quantity_0_5"
+                name="items[${i}][quantity_0_5]"
+                type="text"
+                title="<?= $this->translate('Please enter the quantity of this item for a half share'); ?>"
+                value=""
+                class="{{if quantity_0_5}}required{{/if}}"
+                maxlength="45" />
+        </p>
+
+        <p class="quantity_2" style="{{if quantity_2 == false}}display: none;{{/if}}">
+            <label for="items_${i}_quantity_2" class="required" title="<?= $this->translate('Please enter the quantity of this item for a double share'); ?>">
+                <?= $this->translate('2x Share Quantity'); ?>:
+                <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+            </label>
+
+            <input
+                id="items_${i}_quantity_2"
+                name="items[${i}][quantity_2]"
+                type="text"
+                title="<?= $this->translate('Please enter the quantity of this item for a double share'); ?>"
+                value=""
+                class="{{if quantity_2}}required{{/if}}"
+                maxlength="45" />
+        </p>
+
+        <p>
+            <label title="<?= $this->translate('Remove this item'); ?>">
+                <?= $this->translate('Remove'); ?>:
+            </label>
+
+            <button type="button" class="ui-button ui-widget ui-corner-all ui-button-icon-only ui-state-default item-remove" data-id="${i}">
+                <span class="ui-button-icon-primary ui-icon ui-icon-minusthick"></span>
+                <span class="ui-button-text">
+                    <?= $this->translate('Remove this item'); ?>
+                </span>
+            </button>
+        </p>
+    </div>
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<style>
+    .item {
+        margin : 20px;
+    }
+</style>
+
+<h2>
+    <span class="icon-menu icon-menu-shares" style="float: left; margin: -10px 7px 0 0;"></span>
+    <?= $title ?>
+</h2>
+
+<section class="container_12">
+    <article class="grid_11">
+
+        <form id="delivery" action="/admin/shares/delivery?<?= http_build_query($_GET) ?>" method="post" accept-charset="utf-8" class="cmxform large">
+
+            <section id="formError" class="error ui-widget ui-state-error ui-corner-all" style="<?= (!empty($this->errors)) ? '' : 'display:none;' ?>">
+                <div>
+                    <i class="fa fa-exclamation-triangle"></i>
+                    <strong><?= $this->translate('Oh No!'); ?></strong>
+                    <?= $this->translate('Something is not right with what you entered.  Check below for hints on how to fix things up.'); ?>
+                </div>
+            </section>
+
+            <fieldset>
+                <legend><?= $this->translate('General Info') ?></legend>
+
+                <p>
+                    <label for="shareId" class="required" title="<?= $this->translate('Please select a share'); ?>">
+                        <?= $this->translate('Share'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+
+                    <?=
+                        $this->formSelect(
+                            'shareId',
+                            $this->getFormValue('shareId'),
+                            array(
+                                'id' => 'shareId',
+                                'class' => 'required',
+                                'title' => $this->translate('Please select a share')
+                            ),
+                            $sharesSelect
+                        );
+                    ?>
+
+
+                    <?php if (!empty($this->errors['shareId'])) { ?>
+                    <label for="shareId" class="error">
+                        <?= implode('; ', $this->errors['shareId']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="week" class="required" title="<?= $this->translate('Please set the week for this delivery'); ?>">
+                        <?= $this->translate('Week'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+
+                    <?php
+
+                        $shareId = $this->getFormValue('shareId');
+                        $weeks = array('' => '');
+
+                        if (!empty($sharesData[$shareId])) {
+
+                            $date = new Zend_Date();
+
+                            $date->set($sharesData[$shareId]['year'], Zend_Date::YEAR_8601);
+                            $date->set($sharesData[$shareId]['startWeek'], Zend_Date::WEEK);
+
+                            for ($i = 1; $i <= $sharesData[$shareId]['iterations']; ++$i) {
+
+                                $week = sprintf('%02d', $date->get(Zend_Date::WEEK));
+
+                                $rangeDate = clone $date;
+
+                                $rangeDate->setWeekday(1);
+
+                                $range = $this->translate('Week') . ' ' . $i . ' (' . $rangeDate->toString('yyyy-MM-dd') . ' - ';
+
+                                $rangeDate->setWeekday(7);
+
+                                $range .= $rangeDate->toString('yyyy-MM-dd') . ')';
+
+                                $weeks[$date->get(Zend_Date::YEAR_8601) . 'W' . $week] = $range;
+
+                                switch ($sharesData[$shareId]['deliverySchedule']) {
+                                    case HHF_Domain_Share::DELIVERY_SCHEDULE_WEEKLY :
+                                        $date->addWeek(1);
+                                        break;
+                                    case HHF_Domain_Share::DELIVERY_SCHEDULE_SEMI_MONTHLY :
+                                        $date->addWeek(2);
+                                        break;
+                                    case HHF_Domain_Share::DELIVERY_SCHEDULE_MONTHLY :
+                                        $date->addMonth(1);
+                                        break;
+                                }
+                            }
+                        }
+
+                        echo $this->formSelect(
+                            'week',
+                            $this->getFormValue('week'),
+                            array(
+                                'id' => 'week',
+                                'class' => 'required',
+                                'title' => $this->translate('Please set the week for this delivery')
+                            ),
+                            $weeks
+                        );
+                    ?>
+
+
+                    <?php if (!empty($this->errors['week'])) { ?>
+                    <label for="week" class="error">
+                        <?= implode('; ', $this->errors['week']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="enabled_1" class="required" title="<?= $this->translate('Should this share be disabled?'); ?>">
+                        <?= $this->translate('Enabled'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+
+                    <input
+                        id="enabled_0"
+                        type="radio"
+                        name="enabled"
+                        value="0"
+                        class="required"
+                        title="<?= $this->translate('Don\'t enable share for purchase'); ?>"
+                        <?php echo (($this->getFormValue('enabled') == '0') ? 'checked="checked"' : '') ?> />
+                        <label for="enabled_0" class="radio" title="<?= $this->translate('Don\'t enable share for purchase'); ?>">
+                            <?= $this->translate('Disable'); ?>
+                        </label>
+                    <input
+                        id="enabled_1"
+                        type="radio"
+                        name="enabled"
+                        value="1"
+                        title="<?= $this->translate('Share should be enabled for purchase'); ?>"
+                        <?php
+                            $value = $this->getFormValue('enabled');
+                            if ($value === null) {
+                                echo 'checked="checked"';
+                            } else if ($value == 1) {
+                                echo 'checked="checked"';
+                            }
+                        ?> />
+                        <label for="enabled_1" class="radio" title="<?= $this->translate('Share should be enabled for purchase'); ?>">
+                            <?= $this->translate('Enable'); ?>
+                        </label>
+
+                    <?php if (!empty($this->errors['enabled'])) { ?>
+                        <label for="enabled" class="error">
+                            <?= implode('; ', $this->errors['enabled']) ?>
+                        </label>
+                    <?php } ?>
+                </p>
+            </fieldset>
+
+            <fieldset id="items-container">
+                <legend>
+                    <?= $this->translate('Items') ?>
+                </legend>
+
+                <?php for ($i = 0; $i < $items; ++$i) { ?>
+                <div class="item box" data-id="<?= $i ?>">
+
+                    <input type="hidden"
+                           name="items[<?= $i ?>][id]"
+                           value="<?= $this->getFormValue('id', 'items', $i) ?>" />
+
+                    <p>
+                        <label for="items_<?= $i ?>_item" class="required" title="<?= $this->translate('Please enter the name of the delivery item'); ?>">
+                            <?= $this->translate('Item'); ?>:
+                            <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                        </label>
+
+                        <input
+                            id="items_<?= $i ?>_item"
+                            name="items[<?= $i ?>][item]"
+                            type="text"
+                            title="<?= $this->translate('Please enter the name of the delivery item'); ?>"
+                            value="<?= $this->getFormValue('item', 'items', $i); ?>"
+                            class="required"
+                            maxlength="255" />
+
+                        <?php if (!empty($this->errors['items'][$i]['item'])) { ?>
+                        <label for="items_<?= $i ?>_item" class="error">
+                            <?= implode('; ', $this->errors['items'][$i]['item']) ?>
+                        </label>
+                        <?php } ?>
+                    </p>
+
+                    <p>
+                        <label for="items_<?= $i ?>_source" title="<?= $this->translate('Please enter the source of this item, if it is not from your farm'); ?>">
+                            <?= $this->translate('Source'); ?>:
+                        </label>
+
+                        <input
+                            id="items_<?= $i ?>_source"
+                            name="items[<?= $i ?>][source]"
+                            type="text"
+                            title="<?= $this->translate('Please enter the source of this item, if it is not from your farm'); ?>"
+                            value="<?= $this->getFormValue('source', 'items', $i); ?>"
+                            class=""
+                            maxlength="255" />
+
+                        <?php if (!empty($this->errors['items'][$i]['source'])) { ?>
+                        <label for="items_<?= $i ?>_source" class="error">
+                            <?= implode('; ', $this->errors['items'][$i]['source']) ?>
+                        </label>
+                        <?php } ?>
+                    </p>
+
+                    <p>
+                        <label for="items_<?= $i ?>_certification" class="required" title="<?= $this->translate('Please the include how this item was grown'); ?>">
+                            <?= $this->translate('Type'); ?>:
+                            <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                        </label>
+
+                        <?php
+                            $certifications = HHF_Domain_Certification::getSelectOptions();
+
+                            echo $this->formSelect(
+                                'items[' . $i . '][certification]',
+                                $this->getFormValue('certification', 'items', $i),
+                                array(
+                                    'id' => 'items_' . $i . '_certification',
+                                    'class' => 'required',
+                                    'title' => $this->translate('Please the include how this item was grown')
+                                ),
+                                $certifications
+                            );
+                        ?>
+
+                        <?php if (!empty($this->errors['items'][$i]['certification'])) { ?>
+                        <label for="items_<?= $i ?>_certification" class="error">
+                            <?= implode('; ', $this->errors['items'][$i]['certification']) ?>
+                        </label>
+                        <?php } ?>
+                    </p>
+
+                    <p class="quantity_1">
+                        <label for="items_<?= $i ?>_quantity_1" class="required" title="<?= $this->translate('Please enter the quantity of this item for a full share'); ?>">
+                            <?= $this->translate('Share Quantity'); ?>:
+                            <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                        </label>
+
+                        <input
+                            id="items_<?= $i ?>_quantity_1"
+                            name="items[<?= $i ?>][quantity_1]"
+                            type="text"
+                            title="<?= $this->translate('Please enter the quantity of this item for a full share'); ?>"
+                            value="<?= $this->getFormValue('quantity_1', 'items', $i); ?>"
+                            class="required"
+                            maxlength="45" />
+
+                        <?php if (!empty($this->errors['items'][$i]['quantity_1'])) { ?>
+                        <label for="items_<?= $i ?>_quantity_1" class="error">
+                            <?= implode('; ', $this->errors['items'][$i]['quantity_1']) ?>
+                        </label>
+                        <?php } ?>
+                    </p>
+
+                    <p class="quantity_0_5" style="<?= (!empty($sharesData[$shareId]) && $sharesData[$shareId]['quantity_0_5']) ? '' : 'display: none;' ?>">
+                        <label for="items_<?= $i ?>_quantity_0_5" class="required" title="<?= $this->translate('Please enter the quantity of this item for a half share'); ?>">
+                            <?= $this->translate('1/2 Share Quantity'); ?>:
+                            <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                        </label>
+
+                        <input
+                            id="items_<?= $i ?>_quantity_0_5"
+                            name="items[<?= $i ?>][quantity_0_5]"
+                            type="text"
+                            title="<?= $this->translate('Please enter the quantity of this item for a half share'); ?>"
+                            value="<?= $this->getFormValue('quantity_0_5', 'items', $i); ?>"
+                            class="<?= (!empty($sharesData[$shareId]) && $sharesData[$shareId]['quantity_0_5']) ? 'required' : '' ?>"
+                            maxlength="45" />
+
+                        <?php if (!empty($this->errors['items'][$i]['quantity_0_5'])) { ?>
+                        <label for="items_<?= $i ?>_quantity_0_5" class="error">
+                            <?= implode('; ', $this->errors['items'][$i]['quantity_0_5']) ?>
+                        </label>
+                        <?php } ?>
+                    </p>
+
+                    <p class="quantity_2" style="<?= (!empty($sharesData[$shareId]) && $sharesData[$shareId]['quantity_2']) ? '' : 'display: none;' ?>">
+                        <label for="items_<?= $i ?>_quantity_2" class="required" title="<?= $this->translate('Please enter the quantity of this item for a double share'); ?>">
+                            <?= $this->translate('2x Share Quantity'); ?>:
+                            <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                        </label>
+
+                        <input
+                            id="items_<?= $i ?>_quantity_2"
+                            name="items[<?= $i ?>][quantity_2]"
+                            type="text"
+                            title="<?= $this->translate('Please enter the quantity of this item for a double share'); ?>"
+                            value="<?= $this->getFormValue('quantity_2', 'items', $i); ?>"
+                            class="<?= (!empty($sharesData[$shareId]) && $sharesData[$shareId]['quantity_2']) ? 'required' : '' ?>"
+                            maxlength="45" />
+
+                        <?php if (!empty($this->errors['items'][$i]['quantity_2'])) { ?>
+                        <label for="items_<?= $i ?>_quantity_2" class="error">
+                            <?= implode('; ', $this->errors['items'][$i]['quantity_2']) ?>
+                        </label>
+                        <?php } ?>
+                    </p>
+
+                    <p style="<?= ($i == 0) ? 'display: none' : '' ?>">
+                        <label title="<?= $this->translate('Remove This Item'); ?>">
+                            <?= $this->translate('Remove'); ?>:
+                        </label>
+
+                        <button type="button" class="ui-button ui-widget ui-corner-all ui-button-icon-only ui-state-default item-remove" data-id="<?= $i ?>">
+                            <span class="ui-button-icon-primary ui-icon ui-icon-minusthick"></span>
+                            <span class="ui-button-text">
+                                <?= $this->translate('Remove This Item'); ?>
+                            </span>
+                        </button>
+                    </p>
+                </div>
+                <?php } ?>
+                <p>
+                    <label title="<?= $this->translate('Add a new item for this delivery'); ?>">
+                        <?= $this->translate('Add New'); ?>:
+                    </label>
+
+                    <button type="button" class="ui-button ui-widget ui-corner-all ui-button-icon-only ui-state-default item-add">
+                        <span class="ui-button-icon-primary ui-icon ui-icon-plusthick"></span>
+                        <span class="ui-button-text">
+                            <?= $this->translate('Add New Item'); ?>
+                        </span>
+                    </button>
+                </p>
+            </fieldset>
+
+            <!--<fieldset id="items-container">
+                <legend>
+                    <?= $this->translate('Vacation Weeks') ?>
+                </legend>
+
+                <div class="item box">
+                <p>
+                    <label for="vacation-start" class="required" title="<?= $this->translate('Please set the start
+                    week.'); ?>">
+                        <?= $this->translate('Vacation Start'); ?>:
+                    </label>
+
+                    <?php
+                    echo $this->formSelect('vacation-start', $this->getFormValue('vacation-start'), array('id' => 'vacation-start', 'title' =>
+                        $this->translate('Please set the start week for this vacation')), $weeks);
+                    ?>
+                </p>
+
+                <p>
+                    <label for="vacation-end" class="required" title="<?= $this->translate('Please set the end week.');
+                    ?>">
+                        <?= $this->translate('Vacation End'); ?>:
+                    </label>
+
+                    <?php
+                    echo $this->formSelect('vacation-end', $this->getFormValue('vacation-end'), array('id' => 'vacation-end', 'title' =>
+                        $this->translate('Please set the end week for this vacation')), $weeks);
+                    ?>
+                </p>
+                </div>
+
+                <p>
+                    <label title="<?= $this->translate('Add a new item for this delivery'); ?>">
+                        <?= $this->translate('Add New'); ?>:
+                    </label>
+
+                    <button type="button" class="ui-button ui-widget ui-corner-all ui-button-icon-only
+                    ui-state-default vacation-add">
+                        <span class="ui-button-icon-primary ui-icon ui-icon-plusthick"></span>
+                        <span class="ui-button-text">
+                            <?= $this->translate('Add New Vacation'); ?>
+                        </span>
+                    </button>
+                </p>
+            </fieldset> -->
+
+            <p>
+                <button type="submit" class="submit fieldset-align ui-button ui-widget ui-corner-all ui-button-text-only ui-state-default">
+                    <span class="ui-button-text">
+                        <i class="fa fa-check"></i>
+                        <?= $this->translate('Save!'); ?>
+                    </span>
+                </button>
+            </p>
+        </form>
+    </article>
+</section>

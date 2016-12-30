@@ -1,0 +1,82 @@
+<?php
+    $total = 0;
+    
+    if ($this->order->getPaymentPlan()->canHaveInstalments() && $this->order->getPaymentPlan()->count()) {
+        $total = $this->order->getPaymentPlan()->getUpfrontTotal();
+    } else {
+        $total = $this->order->getTotal();
+    }
+    
+    $terms = $this->farm->getPreferences()->get('plansDetails', 'shares', false);
+?>
+
+<h1 style="color: black !important;"><?= $this->translate('Thank You For Registering!'); ?></h1>
+
+<?php if ($this->paymentMethod == HHF_Domain_Transaction::TYPE_CASH) { ?>
+
+    <?php if (!empty($total)) { ?>
+        <p style="margin: 1em 0;">
+            <?= $this->translate(
+                    'Welcome to %s!  To complete registration for your %s, please send a cheque for %s referencing your customer number %s to:',
+                    $this->escape($this->farm->name),
+                    $this->farm->getPreferences()->get('share', 'shares', 'share'),
+                    $this->escape($this->currency($total)),
+                    $this->escape($this->customer['id'])
+            ) ?>
+        </p>
+
+        <p style="margin: 1em 0;" id="farm-address">
+            <?php
+                $paymentTo = $this->farm->getPreferences()->get('paymentTo', 'shares');
+            ?>
+            <?php if (!empty($paymentTo)) { ?>
+                <?= $this->escape($paymentTo); ?><br />
+            <?php } ?>
+            <?= $this->escape($this->farm->name) ?><br />
+            <?= $this->escape($this->farm->address) ?><br />
+            <?php if (!empty($this->farm->address2)) { ?>
+            <?= $this->escape($this->farm->address2) ?><br />
+            <?php } ?>
+            <?= $this->escape($this->farm->city); ?>, <?= $this->escape($this->farm->state); ?>  <?= $this->escape($this->farm->zipCode); ?>
+        </p>
+    <?php } else { ?>
+        <p style="margin: 1em 0;">
+            <?= $this->translate(
+                'Welcome to %s!',
+                $this->farm->name
+            ) ?>
+        </p>
+    <?php } ?>
+    
+<?php } else { ?>
+    <?php if (!empty($total)) { ?>
+        <p style="margin: 1em 0;">
+            <?= $this->translate(
+                'Welcome to %s!  Your payment of %s should have been completed through Paypal.  A separate invoice will be emailed  to you for that.',
+                $this->farm->name,
+                $this->escape($this->currency($total))
+            ); ?>
+        </p>
+    <?php } else { ?>
+        <p style="margin: 1em 0;">
+            <?= $this->translate(
+                'Welcome to %s!',
+                $this->farm->name
+            ); ?>
+        </p>
+    <?php } ?>
+<?php } ?>
+
+<?php
+    $this->orderEdit = false;
+    $this->paymentMethod = false;
+    $this->mapLinks = false;
+    echo $this->render('public/register-order-summary.phtml'); 
+?>
+        
+<?php if (!empty($terms)) { ?>
+        
+<h4 style="color: black !important;"><?= $this->translate('Membership Agreement'); ?></h4>
+
+<?= $terms ?>
+<?php } ?>

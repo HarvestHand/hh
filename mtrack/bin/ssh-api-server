@@ -1,0 +1,137 @@
+#!/usr/bin/env php
+<?php # vim:ts=2:sw=2:et:ft=php:
+/* For copyright and licensing terms, see the file named LICENSE */
+/* This implements the REST-API-over-SSH logic, that allows command line
+ * invocation of the REST API facilities using SSH and public key auth.
+ *
+ * The codeshell driver sets the following environment for us:
+ * LOGNAME: the mtrack username (derived from ssh key)
+ * REQUEST_METHOD: GET/PUT/POST etc.
+ * REQUEST_URI: The URI, including any "GET" parameters
+ * MTRACK_CONFIG_FILE: the ini file that we should use
+ *
+ * The convention is for the request payload to be sent to us via stdin,
+ * and returned via stdout.
+ *
+ * Requests and responses have a header section, which is a line of json 
+ * encoded text, followed by a blank line, followed by the main payload data.
+ */
+ini_set('log_errors', 1);
+define('MTRACK_IS_REST_API', 1);
+chdir(dirname(__FILE__));
+include '../inc/common.php';
+
+class SSH_Driver implements MTrackAPI_Driver {
+  public $uri;
+  public $method;
+  public $params = array();
+  public $headers = array();
+  public $respheaders = array();
+  public $payload = null;
+  public $payloadBody = null;
+  public $statusCode = 200;
+  public $statusText = 'OK';
+
+  function setStatus($code, $msg = '') {
+    $this->statusCode = $code;
+    $this->statusText = $msg;
+  }
+
+  function error($code, $msg, $extra = null) {
+    $this->setStatus($code, $msg);
+
+    $err = new stdclass;
+    $err->code = $code;
+    $err->status = "error";
+    $err->message = $msg;
+    if ($extra !== null) {
+      $err->extra = $extra;
+    }
+    $this->renderResponse($err);
+  }
+
+  function renderResponse($value) {
+    $this->setHeader('Content-Type', 'application/json');
+
+    if ($value !== null) {
+      $json = json_encode($value);
+    } else {
+      $json = '';
+    }
+    $this->setHeader('Content-MD5', base64_encode(md5($json, true)));
+
+    $head = new stdclass;
+    $head->status = $this->statusCode;
+    $head->message = $this->statusText;
+    $head->headers = $this->respheaders;
+    echo json_encode($head);
+    echo "\n\n";
+    echo $json;
+    exit;
+  }
+
+  function setHeader($name, $value) {
+    $this->respheaders[$name] = $value;
+  }
+
+  function getHeader($name) {
+    $name = strtolower($name);
+    if (isset($this->headers[$name])) {
+      return $this->headers[$name];
+    }
+    return null;
+  }
+
+  function getPayload($stringify = false) {
+    list($type) = explode(';', $this->getHeader('Content-Type'));
+    if ($this->payloadBody === null) {
+      $this->payloadBody = stream_get_contents($this->payload);
+    }
+    if ($stringify) {
+      return $this->payloadBody;
+    }
+    if ($type == 'application/json') {
+      return json_decode($this->payloadBody);
+    }
+    throw new Exception("need to make payload look like a stream!");
+  }
+
+  function getParam($name) {
+    if (isset($this->params[$name])) {
+      return $this->params[$name];
+    }
+    return null;
+  }
+
+  function __construct() {
+    $this->uri = getenv('REQUEST_URI');
+    $this->method = getenv('REQUEST_METHOD');
+    $bits = explode('?', $this->uri, 2);
+    if (count($bits) > 1) {
+      $this->uri = $bits[0];
+      parse_str($bits[1], $this->params);
+    }
+
+    $this->payload = STDIN;
+    $header = fgets($this->payload);
+    if ($header) {
+      $header = json_decode($header);
+      foreach ($header->headers as $k => $v) {
+        $this->headers[strtolower($k)] = $v;
+      }
+      /* skip blank line after header */
+      fgets($this->payload);
+    }
+    if (!$this->getHeader('Content-Type')) {
+      $this->headers['Content-Type'] = 'application/json';
+    }
+  }
+}
+
+// Not strictly needed, but let's be explicit about who are are.
+// LOGNAME is set by codeshell based on the pubkey
+MTrackAuth::su(getenv('LOGNAME'));
+
+$driver = new SSH_Driver;
+$value = MTrackAPI::run($driver->method, $driver->uri, $driver);
+$driver->renderResponse($value);

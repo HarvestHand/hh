@@ -1,0 +1,533 @@
+<?php
+    $this->headTitle($this->translate('Shares Options'));
+
+    $this->loader()->append('jquery_validate')
+        ->append('jquery_metadata')
+        ->append('ckeditor_ckeditor.js')
+        ->append('ckeditor_adapters_jquery.js')
+        ->append('hhf_modules_shares_admin_options');
+
+    $this->loadDatejs(Bootstrap::$locale);
+?>
+
+<h2>
+    <span class="icon-menu icon-menu-shares" style="float: left; margin: -10px 7px 0 0;"></span>
+    <?= $this->translate('Shares Options') ?>
+</h2>
+
+<?php $this->placeholder('head')->captureStart() ?>
+<script type="text/javascript">
+    window.CKEDITOR_BASEPATH = '<?= (!empty($_SERVER['HTTPS'])) ? 'https://static.' : 'http://static.' ?><?= Bootstrap::$rootDomain ?>/_js/ckeditor/';
+</script>
+<?php $this->placeholder('head')->captureEnd() ?>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+    hhf.modules.shares.admin.options.init();
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<section class="container_12">
+    <article class="grid_11">
+        <form id="options" action="/admin/shares/options?<?= http_build_query($_GET) ?>" method="post" accept-charset="utf-8" class="cmxform large">
+
+            <section id="formError" class="error ui-widget ui-state-error ui-corner-all" style="<?= (!empty($this->errors)) ? '' : 'display:none;' ?>">
+                <div>
+                    <i class="fa fa-exclamation-triangle"></i>
+                    <strong><?= $this->translate('Oh No!'); ?></strong>
+                    <?= $this->translate('Something is not right with what you entered.  Check below for hints on how to fix things up.'); ?>
+                </div>
+            </section>
+
+            <fieldset>
+                <legend><?= $this->translate('General') ?></legend>
+
+                <p>
+                    <label for="shares-enabled_1" class="required">
+                        <?= $this->translate('Enable Shares?'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+
+                    <input
+                        id="shares-enabled_0"
+                        type="radio"
+                        name="shares-enabled"
+                        value="0"
+                        class="required"
+                        title="<?= $this->translate('Don\'t enable shares for purchase'); ?>"
+                        <?php echo (($this->getFormValue('shares-enabled') == '0') ? 'checked="checked"' : '') ?> />
+                        <label for="shares-enabled_0" class="radio" title="<?= $this->translate('Don\'t enabled shares for purchase'); ?>">
+                            <?= $this->translate('Disable'); ?>
+                        </label>
+                    <input
+                        id="shares-enabled_1"
+                        type="radio"
+                        name="shares-enabled"
+                        value="1"
+                        title="<?= $this->translate('Enable shares for purchase'); ?>"
+                        <?php
+                            $value = $this->getFormValue('shares-enabled');
+                            if ($value === null) {
+                                echo 'checked="checked"';
+                            } else if ($value == 1) {
+                                echo 'checked="checked"';
+                            }
+                        ?> />
+                    <label for="shares-enabled_1" class="radio" title="<?= $this->translate('Enable shares for purchase'); ?>">
+                        <?= $this->translate('Enable'); ?>
+                    </label>
+
+                    <span class="tooltip"
+                          title="<?= $this->translate('Should shares be disabled?'); ?>">
+                        [?]
+                    </span>
+
+                    <?php if (!empty($this->errors['shares-enabled'])) { ?>
+                        <label for="shares-enabled_1" class="error">
+                            <?= implode('; ', $this->errors['shares-enabled']) ?>
+                        </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="shares-addonsEnabled_1" class="required">
+                        <?= $this->translate('Enable Share Add On Products?'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+
+                    <input
+                        id="shares-addonsEnabled_0"
+                        type="radio"
+                        name="shares-addonsEnabled"
+                        value="0"
+                        class="required"
+                        title="<?= $this->translate('Don\'t enable share add on products for purchase'); ?>"
+                        <?php echo (($this->getFormValue('shares-addonsEnabled') == '0') ? 'checked="checked"' : '') ?> />
+                        <label for="shares-addonsEnabled_0" class="radio" title="<?= $this->translate('Don\'t enable share add on products for purchase'); ?>">
+                            <?= $this->translate('Disable'); ?>
+                        </label>
+                    <input
+                        id="shares-addonsEnabled_1"
+                        type="radio"
+                        name="shares-addonsEnabled"
+                        value="1"
+                        title="<?= $this->translate('Share add on products should be enabled'); ?>"
+                        <?php
+                            $value = $this->getFormValue('shares-addonsEnabled');
+                            if ($value === null) {
+                                echo 'checked="checked"';
+                            } else if ($value == 1) {
+                                echo 'checked="checked"';
+                            }
+                        ?> />
+                    <label for="shares-addonsEnabled_1" class="radio" title="<?= $this->translate('Share add on products should be enabled'); ?>">
+                        <?= $this->translate('Enable'); ?>
+                    </label>
+
+                    <span class="tooltip"
+                          title="<?= $this->translate('Should share add on products be disabled?'); ?>">
+                        [?]
+                    </span>
+
+                    <?php if (!empty($this->errors['shares-addonsEnabled'])) { ?>
+                        <label for="shares-addonsEnabled_1" class="error">
+                            <?= implode('; ', $this->errors['shares-addonsEnabled']) ?>
+                        </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="shares-share" class="required">
+                        <?= $this->translate('Share Term'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+                    <input
+                        id="shares-share"
+                        name="shares-share"
+                        type="text"
+                        value="<?= $this->getFormValue('shares-share'); ?>"
+                        class="required"
+                        maxlength="25" />
+
+                    <span class="tooltip"
+                          title="<?= $this->escape($this->translate('What do you call a "share"?')); ?>">
+                        [?]
+                    </span>
+
+                    <?php if (!empty($this->errors['shares-share'])) { ?>
+                    <label for="shares-share" class="error">
+                        <?= implode('; ', $this->errors['shares-share']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="shares-shares" class="required">
+                        <?= $this->translate('Shares Term'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+                    <input
+                        id="shares-shares"
+                        name="shares-shares"
+                        type="text"
+                        value="<?= $this->getFormValue('shares-shares'); ?>"
+                        class="required"
+                        maxlength="25" />
+
+                    <span class="tooltip"
+                          title="<?= $this->escape($this->translate('What do you call "shares"?')); ?>">
+                        [?]
+                    </span>
+
+                    <?php if (!empty($this->errors['shares-shares'])) { ?>
+                    <label for="shares-shares" class="error">
+                        <?= implode('; ', $this->errors['shares-shares']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+            </fieldset>
+
+            <fieldset>
+                <legend><?= $this->translate('Payment Options And Plans') ?></legend>
+
+                <!-- <p>
+                    <label for="shares-plansWeekly" class="required">
+                        <?= $this->translate('Weekly'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+
+                    <input
+                        id="shares-plansWeekly_0"
+                        type="radio"
+                        name="shares-plansWeekly"
+                        value="0"
+                        class="required"
+                        title="<?= $this->translate('Don\'t enabled weekly payment plans'); ?>"
+                        <?php
+                            $value = $this->getFormValue('shares-plansWeekly');
+                            if ($value === null) {
+                                echo 'checked="checked"';
+                            } else if ($value == '0') {
+                                echo 'checked="checked"';
+                            }
+                        ?> />
+                        <label for="shares-plansWeekly_0" class="radio" title="<?= $this->translate('Don\'t enabled weekly payment plans'); ?>">
+                            <?= $this->translate('Disable'); ?>
+                        </label>
+                    <input
+                        id="shares-plansWeekly_1"
+                        type="radio"
+                        name="shares-plansWeekly"
+                        value="1"
+                        title="<?= $this->translate('Should weekly payment plans should be enabled'); ?>"
+                        <?php echo (($value == '1') ? 'checked="checked"' : '') ?> />
+
+                    <label for="shares-plansWeekly_1" class="radio" title="<?= $this->translate('Shares weekly payment plans should be enabled'); ?>">
+                        <?= $this->translate('Enable'); ?>
+                    </label>
+
+                    <span class="tooltip"
+                          title="<?= $this->translate('Should weekly payment plans be disabled?'); ?>">
+                        [?]
+                    </span>
+
+                    <?php if (!empty($this->errors['shares-plansWeekly'])) { ?>
+                        <label for="shares-plansWeekly" class="error">
+                            <?= implode('; ', $this->errors['shares-plansWeekly']) ?>
+                        </label>
+                    <?php } ?>
+                </p>
+                -->
+                <!-- <p id="shares-plansWeeklyUpfrontField" style="<?= (empty($value)) ? 'display:none' : null; ?>">
+                    <label for="shares-plansWeeklyUpfront">
+                        <?= $this->translate('Weekly Upfront Payment %'); ?>:
+                    </label>
+                    <input
+                        id="shares-plansWeeklyUpfront"
+                        name="shares-plansWeeklyUpfront"
+                        type="text"
+                        title="<?= $this->translate('Please enter the percent for upfront payment of the total cost for share'); ?>"
+                        value="<?= $this->getFormValue('shares-plansWeeklyUpfront'); ?>"
+                        class="number"
+                        maxlength="5" />
+
+                    <span class="tooltip"
+                          title="<?= $this->translate('Should an upfront lump sum be required on signup, indicate the amount as a percent of the total cost for share'); ?>">
+                        [?]
+                    </span>
+
+                    <?php if (!empty($this->errors['shares-plansWeeklyUpfront'])) { ?>
+                    <label for="shares-plansWeeklyUpfront" class="error">
+                        <?= implode('; ', $this->errors['shares-plansWeeklyUpfront']) ?>
+                    </label>
+                    <?php } ?>
+                </p> -->
+
+                <p>
+                    <label for="shares-plansMonthly" class="required">
+                        <?= $this->translate('Monthly'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+
+                    <input
+                        id="shares-plansMonthly_0"
+                        type="radio"
+                        name="shares-plansMonthly"
+                        value="0"
+                        class="required"
+                        title="<?= $this->translate('Don\'t enabled monthly payment plans'); ?>"
+                        <?php
+                            $value = $this->getFormValue('shares-plansMonthly');
+                            if ($value === null) {
+                                echo 'checked="checked"';
+                            } else if ($value == '0') {
+                                echo 'checked="checked"';
+                            }
+                        ?> />
+                    <label for="shares-plansMonthly_0" class="radio" title="<?= $this->translate('Don\'t enabled monthly payment plans'); ?>">
+                        <?= $this->translate('Disable'); ?>
+                    </label>
+
+                    <input
+                        id="shares-plansMonthly_1"
+                        type="radio"
+                        name="shares-plansMonthly"
+                        value="1"
+                        title="<?= $this->translate('Shares monthly payment plans should be enabled'); ?>"
+                        <?php echo (($value == '1') ? 'checked="checked"' : '') ?> />
+
+                    <label for="shares-plansMonthly_1" class="radio" title="<?= $this->translate('Shares monthly payment plans should be enabled'); ?>">
+                        <?= $this->translate('Enable'); ?>
+                    </label>
+
+                    <span class="tooltip"
+                          title="<?= $this->translate('Should monthly payment plans be disabled?'); ?>">
+                        [?]
+                    </span>
+
+                    <?php if (!empty($this->errors['shares-plansMonthly'])) { ?>
+                        <label for="shares-plansMonthly" class="error">
+                            <?= implode('; ', $this->errors['shares-plansMonthly']) ?>
+                        </label>
+                    <?php } ?>
+                </p>
+
+                <!-- <p id="shares-plansMonthlyUpfrontField" style="<?= (empty($value)) ? 'display:none' : null; ?>">
+                    <label for="shares-plansMonthlyUpfront">
+                        <?= $this->translate('Monthly Upfront Payment %'); ?>:
+                    </label>
+                    <input
+                        id="shares-plansMonthlyUpfront"
+                        name="shares-plansMonthlyUpfront"
+                        type="text"
+                        title="<?= $this->translate('Please enter the percent for upfront payment of the total cost for share'); ?>"
+                        value="<?= $this->getFormValue('shares-plansMonthlyUpfront'); ?>"
+                        class="number"
+                        maxlength="5" />
+
+                    <span class="tooltip"
+                          title="<?= $this->translate('Should an upfront lump sum be required on signup, indicate the amount as a percent of the total cost for share'); ?>">
+                        [?]
+                    </span>
+
+                    <?php if (!empty($this->errors['shares-plansMonthlyUpfront'])) { ?>
+                    <label for="shares-plansMonthlyUpfront" class="error">
+                        <?= implode('; ', $this->errors['shares-plansMonthlyUpfront']) ?>
+                    </label>
+                    <?php } ?>
+                </p> -->
+
+                <p>
+                    <label for="shares-plansFixed" class="required">
+                        <?= $this->translate('Fixed'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+
+                    <input
+                        id="shares-plansFixed_0"
+                        type="radio"
+                        name="shares-plansFixed"
+                        value="0"
+                        class="required"
+                        title="<?= $this->translate('Don\'t enabled fixed date payment plans'); ?>"
+                        <?php
+                            $value = $this->getFormValue('shares-plansFixed');
+                            if ($value === null) {
+                                echo 'checked="checked"';
+                            } else if ($value == '0') {
+                                echo 'checked="checked"';
+                            }
+                        ?> />
+                        <label for="shares-plansFixed_0" class="radio" title="<?= $this->translate('Don\'t enabled fixed date payment plans'); ?>">
+                            <?= $this->translate('Disable'); ?>
+                        </label>
+                    <input
+                        id="shares-plansFixed_1"
+                        type="radio"
+                        name="shares-plansFixed"
+                        value="1"
+                        title="<?= $this->translate('Enabled fixed date payment plans'); ?>"
+                        <?php echo (($value == '1') ? 'checked="checked"' : '') ?> />
+
+                    <label for="shares-plansFixed_1" class="radio" title="<?= $this->translate('Enabled fixed date payment plans'); ?>">
+                        <?= $this->translate('Enable'); ?>
+                    </label>
+
+                    <span class="tooltip"
+                          title="<?= $this->translate('Should fixed date payment plans be disabled?'); ?>">
+                        [?]
+                    </span>
+
+                    <?php if (!empty($this->errors['shares-plansFixed'])) { ?>
+                        <label for="shares-plansFixed" class="error">
+                            <?= implode('; ', $this->errors['shares-plansFixed']) ?>
+                        </label>
+                    <?php } ?>
+                </p>
+
+                <p id="shares-plansFixedDatesField" style="<?= (empty($value)) ? 'display:none' : null; ?>">
+                    <label for="shares-plansFixedDates">
+                        <?= $this->translate('Fixed Dates'); ?>:
+                    </label>
+                    <input
+                        id="shares-plansFixedDates"
+                        name="shares-plansFixedDates"
+                        type="text"
+                        value="<?= $this->getFormValue('shares-plansFixedDates'); ?>"
+                        class=""
+                        maxlength="100" />
+
+                    <span class="tooltip"
+                          title="<?= $this->escape($this->translate('What dates should payments be made on?  Enter a comma seperated list of month-days.  IE: "08-15,10-15,12-15" for August 15, October 15, and December 15.  Alternatively, you can define payments dates on a per share basis.')); ?>">
+                        [?]
+                    </span>
+
+                    <?php if (!empty($this->errors['shares-plansFixedDates'])) { ?>
+                    <label for="shares-plansFixedDates" class="error">
+                        <?= implode('; ', $this->errors['shares-plansFixedDates']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p id="shares-adminFee">
+                    <label for="shares-adminFee">
+                        <?= $this->translate('Administrative Fee'); ?>:
+                    </label>
+                    <input
+                        id="shares-adminFee"
+                        name="shares-adminFee"
+                        type="number"
+                        value="<?= $this->getFormValue('shares-adminFee'); ?>"
+                        class="number"
+                        maxlength="100" />
+
+                    <span class="tooltip"
+                          title="<?= $this->escape($this->translate('Should an one time per year administrative fee be added to share orders?')); ?>">
+                        [?]
+                    </span>
+
+                    <?php if (!empty($this->errors['shares-adminFee'])) { ?>
+                        <label for="shares-adminFee" class="error">
+                            <?= implode('; ', $this->errors['shares-adminFee']) ?>
+                        </label>
+                    <?php } ?>
+                </p>
+
+                <p id="shares-paymentTo">
+                    <label for="shares-paymentTo">
+                        <?= $this->translate('Payment To'); ?>:
+                    </label>
+                    <input
+                        id="shares-paymentTo"
+                        name="shares-paymentTo"
+                        type="text"
+                        value="<?= $this->getFormValue('shares-paymentTo'); ?>"
+                        class=""
+                        maxlength="100" />
+
+                    <span class="tooltip"
+                          title="<?= $this->escape($this->translate('If cheques should be made payable to someone other than the farm, specify that here.')); ?>">
+                        [?]
+                    </span>
+
+                    <?php if (!empty($this->errors['shares-paymentTo'])) { ?>
+                    <label for="shares-paymentTo" class="error">
+                        <?= implode('; ', $this->errors['shares-paymentTo']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="shares-plansDetails" class="" title="<?= $this->translate('Please enter any membership terms and details about payment plan'); ?>">
+                        <?= $this->translate('Terms'); ?>:
+                    </label>
+
+                    <textarea
+                        id="shares-plansDetails"
+                        name="shares-plansDetails"
+                        title="<?= $this->translate('Please enter any membership terms and details about payment plans'); ?>"
+                        class="large"
+                        cols="10"
+                        rows="10"><?= $this->escape($this->getFormValue('shares-plansDetails')); ?></textarea>
+                    <?php if (!empty($this->errors['shares-plansDetails'])) { ?>
+                    <label for="shares-plansDetails" class="error">
+                        <?= implode('; ', $this->errors['shares-plansDetails']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+            </fieldset>
+
+            <fieldset>
+
+                <legend><?= $this->translate('Add On Products') ?></legend>
+
+                <p>
+                    <label for="shares-addOnCutOffTime">
+                        <?= $this->translate('Purchase Cut Off Time'); ?>:
+                    </label>
+                    <input
+                        id="shares-addOnCutOffTime"
+                        name="shares-addOnCutOffTime"
+                        type="text"
+                        value="<?php
+                            $time = $this->getFormValue('shares-addOnCutOffTime');
+
+                            if (!empty($time) && !(is_numeric($time) && $time < 0)) {
+                                try {
+                                    $date = new Zend_Date($time, 'HH:mm');
+                                    echo $date->toString('h:mm a');
+                                } catch (Exception $exception) {
+                                    HH_Error::exceptionHandler($exception, E_USER_WARNING);
+                                }
+                            } else {
+                                echo $time;
+                            }
+                        ?>"
+                        class=""
+                        maxlength="8" />
+
+                    <span class="tooltip"
+                          title="<?= $this->translate('Please enter the time of day that add on products can no longer be purchased.  You can enter 11:00 am, or a negative value like -24 to indicate that the cut off is one full day prior to delivery day.  Defaults to the day prior to the share delivery day.'); ?>">
+                        [?]
+                    </span>
+
+                    <?php if (!empty($this->errors['shares-addOnCutOffTime'])) { ?>
+                    <label for="shares-addOnCutOffTime" class="error">
+                        <?= implode('; ', $this->errors['shares-addOnCutOffTime']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+            </fieldset>
+
+            <p>
+                <button type="submit" class="submit fieldset-align ui-button ui-widget ui-corner-all ui-button-text-only ui-state-default">
+                    <span class="ui-button-text">
+                        <i class="fa fa-check"></i>
+                        <?= $this->translate('Save!'); ?>
+                    </span>
+                </button>
+            </p>
+        </form>
+    </article>
+</section>

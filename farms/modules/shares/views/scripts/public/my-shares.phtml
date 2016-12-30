@@ -1,0 +1,494 @@
+<?php
+    $this->headTitle($this->translate(
+        'My Upcoming %s',
+         ucfirst($this->farm->getPreferences()->get('share', 'shares', 'share'))
+    ));
+
+    $dateFormatter = new IntlDateFormatter(
+        Bootstrap::$locale,
+        IntlDateFormatter::LONG,
+        IntlDateFormatter::NONE
+    );
+
+    list($year, $week) = explode('W', $this->week);
+
+    $date = new DateTime();
+    $date->setISODate($year, $week, 1);
+
+    $startDate = $dateFormatter->format((int) $date->format('U'));
+    Bootstrap::$locale;
+    $date->setISODate($year, $week, 7);
+    $endDate = $dateFormatter->format((int) $date->format('U'));
+
+    $this->headLink()
+        ->appendStylesheet('/_farms/css/themes/default/shares.css');
+
+    $this->loader()->append('jquery_validate')
+        ->append('jquery_metadata')
+        ->append('jquery_ui_spinner')
+        ->append('jquery_colorbox')
+        ->append('jquery_dropdown');
+?>
+
+<div class="btn-group" style="float:right">
+    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+        <?= $this->translate('Follow') ?>
+        <span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu pull-right">
+        <li>
+            <a href="/shares?format=rss">
+                <?= $this->translate(
+                    '%s RSS Feed',
+                    ucfirst($this->farm->getPreferences()->get('shares', 'shares', 'shares'))
+                ) ?>
+            </a>
+            <?php if (!empty($this->farmer) && $this->farmer['role'] == HH_Domain_Farmer::ROLE_MEMBER) { ?>
+                <a href="/shares?t=<?= $this->farmer['userToken'] ?>&format=ics">
+                    <?= $this->translate(
+                        'My %s iCalendar Feed',
+                        ucfirst($this->farm->getPreferences()->get('shares', 'shares', 'shares'))
+                    ) ?>
+                </a>
+            <?php } else { ?>
+                <a href="/shares?format=ics">
+                    <?= $this->translate(
+                        '%s iCalendar Feed',
+                        ucfirst($this->farm->getPreferences()->get('shares', 'shares', 'shares'))
+                    ) ?>
+                </a>
+            <?php } ?>
+            <?php if (!empty($this->farmer) && $this->farmer['role'] == HH_Domain_Farmer::ROLE_MEMBER) { ?>
+                <a href="https://www.google.com/calendar/render?cid=<?= urlencode($this->farm->getBaseUri() . 'shares?t=' . $this->farmer['userToken'] . '&format=ics') ?>">
+                    <?= $this->translate(
+                        'Add To Google Calendar',
+                        ucfirst($this->farm->getPreferences()->get('shares', 'shares', 'shares'))
+                    ) ?>
+                </a>
+            <?php } else { ?>
+                <a href="https://www.google.com/calendar/render?cid=<?= urlencode($this->farm->getBaseUri() . 'shares?format=ics') ?>">
+                    <?= $this->translate(
+                        'Add To Google Calendar',
+                        ucfirst($this->farm->getPreferences()->get('shares', 'shares', 'shares'))
+                    ) ?>
+                </a>
+            <?php } ?>
+        </li>
+    </ul>
+</div>
+
+<h2><?= $this->translate(
+        'My %s Delivery',
+        ucfirst($this->farm->getPreferences()->get('share', 'shares', 'share'))
+    ); ?></h2>
+
+<h3>
+    <?= $this->translate(
+        'Week of %s to %s',
+        $this->escape($startDate),
+        $this->escape($endDate)
+    ) ?>
+</h3>
+
+
+<?php if (empty($this->subscriptions)) { ?>
+
+    <section class="info ui-widget ui-state-highlight ui-corner-all">
+        <div>
+            <i class="fa fa-info-circle"></i>
+            <strong><?= $this->translate('Hey!'); ?></strong>
+            <?= $this->translate(
+                'You currently don\'t have any %s that are currently in season.',
+                $this->farm->getPreferences()->get('shares', 'shares', 'shares')
+            ); ?>
+        </div>
+    </section>
+
+    <p><?= $this->translate(
+        'You can view a list of <a href="%s">all your purchased %s</a> that are upcoming or purchased in years gone by.',
+        '/shares/purchase-history',
+        $this->farm->getPreferences()->get('shares', 'shares', 'shares')
+        ) ?></p>
+
+    <p><?= $this->translate(
+        'To register for a %s, <a href="%s">please visit our sign up form</a>.',
+        $this->farm->getPreferences()->get('share', 'shares', 'share'),
+        '/shares/register'
+        ) ?></p>
+<?php } else if (empty($this->deliveries)) { ?>
+
+    <section class="info ui-widget ui-state-highlight ui-corner-all">
+        <div>
+            <i class="fa fa-info-circle"></i>
+            <strong><?= $this->translate('Hey!'); ?></strong>
+            <?= $this->translate(
+                'There are no %s deliveries scheduled for this week yet.',
+                $this->farm->getPreferences()->get('shares', 'shares', 'shares')
+            ); ?>
+        </div>
+    </section>
+
+    <p><?= $this->translate(
+        'Please check back soon.  In the mean time, wet your appetite by <a href="%s">viewing %s details of previous weeks</a>.',
+        '/shares/previous',
+        $this->farm->getPreferences()->get('share', 'shares', 'share')
+        ) ?></p>
+
+<?php } else { ?>
+
+    <dl>
+        <?php foreach ($this->deliveries as $delivery) { ?>
+
+        <dt class="delivery-share">
+            <?= $this->escape($delivery->getShare()->name); ?>
+        </dt>
+
+        <dd>
+            <dl class="delivery-share-items">
+        <?php foreach ($delivery->getItems() as $item){ ?>
+            <dt>
+                <?= $this->escape($item->item); ?> -
+                <?php
+                $sizes = array();
+
+                if(!empty($item->quantity_0_5)){
+                    foreach($delivery->getShare()->sizes as $size){
+                        if($size->size == 0.5){
+
+                            $sizes[] = array(
+                                'name' => $size->name,
+                                'qty'  => $item->quantity_0_5
+                            );
+
+                            break;
+                        }
+                    }
+                }
+
+                if(!empty($item->quantity_1)){
+                    foreach($delivery->getShare()->sizes as $size){
+                        if($size->size == 1){
+
+                            $sizes[] = array(
+                                'name' => $size->name,
+                                'qty'  => $item->quantity_1
+                            );
+
+                            break;
+                        }
+                    }
+                }
+
+                if(!empty($item->quantity_2)){
+                    foreach($delivery->getShare()->sizes as $size){
+                        if($size->size == 2){
+
+                            $sizes[] = array(
+                                'name' => $size->name,
+                                'qty'  => $item->quantity_2
+                            );
+
+                            break;
+                        }
+                    }
+                }
+
+                if(!empty($sizes)){
+                    //                            if (count($sizes) == 1) {
+                    //                                echo $sizes[0]['qty'];
+                    //                            } else {
+                    for($x = 0, $c = count($sizes); $x < $c; ++$x){
+                        echo $sizes[$x]['qty'] . ' (' . $sizes[$x]['name'] . ')';
+                        if($x + 1 != $c){
+                            echo '; ';
+                        }
+                    }
+                    //                            }
+                }
+                ?>
+            </dt>
+            <dd>
+            <?php if(!empty($item->source)){ ?>
+                <?= $this->escape($item->source) ?> -
+            <?php } ?>
+            <?php
+                $certs = HHF_Domain_Certification::getSelectOptions();
+                if(!empty($certs[$item->certification])){
+                   echo $certs[$item->certification];
+                }
+            ?>
+            </dd>
+        <?php } ?>
+            </dl>
+        </dd>
+
+        <?php } ?>
+    </dl>
+
+    <?php if (!empty($this->addons) && $this->farm->getPreferences()->get('addonsEnabled', 'shares', true)) { ?>
+
+    <?php
+        $addons = array();
+        $categories = array();
+
+        foreach ($this->addons as $addon) {
+            if (is_numeric($addon['inventory']) && intval($addon['inventory']) === 0) {
+                continue;
+            }
+
+            if (!array_key_exists($addon['categoryId'], $categories)) {
+                $categories[$addon['categoryId']] = 1;
+            } else {
+                ++$categories[$addon['categoryId']];
+            }
+
+            $addons[] = array(
+                'id' => $addon->id,
+                'inventory' => $addon->inventory,
+                'price' => $addon->price
+            );
+        }
+
+        $this->loader(true, true)
+            ->append('myShares')
+            ->init(
+                array(
+                    'addons' => $addons,
+                    'lang' => array(
+                        'alert' => $this->translate('At least one add on needs to be selected to place an order.'),
+                        'current' => $this->translate('image {current} of {total}'),
+                        'previous' => $this->translate('previous'),
+                        'next' => $this->translate('next'),
+                        'close' => $this->translate('close'),
+                        'xhrError' => $this->translate('This content failed to load.'),
+                        'imgError' => $this->translate('This image failed to load.')
+                    )
+                )
+            );
+    ?>
+
+    <form action="<?= $this->escape($this->Url()) ?>"
+            method="post"
+            style="width: 100%;"
+            accept-charset="utf-8"
+            class="cmxform"
+            id="my">
+
+        <section id="formError"
+                 class="error ui-widget ui-state-error ui-corner-all"
+                 style="<?= (!empty($this->errors)) ? '' : 'display:none;' ?>">
+            <div>
+                <i class="fa fa-exclamation-triangle"></i>
+                <strong><?= $this->translate('Oh No!'); ?></strong>
+                <?= $this->translate('Something is not right with what you entered.  Check below for hints on how to fix things up.'); ?>
+            </div>
+        </section>
+
+        <fieldset>
+
+            <legend><?= $this->translate(
+                '%s Add Ons for %s',
+                ucfirst($this->farm->getPreferences()->get('share', 'shares', 'share')),
+                $this->escape(
+                    $dateFormatter->format(
+                        (int) $this->addonWeek->getTimestamp()
+                    )
+                )
+            ); ?></legend>
+
+            <?php
+                $currentCategory = null;
+                $hasCategories = (count($categories) > 1) ? true : false;
+            ?>
+
+            <?php if ($hasCategories) { ?>
+            <div id="addonCategories" style="margin: 10px 0px 15px 0px; padding-left: 10px; padding-right: 10px; width: auto;">
+            <?php } ?>
+
+            <?php foreach ($this->addons as $item) { ?>
+                <?php
+                    if ($hasCategories && $item['categoryId'] != $currentCategory) {
+                        if (!empty($currentCategory)) { ?>
+                            </div>
+                        <?php }
+                            $currentCategory = $item['categoryId'];
+                        ?>
+
+                        <h3 style="padding: 5px; padding-left: 25px;">
+                            <?= $this->escape($item['categoryName']) ?>
+                        </h3>
+                        <div class="addonCategory">
+                        <?php
+                    }
+                ?>
+                <?php if (is_numeric($item['inventory']) && intval($item['inventory']) === 0) {
+                    continue;
+                } ?>
+                <div class="addon" style="width: auto; margin: 10px 10px 10px 10px; border: 1px solid #4C2D0C; -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px;">
+                    <table style="width: 100%">
+                        <?php if (!empty($this->errors['addons'][$item['id']])) { ?>
+                        <tr>
+                            <td colspan="2" style="padding: .5em">
+                                <span class="error"><?php
+                                    $errors = array();
+
+                                    foreach ($this->errors['addons'][$item['id']] as $error) {
+                                        $errors += $error;
+                                    }
+
+                                    echo $this->escape(implode('; ', $errors));
+                                ?></span>
+                            </td>
+                        </tr>
+                        <?php } ?>
+                        <tr>
+                            <td rowspan="2" width="20" style="padding: .5em">
+                                <input
+                                    class="quantity {required : true, digits: true} <?= (!empty($this->errors['addons'][$item['id']])) ? 'error' : '' ?>"
+                                    type="text"
+                                    maxlength="3"
+                                    size="3"
+                                    data-id="<?= $this->escape($item['id']); ?>"
+                                    data-unitorderminimum="<?= $this->escape($item['unitOrderMinimum']); ?>"
+                                    data-pendingonorder="<?= $this->escape($item['pendingOnOrder']) ?>"
+                                    name="addons[<?= $this->escape($item['id']); ?>][quantity]"
+                                    value="<?= $this->getFormValue('quantity', 'addons', $item['id']); ?>"
+                                    title="<?= $this->translate(
+                                        'Quantity of %s to order',
+                                        $this->escape($item['name'])
+                                    ); ?>" />
+
+                                <?php if (!empty($item->image)) { ?>
+                                    <?php if (is_numeric($item->image)) { ?>
+                                        <a class="addon-photo"
+                                           href="/default/file/id/<?= $this->escape($item->image) ?>/s/<?= HHF_Domain_File::IMAGE_LARGE ?>">
+                                            <img
+                                                src="/default/file/id/<?= $this->escape($item->image) ?>/s/<?= HHF_Domain_File::IMAGE_THUMBNAIL ?>"
+                                                alt="<?= $this->escape($item['name']); ?>"
+                                                align="right" />
+                                        </a>
+                                    <?php } else { ?>
+                                        <img
+                                            src="<?= $this->escape($item->image) ?>"
+                                            alt="<?= $this->escape($item['name']); ?>"
+                                            align="right" />
+                                    <?php } ?>
+                                <?php } ?>
+                                <strong><?= $this->escape($item['name']); ?> - <?=
+                                    $this->escape($this->currency($item['price']));
+                                ?><?php if ($item['priceBy'] == HHF_Domain_Addon::PRICE_BY_WEIGHT) { ?>
+                                    / <?= $this->translate(strtolower($item['unitType'])) ?>
+                                <?php } ?></strong>
+                                <?php if (!empty($item['source']) || !empty($item['certification'])) { ?>
+                                    <br />
+                                    <?php if (!empty($item['source'])) { ?>
+                                        <?= $this->escape($item['source']) ?> -
+                                    <?php } ?>
+                                    <?php if (!empty($item['certification'])) { ?>
+                                        <?php
+                                        $certs = HHF_Domain_Certification::getSelectOptions();
+                                        if(!empty($certs[$item['certification']])){
+                                            echo $certs[$item['certification']];
+                                        }
+                                        ?>
+                                    <?php } ?>
+                                <?php } ?>
+                                <br />
+                                <?php if (!empty($item['unitOrderMinimum']) && $item['unitOrderMinimum'] > 1) { ?>
+                                <em>
+                                <?php
+                                    $unitOrderMinimum = $item['unitOrderMinimum'];
+
+                                    if (strpos($unitOrderMinimum, '.00')) {
+                                        $unitOrderMinimum = (int) $unitOrderMinimum;
+                                    }
+                                    echo $this->translate(
+                                        'The smallest amount you can order is %s %s',
+                                        $unitOrderMinimum,
+                                        $this->translate(ucfirst(strtolower($item['unitType'] . 's')))
+                                    );
+                                ?>
+                                </em>
+                                <br />
+                                <?php } ?>
+                                <?php if (!empty($item['pendingOnOrder'])) { ?>
+                                <em>
+                                    <?= $this->translate('Ordering this item will require that we first check our stock before we confirm your final invoice amount') ?>
+                                </em>
+                                <br />
+                                <?php } ?>
+                                <?= $item['details']; ?>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            <?php } ?>
+
+            <?php if ($hasCategories) { ?>
+                </div>
+            </div>
+            <?php } ?>
+        </fieldset>
+
+        <fieldset>
+            <legend><?= $this->translate('Payment'); ?></legend>
+
+            <p>
+                <label><?= $this->translate('Total'); ?></label>
+                <span id="total"><?= $this->currency(0) ?></span>
+                <span class="pending-on-order" style="display: none;">(<?= $this->translate('Estimate') ?>)</span>
+            </p>
+
+            <p class="pending-on-order" style="display: none;">
+                <?= $this->translate('We\'ll be manually processing this order before the final invoice can be issued.  Till then, let us know how you intend on paying.') ?>
+            </p>
+
+            <p>
+                <label for="payment" class="required" title="<?= $this->translate('Please choose a payment method'); ?>">
+                    <?= $this->translate('Payment Method'); ?>:
+                    <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                </label>
+
+                <?php
+                    $paymentOptions = array(
+                        '' => $this->translate('Choose a payment method'),
+                        HHF_Domain_Transaction::TYPE_CASH => $this->translate('Cash, Cheque or Bank Payment')
+                    );
+
+                    if ($this->farm->getPreferences()->get('enabled', 'paypal', false)) {
+                        $paymentOptions[HHF_Domain_Transaction::TYPE_PAYPAL] = $this->translate('Online Payment');
+                    }
+
+                    echo $this->formSelect(
+                        'payment',
+                        $this->getFormValue('payment'),
+                        array(
+                            'id' => 'payment',
+                            'class' => 'required',
+                            'title' => $this->translate('Please choose a payment method')
+                        ),
+                        $paymentOptions
+                    );
+                ?>
+
+                <?php if (!empty($this->errors['payment'])) { ?>
+                <label for="payment" class="error">
+                    <?= implode('; ', $this->errors['payment']) ?>
+                </label>
+                <?php } ?>
+            </p>
+
+            <p>
+                <button
+                    name="Order"
+                    id="Save"
+                    type="submit"
+                    class="submit">
+                        <?= $this->translate('Order'); ?>
+                </button>
+            </p>
+        </fieldset>
+    </form>
+    <?php } ?>
+
+<?php } ?>

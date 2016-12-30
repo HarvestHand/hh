@@ -1,0 +1,49 @@
+/*
+ * Copyright 2008 Konrad Rudolph
+ * All rights reserved.
+ *
+ * Colour scheme based on the Vibrant Ink scheme by Justin Palmer for the
+ * TextMate text editor.
+ * http://alternateidea.com/blog/articles/2006/1/3/textmate-vibrant-ink-theme-and-prototype-bundle
+ */
+
+.source-code.vibrant-ink {
+    background: black;
+    color: white;
+}
+
+.source-code.vibrant-ink .keyword { color: #F60; font-weight: bold; }
+.source-code.vibrant-ink .keyword.literal { color: #FC0; }
+.source-code.vibrant-ink .keyword.type { color: #FC0; }
+.source-code.vibrant-ink .keyword.builtin { color: #44B4CC; }
+.source-code.vibrant-ink .preprocessor { color: #996; }
+.source-code.vibrant-ink .comment { color: #93C; }
+.source-code.vibrant-ink .comment .doc { color: #399; font-weight: bold; }
+.source-code.vibrant-ink .identifier { color: white; }
+.source-code.vibrant-ink .string, .source-code.vibrant-ink .char { color: #6F0; }
+.source-code.vibrant-ink .escaped { color: #AAA; }
+.source-code.vibrant-ink .number, .source-code.vibrant-ink .tag { color: #FFEE98; }
+.source-code.vibrant-ink .regex, .source-code.vibrant-ink .attribute { color: #44B4CC; }
+.source-code.vibrant-ink .operator { color: #888; }
+.source-code.vibrant-ink .keyword.operator { color: #F60; }
+.source-code.vibrant-ink .whitespace { background: #333; }
+.source-code.vibrant-ink .error { border-bottom: 1px solid red; }
+
+.source-code.vibrant-ink .tag .attribute { font-style: italic; }
+.source-code.vibrant-ink.xml .preprocessor .keyword { color: #996; }
+.source-code.vibrant-ink.xml .meta, .source-code.vibrant-ink.xml .meta .keyword { color: #399; }
+
+.source-code.vibrant-ink.cpp .preprocessor .identifier { color: #996; }
+
+.source-code.vibrant-ink::-moz-selection,
+.source-code.vibrant-ink span::-moz-selection {
+    background: yellow;
+    color: black;
+}
+
+.source-code.vibrant-ink::selection,
+.source-code.vibrant-ink span::selection {
+    background: yellow;
+    color: black;
+}
+

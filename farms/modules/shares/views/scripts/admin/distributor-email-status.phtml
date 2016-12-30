@@ -1,0 +1,60 @@
+<p><?= $this->translate(
+        'Hi %s',
+        $this->escape($this->farmer->firstName)
+    ) ?></p>
+
+<p>
+    <?= $this->translate(
+        'Here is a summary of your distribution network as of %s.',
+        date('r')
+    ) ?>
+    <?= $this->translate('Your distributor network is your farms and vendors who are allowed to publish products to you.') ?>
+</p>
+
+
+<table width="100%" cellpadding="2" border="1">
+    <thead>
+    <tr>
+        <th>
+            <?= $this->translate('ID'); ?>
+        </th>
+        <th
+            width="50%"
+            title="<?= $this->translate('Vendor') ?>">
+            <?= $this->translate('Vendor'); ?>
+        </th>
+        <th
+            width="25%"
+            title="<?= $this->translate('Products Last Updated') ?>">
+            <?= $this->translate('Updated'); ?>
+        </th>
+        <th
+            width="25%"
+            title="<?= $this->translate('Relationship Status') ?>">
+            <?= $this->translate('Status') ?>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($this->parentNetworksStatus as $vendor) { ?>
+            <tr>
+                <td>
+                    <a href="<?= $this->escape($this->distributor->getBaseUri()) ?>admin/shares/addons/source/V_<?= $vendor['id'] ?>">
+                        <?= $this->escape($vendor['id']) ?>
+                    </a>
+                </td>
+                <td>
+                    <a href="<?= $this->escape($this->distributor->getBaseUri()) ?>admin/shares/addons/source/V_<?= $vendor['id'] ?>">
+                        <?= $this->escape($vendor['name']) ?>
+                    </a>
+                </td>
+                <td>
+                    <?= $this->escape($vendor['updated']) ?>
+                </td>
+                <td>
+                    <?= $this->escape($vendor['status']) ?>
+                </td>
+            </tr>
+        <?php } ?>
+    </tbody>
+</table>

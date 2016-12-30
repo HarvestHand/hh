@@ -1,0 +1,117 @@
+<?php
+    if ($this->farm->getPreferences()->get('sidebarBalanceEnabled', 'website', true)) {
+        $balance = $this->farmer->getCustomer()->getBalanceTotal();
+    } else {
+        $balance = 0;
+    }
+?>
+
+<form
+    id="login"
+    action=""
+    method="post"
+    class="cmxform full"
+    accept-charset="utf-8">
+
+    <fieldset>
+        <legend><?= $this->escape('Account'); ?></legend>
+
+        <p>
+            <?= $this->translate(
+                'Welcome %s!',
+                $this->farmer->getCustomer()->firstName
+            ); ?>
+            <?php if ($balance > 0) { ?>
+                <br />
+                <?= $this->translate('Current Balance Due: %s.', $this->currency($balance)) ?>
+            <?php } ?>
+            <br />
+            <?= $this->translate(
+                'Your customer # is %s.',
+                $this->farmer->getCustomer()->id
+            ) ?>
+        </p>
+
+        <p>
+            <a class="button ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only"
+               href="/shares/purchase-history"
+               id="view-share"
+               role="button"
+               aria-disabled="false"
+               title="<?= $this->translate('View Purchases'); ?>">
+                <span class="ui-button-icon-primary ui-icon ui-icon-cart"></span>
+                <span class="ui-button-text"><?= $this->translate('View Purchases'); ?></span>
+            </a>
+            <a href="/shares/purchase-history"><?= $this->translate('View Purchases'); ?></a>
+        </p>
+
+        <?php if ($this->farm->getPreferences()->get('enabled', 'paypal', false)) { ?>
+        <p>
+            <a class="button ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only"
+               href="/customers/payment"
+               id="payment-button"
+               role="button"
+               aria-disabled="false"
+               title="<?= $this->translate('Make Payment'); ?>">
+                <span class="ui-button-icon-primary ui-icon ui-icon-plusthick"></span>
+                <span class="ui-button-text"><?= $this->translate('Make Payment'); ?></span>
+            </a>
+            <a href="/customers/payment"><?= $this->translate('Make Payment'); ?></a>
+        </p>
+        <?php } ?>
+
+        <p>
+            <a class="button ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only"
+               href="/customers/customer"
+               id="update-account"
+               role="button"
+               aria-disabled="false"
+               title="<?= $this->translate('Update Account'); ?>">
+                <span class="ui-button-icon-primary ui-icon ui-icon-person"></span>
+                <span class="ui-button-text"><?= $this->translate('Update Account'); ?></span>
+            </a>
+            <a href="/customers/customer"><?= $this->translate('Update Account'); ?></a>
+        </p>
+
+        <p>
+            <a class="button ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only"
+               href="/customers/vacations"
+               id="update-vacations"
+               role="button"
+               aria-disabled="false"
+               title="<?= $this->translate('Edit Vacations'); ?>">
+                <span class="ui-button-icon-primary ui-icon ui-icon-calendar"></span>
+                <span class="ui-button-text"><?= $this->translate('Edit Vacations'); ?></span>
+            </a>
+            <a href="/customers/vacations"><?= $this->translate('Edit Vacations'); ?></a>
+        </p>
+
+        <?php if ($this->farm->id == 1) { ?>
+        <p>
+            <a class="button ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only"
+               href="http://www.harvesthand.com/forum#/categories/animal-vegetable-miracle"
+               id="forum"
+               role="button"
+               aria-disabled="false"
+               title="<?= $this->translate('Discussion Forum'); ?>">
+                <span class="ui-button-icon-primary ui-icon ui-icon-comment"></span>
+                <span class="ui-button-text"><?= $this->translate('Discussion Forum'); ?></span>
+            </a>
+            <a href="http://www.harvesthand.com/forum#/categories/animal-vegetable-miracle"><?= $this->translate('Discussion Forum'); ?></a>
+        </p>
+        <?php } ?>
+
+        <p>
+            <a class="button ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only"
+               href="/logout"
+               id="logout"
+               role="button"
+               aria-disabled="false"
+               title="<?= $this->translate('Logout'); ?>">
+                <span class="ui-button-icon-primary ui-icon ui-icon-close"></span>
+                <span class="ui-button-text"><?= $this->translate('Logout'); ?></span>
+            </a>
+            <a href="/logout"><?= $this->translate('Logout'); ?></a>
+        </p>
+    </fieldset>
+</form>

@@ -1,0 +1,141 @@
+<!doctype html>
+<!--[if lt IE 7 ]> <html class="ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]>    <html class="ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]>    <html class="ie8" lang="en"> <![endif]-->
+<!--[if IE 9 ]>    <html class="ie9" lang="en"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html lang="en"> <!--<![endif]-->
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="chrome=1">
+        <meta charset="utf-8">
+        <?php echo $this->headTitle() ?>
+        <link rel="shortcut icon" href="/_images/favicon.png">
+        <link rel="apple-touch-icon" href="/_images/apple-touch-icon.png">
+        <link rel="stylesheet" href="/_css/style.css?v=4">
+        <?php echo $this->headStyle() ?>
+        <link rel="stylesheet" media="handheld" href="/_css/handheld.css?v=1">
+        <script src="/_js/modernizr.js"></script>
+        <?php echo $this->headLink() ?>
+    </head>
+    <body>
+        <header id="top">
+            <div id="header" class="container_12">
+
+                <div class="grid_12">
+                    <div class="grid_3 alpha">
+                        <a href="/"><img id="logo" src="<?= $this->images ?>logo.png" width="176" height="40" alt="<?= $this->translate('HarvestHand - Local Food &amp; Communities'); ?>" /></a>
+                    </div>
+
+                    <nav id="nav-main" class="grid_9  omega">
+                        <ul id="nav-main-two">
+                            <?php if ($this->isAuthenticated()) { ?>
+                                <?php
+                                $farmer = HH_Domain_Farmer::getAuthenticated();
+
+                                if ($farmer instanceof HH_Domain_Farmer) { ?>
+                                    <li>
+                                        <a href="<?= $farmer->getFarm()->getBaseUri() . 'admin' ?>"><?= $this->translate('MY FARM') ?></a>
+                                    </li>
+                                <?php } ?>
+                                <li>
+                                    <a href="/logout"><?= $this->translate('LOG OUT'); ?></a>
+                                </li>
+                            <?php } else { ?>
+                                <?php if (getenv('APPLICATION_ENV') == 'development') { ?>
+                                    <li><a id="signup" href="/signup"><?= $this->translate('SIGN UP'); ?></a></li>
+                                <?php } ?>
+                                <li><a href="/login"><?= $this->translate('LOG IN'); ?></a></li>
+                            <?php } ?>
+                        </ul>
+                        <ul id="nav-main-one">
+                            <!--
+                            <li><a href=""><?php echo $this->translate('Take a Tour'); ?></a></li>
+                            <li><a href="/about"><?php echo $this->translate('About'); ?></a></li>
+                            <li><a href="/features"><?php echo  $this->translate('Features &amp; Pricing'); ?><</a></li>
+                            <li><a href="http://harvesthand.<?php echo Bootstrap::$rootDomain ?>/blog"><?php echo $this->translate('Blog'); ?></a></li>
+                            -->
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+        <section id="body">
+            <header class="heading">
+                <h1>
+                    HarvestHand
+                </h1>
+            </header>
+            <section id="body-content" class="container_12">
+                <div id="body-content-left" class="grid_12 ">
+                    <div id="body-content-right">
+                        <div id="body-content-content">
+                            <?php echo $this->layout()->content ?>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+            <br class="clear"/>
+        </section>
+
+        <footer id="footer">
+            <div class="container_12">
+                <div class="grid_12">
+                    <div id="footer-company" class="grid_4 alpha">
+
+                        <h3><?= $this->translate('Company'); ?></h3>
+
+                        <ul>
+                            <li><a href="http://www.<?= Bootstrap::$rootDomain ?>/about"><?= $this->translate('About'); ?></a></li>
+                            <li><a href="http://planet.<?= Bootstrap::$rootDomain ?>/" title="<?= $this->translate('Planet HarvestHand'); ?>"><?= $this->translate('Planet'); ?></a></li>
+                            <li><a href="http://www.<?= Bootstrap::$rootDomain ?>/legal"><?= $this->translate('Legal'); ?></a></li>
+                        </ul>
+                    </div>
+                    <div id="footer-contact" class="grid_4">
+                        <h3><?= $this->translate('Stay in Touch'); ?></h3>
+
+                        <ul>
+                            <li><a href="mailto:farmnik@harvesthand.com" title="<?= $this->translate('Email'); ?>"><span class="icon-social icon-social-email"></span></a></li>
+                            <li><a href="http://harvesthand.<?= Bootstrap::$rootDomain ?>/blog?format=rss" title="<?= $this->translate('RSS'); ?>"><span class="icon-social icon-social-rss"></span></a></li>
+                            <li><a href="http://www.facebook.com/pages/HarvestHand/143523832349725" title="<?= $this->translate('Facebook'); ?>"><span class="icon-social icon-social-facebook"></span></a></li>
+                            <li><a href="http://twitter.com/HarvestHand" title="<?= $this->translate('Twitter'); ?>"><span class="icon-social icon-social-twitter"></span></a></li>
+                            <li><a href="https://github.com/michaelcaplan/HH" title="<?= $this->translate('Github Code Repository'); ?>"><span class="icon-social icon-social-github"></span></a></li>
+                        </ul>
+                    </div>
+                    <div id="footer-support" class="grid_4 omega">
+                        <h3><?= $this->translate('Support'); ?></h3>
+
+                        <ul>
+                            <!-- <li><a href="#"><?= $this->translate('Get Help'); ?></a></li> -->
+                            <li><a href="/forum"><?= $this->translate('Forum'); ?></a></li>
+                            <!-- <li><a href="#"><?= $this->translate('Create Support Ticket'); ?></a></li> -->
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+            <br class="clear"/>
+        </footer>
+
+        <?php
+            echo $this->loader()->prepend(
+                array(
+                    'jquery',
+                    'jquery_ui',
+                    'hh'
+                )
+            )->toString(HH_View_Helper_Loader::JS);
+        ?>
+        <?php echo $this->headScript() ?>
+        <?php echo $this->placeholder('foot'); ?>
+        <script type="text/javascript">
+        document.write(unescape("%3Cscript src='/_stats/piwik.js' type='text/javascript'%3E%3C/script%3E"));
+        </script><script type="text/javascript">
+        try {
+        var piwikTracker = Piwik.getTracker("/_stats/piwik.php", 1);
+        piwikTracker.trackPageView();
+        piwikTracker.enableLinkTracking();
+        } catch( err ) {}
+        </script><noscript><p><img src="/_stats/piwik.php?idsite=1" style="border:0" alt="" /></p></noscript>
+    </body>
+</html>

@@ -1,0 +1,581 @@
+<?php
+    if (empty($this->customer)) {
+        $title = $this->translate('New Customer');
+
+    } else {
+        $title = $this->translate('Edit Customer');
+    }
+
+    $this->headTitle($title);
+
+    $this->loader()->append('jquery_validate');
+?>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+    var isDirty = false;
+
+    $(document).ready(function(){
+        $("#customer").validate({
+            rules: {
+                "farmer[password]" : {
+                    minlength : 4
+                },
+                "farmer[userName]" : {
+                    remote : "/customers/usernameunique?<?= http_build_query($_GET) ?>"
+                },
+                "passwordConfirm" : {
+                    equalTo : "#farmer_password"
+                }
+            },
+            messages : {
+                "farmer[userName]" : {
+                    remote : function() {
+                        return $.format(
+                            "<?= $this->translate('The user name {0} is already in use'); ?>",
+                            $("#farmer_userName").val()
+                        );
+                    }
+                },
+                "passwordConfirm" : {
+                    equalTo : "<?= $this->translate('Your passwords are not the same'); ?>"
+                }
+            },
+            errorContainer: $("#formError")
+        });
+
+        $("#city").autocomplete({
+            source: function(request, response) {
+                $.get("/customers/locale",
+                    {
+                        country : $("#country").val(),
+                        subdivision : $("#state").val(),
+                        unlocode: request.term
+                    },
+                    function(unlocodes) {
+                        response(unlocodes);
+                    },
+                    'json'
+                );
+            }
+        });
+    });
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<h2 style="display: inline-block; vertical-align: middle; margin-right: 15px; margin-bottom: 11px;">
+    <span class="icon-menu icon-menu-members" style="float: left; margin: -10px 7px 0 0;"></span>
+    <?= $title ?>
+</h2>
+
+<section class="container_12">
+    <article class="grid_11">
+
+        <form id="customer" action="/admin/customers/customer?<?= http_build_query($_GET) ?>" method="post" accept-charset="utf-8" class="cmxform large">
+
+            <section id="formError" class="error ui-widget ui-state-error ui-corner-all" style="<?= (!empty($this->errors)) ? '' : 'display:none;' ?>">
+                <div>
+                    <i class="fa fa-exclamation-triangle"></i>
+                    <strong><?= $this->translate('Oh No!'); ?></strong>
+                    <?= $this->translate('Something is not right with what you entered.  Check below for hints on how to fix things up.'); ?>
+                </div>
+            </section>
+
+            <input id="country" type="hidden" name="country" value="<?= $this->getFormValue('country') ?>" />
+
+            <fieldset>
+                <legend><?= $this->translate('Contact Info') ?></legend>
+
+                <p>
+                    <label for="firstName" class="required" title="<?= $this->translate('Please enter the first name of your customer'); ?>">
+                        <?= $this->translate('First Name'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+                    <input
+                        id="firstName"
+                        name="firstName"
+                        type="text"
+                        title="<?= $this->translate('Please enter the first name of your customer'); ?>"
+                        value="<?= $this->getFormValue('firstName'); ?>"
+                        class="required large"
+                        maxlength="100" />
+
+                    <?php if (!empty($this->errors['firstName'])) { ?>
+                    <label for="firstName" class="error">
+                        <?= implode('; ', $this->errors['firstName']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="lastName" class="required" title="<?= $this->translate('Please enter the last name of your customer'); ?>">
+                        <?= $this->translate('Last Name'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+                    <input
+                        id="lastName"
+                        name="lastName"
+                        type="text"
+                        title="<?= $this->translate('Please enter the last name of your customer'); ?>"
+                        value="<?= $this->getFormValue('lastName'); ?>"
+                        class="required large"
+                        maxlength="100" />
+
+                    <?php if (!empty($this->errors['lastName'])) { ?>
+                    <label for="lastName" class="error">
+                        <?= implode('; ', $this->errors['lastName']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="address" title="<?= $this->translate('Please enter the address of your customer'); ?>">
+                        <?= $this->translate('Address'); ?>:
+                    </label>
+                    <input
+                        id="address"
+                        name="address"
+                        type="text"
+                        title="<?= $this->translate('Please enter the address of your customer'); ?>"
+                        value="<?= $this->getFormValue('address'); ?>"
+                        class="large"
+                        maxlength="255" />
+
+                    <?php if (!empty($this->errors['address'])) { ?>
+                    <label for="address" class="error">
+                        <?= implode('; ', $this->errors['address']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="address2" title="<?= $this->translate('Please enter the address of your customer'); ?>">
+                        <?= $this->translate('Address'); ?>:
+                    </label>
+                    <input
+                        id="address2"
+                        name="address2"
+                        type="text"
+                        title="<?= $this->translate('Please enter the address of your customer'); ?>"
+                        value="<?= $this->getFormValue('address2'); ?>"
+                        class="large"
+                        maxlength="255" />
+
+                    <?php if (!empty($this->errors['address2'])) { ?>
+                    <label for="address2" class="error">
+                        <?= implode('; ', $this->errors['address2']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="city" title="<?= $this->translate('Please enter the customer\'s town or city'); ?>">
+                        <?= $this->translate('Town'); ?>:
+                    </label>
+                    <input
+                        id="city"
+                        name="city"
+                        type="text"
+                        title="<?= $this->translate('Please enter the customer\'s town or city'); ?>"
+                        value="<?= $this->getFormValue('city'); ?>"
+                        class="large"
+                        maxlength="100" />
+
+                    <?php if (!empty($this->errors['city'])) { ?>
+                    <label for="city" class="error">
+                        <?= implode('; ', $this->errors['city']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="state" class="required" title="<?= $this->translate('Please enter the customer\'s state'); ?>">
+                        <?= $this->translate('State'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+                    <?php
+                        $country = $this->getFormValue('country');
+
+                        if (!empty($country)) {
+                            $country = substr($country, 0, 2);
+
+                            $states = HH_Tools_Countries::getSubdivisions($country);
+                        }
+                    ?>
+                    <?php if (!empty($states)) { ?>
+                        <?=
+                            $this->formSelect(
+                                'state',
+                                $this->getFormValue('state'),
+                                array(
+                                    'id' => 'state',
+                                    'class' => 'required',
+                                    'title' => $this->translate('Please enter the customer\'s state')
+                                ),
+                                array('' => '') + $states
+                            );
+                        ?>
+                    <?php } else { ?>
+                        <input
+                            id="state"
+                            name="state"
+                            type="text"
+                            title="<?= $this->translate('Please enter the customer\'s state'); ?>"
+                            value="<?= $this->getFormValue('state'); ?>"
+                            class="required"
+                            maxlength="45" />
+                    <?php } ?>
+
+                    <?php if (!empty($this->errors['state'])) { ?>
+                    <label for="state" class="error">
+                        <?= implode('; ', $this->errors['state']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="zipCode" class="" title="<?= $this->translate('Please enter the customer\'s zip code'); ?>">
+                        <?= $this->translate('Zip Code'); ?>:
+                    </label>
+                    <input
+                        id="zipCode"
+                        name="zipCode"
+                        type="text"
+                        title="<?= $this->translate('Please enter the customer\'s zip code'); ?>"
+                        value="<?= $this->getFormValue('zipCode'); ?>"
+                        class=""
+                        maxlength="45" />
+
+                    <?php if (!empty($this->errors['zipCode'])) { ?>
+                    <label for="zipCode" class="error">
+                        <?= implode('; ', $this->errors['zipCode']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="email" title="<?= $this->translate('Please enter the customer\'s email'); ?>">
+                        <?= $this->translate('Email'); ?>:
+                    </label>
+                    <input
+                        id="email"
+                        name="email"
+                        type="text"
+                        title="<?= $this->translate('Please enter the customer\'s email'); ?>"
+                        value="<?= $this->getFormValue('email'); ?>"
+                        class="email"
+                        maxlength="255" />
+
+                    <?php if (!empty($this->errors['email'])) { ?>
+                    <label for="email" class="error">
+                        <?= implode('; ', $this->errors['email']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="telephone" title="<?= $this->translate('Please enter the customer\'s telephone'); ?>">
+                        <?= $this->translate('Telephone'); ?>:
+                    </label>
+                    <input
+                        id="telephone"
+                        name="telephone"
+                        type="text"
+                        title="<?= $this->translate('Please enter the customer\'s telephone'); ?>"
+                        value="<?= $this->getFormValue('telephone'); ?>"
+                        class="telephone"
+                        maxlength="20" />
+
+                    <?php if (!empty($this->errors['telephone'])) { ?>
+                    <label for="telephone" class="error">
+                        <?= implode('; ', $this->errors['telephone']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="fax" title="<?= $this->translate('Please enter the customer\'s fax'); ?>">
+                        <?= $this->translate('Fax'); ?>:
+                    </label>
+                    <input
+                        id="fax"
+                        name="fax"
+                        type="text"
+                        title="<?= $this->translate('Please enter the customer\'s fax'); ?>"
+                        value="<?= $this->getFormValue('fax'); ?>"
+                        class="fax"
+                        maxlength="20" />
+
+                    <?php if (!empty($this->errors['fax'])) { ?>
+                    <label for="fax" class="error">
+                        <?= implode('; ', $this->errors['fax']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="enabled_1" class="required" title="<?= $this->translate('Should this customer be disabled?'); ?>">
+                        <?= $this->translate('Enabled'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+
+                    <input
+                        id="enabled_0"
+                        type="radio"
+                        name="enabled"
+                        value="0"
+                        class="required"
+                        title="<?= $this->translate('Don\'t enable customer'); ?>"
+                        <?php echo (($this->getFormValue('enabled') == '0') ? 'checked="checked"' : '') ?> />
+                        <label for="enabled_0" class="radio" title="<?= $this->translate('Don\'t enable customer'); ?>">
+                            <?= $this->translate('Disable'); ?>
+                        </label>
+                    <input
+                        id="enabled_1"
+                        type="radio"
+                        name="enabled"
+                        value="1"
+                        title="<?= $this->translate('Customer should be enabled'); ?>"
+                        <?php
+                            $value = $this->getFormValue('enabled');
+                            if ($value === null) {
+                                echo 'checked="checked"';
+                            } else if ($value == 1) {
+                                echo 'checked="checked"';
+                            }
+                        ?> />
+                        <label for="enabled_1" class="radio" title="<?= $this->translate('Customer should be enabled'); ?>">
+                            <?= $this->translate('Enable'); ?>
+                        </label>
+
+                    <?php if (!empty($this->errors['enabled'])) { ?>
+                        <label for="enabled" class="error">
+                            <?= implode('; ', $this->errors['enabled']) ?>
+                        </label>
+                    <?php } ?>
+                </p>
+            </fieldset>
+
+            <fieldset>
+                <legend><?= $this->translate('Notes') ?></legend>
+
+                <p>
+                    <label for="notes" title="<?= $this->translate('Enter any customer notes'); ?>">
+                        <?= $this->translate('Notes'); ?>:
+                    </label>
+                    <input
+                        id="notes"
+                        name="notes"
+                        type="text"
+                        title="<?= $this->translate('Enter any customer notes'); ?>"
+                        value="<?= $this->getFormValue('notes'); ?>"
+                        class="notes"
+                        maxlength="50" />
+
+                    <?php if (!empty($this->errors['notes'])) { ?>
+                        <label for="notes" class="error">
+                            <?= implode('; ', $this->errors['notes']) ?>
+                        </label>
+                    <?php } ?>
+                </p>
+            </fieldset>
+
+            <fieldset>
+                <legend><?= $this->translate('Secondary Contact') ?></legend>
+                <p>
+                    <label for="secondaryFirstName" title="<?= $this->translate('Please enter the secondary contact first name'); ?>">
+                        <?= $this->translate('First Name'); ?>:
+                    </label>
+                    <input
+                        id="secondaryFirstName"
+                        name="secondaryFirstName"
+                        type="text"
+                        title="<?= $this->translate('Please enter the secondary contact first name'); ?>"
+                        value="<?= $this->getFormValue('secondaryFirstName'); ?>"
+                        class="large"
+                        maxlength="100" />
+
+                    <?php if (!empty($this->errors['secondaryFirstName'])) { ?>
+                    <label for="secondaryFirstName" class="error">
+                        <?= implode('; ', $this->errors['secondaryFirstName']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="secondaryLastName" title="<?= $this->translate('Please enter the secondary contact last name'); ?>">
+                        <?= $this->translate('Last Name'); ?>:
+                    </label>
+                    <input
+                        id="secondaryLastName"
+                        name="secondaryLastName"
+                        type="text"
+                        title="<?= $this->translate('Please enter the secondary contact last name'); ?>"
+                        value="<?= $this->getFormValue('secondaryLastName'); ?>"
+                        class="large"
+                        maxlength="100" />
+
+                    <?php if (!empty($this->errors['secondaryLastName'])) { ?>
+                    <label for="secondaryLastName" class="error">
+                        <?= implode('; ', $this->errors['secondaryLastName']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="secondaryEmail" title="<?= $this->translate('Please enter the secondary contact email'); ?>">
+                        <?= $this->translate('Email'); ?>:
+                    </label>
+                    <input
+                        id="secondaryEmail"
+                        name="secondaryEmail"
+                        type="text"
+                        title="<?= $this->translate('Please enter the secondary contact email'); ?>"
+                        value="<?= $this->getFormValue('secondaryEmail'); ?>"
+                        class="email"
+                        maxlength="255" />
+
+                    <?php if (!empty($this->errors['secondaryEmail'])) { ?>
+                    <label for="secondaryEmail" class="error">
+                        <?= implode('; ', $this->errors['secondaryEmail']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+            </fieldset>
+
+            <fieldset>
+                <legend><?= $this->translate('Login Details') ?></legend>
+
+                <p>
+                    <label for="farmer_userName" title="<?= $this->translate('Please enter a user name to log in with'); ?>">
+                        <?= $this->translate('User Name'); ?>:
+                    </label>
+                    <input
+                        id="farmer_userName"
+                        name="farmer[userName]"
+                        type="text"
+                        title="<?= $this->translate('Please enter a user name to log in with'); ?>"
+                        value="<?= $this->getFormValue('userName', 'farmer'); ?>"
+                        class=""
+                        maxlength="50" />
+
+                    <?php if (!empty($this->errors['farmer']['userName'])) { ?>
+                    <label for="farmer_userName" class="error">
+                        <?= implode('; ', $this->errors['farmer']['userName']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="farmer_password" title="<?= $this->translate('Please enter a password to log in with'); ?>">
+                        <?= $this->translate('Password'); ?>:
+                    </label>
+                    <input
+                        id="farmer_password"
+                        name="farmer[password]"
+                        type="password"
+                        title="<?= $this->translate('Please enter a password to log in with'); ?>"
+                        value="<?= $this->getFormValue('password', 'farmer'); ?>"
+                        class=""
+                        maxlength="32"
+                        autocomplete="off" />
+
+                    <?php if (!empty($this->errors['farmer']['password'])) { ?>
+                    <label for="farmer_password" class="error">
+                        <?= implode('; ', $this->errors['farmer']['password']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="passwordConfirm" title="<?= $this->translate('Please confirm your password'); ?>">
+                        <?= $this->translate('Confirm Password'); ?>:
+                    </label>
+                    <input
+                        id="passwordConfirm"
+                        name="passwordConfirm"
+                        type="password"
+                        title="<?= $this->translate('Please confirm your password'); ?>"
+                        value="<?= $this->getFormValue('passwordConfirm'); ?>"
+                        class=""
+                        maxlength="32"
+                        autocomplete="off" />
+                </p>
+
+            </fieldset>
+
+            <fieldset>
+                <legend><?= $this->translate('Additional Info') ?></legend>
+
+                <p>
+                    <label for="enabled_1" class="required" title="<?= $this->translate('Should this customer be disabled?'); ?>">
+                        <?= $this->translate('Newsletter Opt Out'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+
+                    <input
+                        id="preferences_newsletter_optOut_0"
+                        type="radio"
+                        name="preferences[newsletter][optOut]"
+                        value="0"
+                        class="required"
+                        title="<?= $this->translate('Include in newsletter mailings'); ?>"
+                        <?php echo (($this->getFormValue('optOut', 'preferences', 'newsletter') == '0') ? 'checked="checked"' : '') ?> />
+                    <label for="preferences_newsletter_optOut_0" class="radio" title="<?= $this->translate('Include in newsletter mailings'); ?>">
+                        <?= $this->translate('No'); ?>
+                    </label>
+                    <input
+                        id="preferences_newsletter_optOut_1"
+                        type="radio"
+                        name="preferences[newsletter][optOut]"
+                        value="1"
+                        title="<?= $this->translate('Don\'t include in newsletter mailings'); ?>"
+                        <?php echo (($this->getFormValue('optOut', 'preferences', 'newsletter') == '1') ? 'checked="checked"' : '') ?> />
+                    <label for="preferences_newsletter_optOut_1" class="radio" title="<?= $this->translate('Don\'t include in newsletter mailings'); ?>">
+                        <?= $this->translate('Yes'); ?>
+                    </label>
+
+                    <?php if (!empty($this->errors['preferences']['newsletter']['optOut'])) { ?>
+                        <label for="enabled" class="error">
+                            <?= implode('; ', $this->errors['preferences']['newsletter']['optOut']) ?>
+                        </label>
+                    <?php } ?>
+                </p>
+            </fieldset>
+
+            <p>
+                <button type="submit" class="submit fieldset-align ui-button ui-widget ui-corner-all ui-button-text-only ui-state-default">
+                    <span class="ui-button-text">
+                        <i class="fa fa-check"></i>
+                        <?= $this->translate('Save!'); ?>
+                    </span>
+                </button>
+            </p>
+        </form>
+    </article>
+</section>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $("#balance").keydown(function (e) {
+            // Allow: backspace, delete, tab, escape, enter and .
+            if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+                    // Allow: Ctrl+A, Command+A
+                (e.keyCode == 65 && ( e.ctrlKey === true || e.metaKey === true ) ) ||
+                    // Allow: home, end, left, right, down, up
+                (e.keyCode >= 35 && e.keyCode <= 40)) {
+                // let it happen, don't do anything
+
+                if($("#balance").val().indexOf(".") > -1 && e.keyCode != 8){
+
+                } else {
+                    return;
+                }
+            }
+            // Ensure that it is a number and stop the keypress
+            if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                e.preventDefault();
+            }
+        });
+    });
+</script>

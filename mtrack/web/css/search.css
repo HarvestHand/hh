@@ -1,0 +1,34 @@
+input#searchq {
+  width: 20em;
+  font-size: 2em;
+}
+ul.searchresults {
+  margin-top: 2em;
+}
+
+ul.searchresults li {
+  list-style-type: none;
+  margin-top: 1em;
+  margin-bottom: 2em;
+  margin-left: 0;
+}
+
+ul.searchresults li div.excerpt {
+  margin-top: 0.5em;
+  margin-left: 2em;
+  max-width: 50em;
+}
+
+div.excerpt span.hl {
+  background-color: yellow;
+}
+
+table.searchresults tr td {
+  padding-bottom: 0.8em;
+}
+
+table.searchresults tr {
+  vertical-align: top;
+}
+
+

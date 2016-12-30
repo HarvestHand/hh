@@ -1,0 +1,30 @@
+mkdir -p ../../public/_stats/tmp/assets
+mkdir -p ../../data/piwik_prod/tmp/templates_c
+mkdir -p ../../data/piwik_prod/tmp/cache
+mkdir -p ../../data/piwik_prod/tmp/assets
+mkdir -p ../../data/piwik_prod/tmp/logs
+mkdir -p ../../data/vanilla_prod/cache/Smarty/cache
+mkdir -p ../../data/vanilla_prod/cache/Smarty/compile
+mkdir -p ../../data/vanilla_prod/uploads
+chown nobody:nobody ../../data/piwik_prod/tmp
+chown nobody:nobody ../../data/piwik_prod/tmp/templates_c/
+chown nobody:nobody ../../data/piwik_prod/tmp/cache/
+chown nobody:nobody ../../data/piwik_prod/tmp/assets
+chown nobody:nobody ../../public/_stats/tmp/assets
+chown nobody:nobody ../../data/piwik_prod/tmp/logs
+chown nobody:nobody ../../data/piwik_prod/config
+chown nobody:nobody ../../data/vanilla_prod/conf
+chown nobody:nobody ../../data/vanilla_prod/uploads
+chown nobody:nobody ../../data/HTMLPurifier
+chown -R nobody:nobody ../../data/vanilla_prod/cache
+chmod 0777 ../../data/piwik_prod/tmp
+chmod 0777 ../../data/piwik_prod/tmp/templates_c/
+chmod 0777 ../../data/piwik_prod/tmp/cache/
+chmod 0777 ../../data/piwik_prod/tmp/assets
+chmod 0777 ../../data/piwik_prod/tmp/logs
+chmod 0777 ../../data/piwik_prod/config
+chmod 0777 ../../data/vanilla_prod/conf
+chmod 0777 ../../data/vanilla_prod/uploads
+chmod 0777 ../../data/HTMLPurifier
+chmod -R 0777 ../../data/vanilla_prod/cache
+chmod 0777 ../../public/_stats/tmp/assets

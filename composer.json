@@ -1,0 +1,18 @@
+{
+    "name": "mompopmedia/harvesthand",
+    "description": "CSA Management",
+    "require": {
+        "sabre/vobject": "2.0.5",
+        "sabre/dav" : "1.8.*"
+    },
+    "authors": [
+        {
+            "name": "Michael Caplan",
+            "email": "farmnik@harvesthand.com"
+        }
+    ],
+    "config": {
+        "vendor-dir": "library",
+        "bin-dir": "data"
+    }
+}

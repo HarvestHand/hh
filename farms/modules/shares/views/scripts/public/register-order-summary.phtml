@@ -1,0 +1,518 @@
+<?php if (isset($this->mapLinks) && $this->mapLinks == true) { ?>
+    <?php
+        $appId = Bootstrap::getZendConfig()->resources->yahoo->applicationId;
+
+        $this->headScript()
+            ->appendFile('http://api.maps.yahoo.com/ajaxymap?v=3.8&appid=' . $appId);
+        
+        $locationPrices = array();
+    
+        foreach ($this->order as $item) {
+            $share = $item->getShare();
+            $locationPrices[$share->id] = $share->locationPrice;
+        }
+    ?>
+    <?php $this->placeholder('foot')->captureStart() ?>
+    <script type="text/javascript">
+        var locationPrices = <?= Zend_Json::encode($locationPrices); ?>;
+        
+        $(document).ready(function(){
+            $(".locationWindow").dialog({
+                modal: true,
+                autoOpen: false,
+                width: 430
+            });
+
+            $(".location").click(locationDetails);
+        });
+
+        function locationDetails (event) {
+            event.preventDefault();
+
+            var locationId = $(this).data('id'),
+                shareId = $(this).parents("tr.share").data('shareid');
+
+            if (locationId) {
+                $(".locationWindow").each(function(){
+                    var $this = $(this);
+
+                    if ($this.data('id') == locationId) {
+
+                        var mapBox = $this.find('.map').first();
+
+                        if (mapBox.hasOwnProperty(0)) {
+
+                            map = new YMap(
+                                mapBox[0],
+                                YAHOO_MAP_REG
+                            );
+                            map.addTypeControl();
+                            map.addPanControl();
+                            map.addZoomShort();
+                            map.removeZoomScale();
+                            map.disableKeyControls();
+
+                            var location = '',
+                                zoom = 5,
+                                longitudeDegrees = $this.data('longitudedegrees'),
+                                latitudeDegrees = $this.data('latitudedegrees'),
+                                address = $this.data('address'),
+                                city = $this.data('city'),
+                                state = $this.data('state'),
+                                country = $this.data('country'),
+                                zipCode = $this.data('zipcode');
+
+
+                            if (jQuery.type(longitudeDegrees) == 'number' && jQuery.type(latitudeDegrees) == 'number') {
+                                location = new YGeoPoint(latitudeDegrees, longitudeDegrees);
+                                zoom = 2;
+
+                                var myImage = new YImage();
+
+                                myImage.src = 'http://www.<?= Bootstrap::$rootDomain ?>/_images/mapMarker.png';
+                                myImage.size = new YSize(27,26);
+                                myImage.offsetSmartWindow = new YCoordPoint(0,0);
+
+                                var marker = new YMarker(location, myImage);
+                                marker.setSmartWindowColor("black");
+                                map.addOverlay(marker);
+                            } else {
+                                if (address !== null && address.length) {
+                                    location = address + ', ' + 
+                                        (city || '<?= addslashes($this->farm->city) ?>') + ', ' + state + ', ' + country;
+                                    if (zipCode !== null && zipCode.length) {
+                                        location += ', ' + zipCode;
+                                    }
+                                    zoom = 3;
+                                } else if (city !== null && city.length) {
+                                    location = city + ', ' + state + ', ' + country;
+                                    if (zipCode !== null && zipCode.length) {
+                                        location += ', ' + zipCode;
+                                    }
+
+                                    zoom = 4;
+                                } else {
+                                    location = '<?= addslashes($this->farm->city) ?>, ' + state + ', ' + country;
+                                    zoom = 6;
+                                }
+
+                                YEvent.Capture(map, EventsList.endMapDraw, function(event){
+                                    var myImage = new YImage();
+
+                                    myImage.src = 'http://www.<?= Bootstrap::$rootDomain ?>/_images/mapMarker.png';
+                                    myImage.size = new YSize(27,26);
+                                    myImage.offsetSmartWindow = new YCoordPoint(0,0);
+
+                                    var marker = new YMarker(map.getCenterLatLon(), myImage);
+                                    marker.setSmartWindowColor("black");
+                                    map.addOverlay(marker);
+                                });
+                            }
+
+                            map.drawZoomAndCenter(location, zoom);
+
+                        }
+
+                        if (locationPrices.hasOwnProperty(shareId) && locationPrices[shareId] == 0) {
+                            $this.find(".locationPrice").hide();
+                        } else {
+                            $this.find(".locationPrice").show();
+                        }
+
+                        $this.dialog("open");
+                        return false;
+                    }
+                });
+            }
+        }
+    </script>
+    <?php $this->placeholder('foot')->captureEnd() ?>
+<?php } ?>
+
+
+<table id="register-summary" border="1">
+    <caption>
+        <?= $this->translate('Order Summary'); ?>
+    </caption>
+    <thead>
+        <tr>
+            <th><?= ucfirst($this->farm->getPreferences()->get('shares', 'shares', 'shares')); ?></th>
+            <th><?= $this->translate('Quantity'); ?></th>
+            <th><?= $this->translate('Total'); ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php 
+            foreach ($this->order as $item) { ?>
+        <tr class="share" data-shareid="<?= (int) $item->getShare()->id ?>">
+            <td>
+                <strong><?= $this->escape($item->getShare()->name) ?></strong>
+
+                <?php if ($item->getShare()->image) { ?>
+                <img 
+                    src="<?= $this->farm->getBaseUri() ?>default/file/id/<?= $this->escape($item->getShare()->image) ?>/s/<?= HHF_Domain_File::IMAGE_THUMBNAIL ?>" 
+                    alt="<?= $this->escape($item->getShare()->name) ?>"
+                    align="right"
+                    class="thumbnail" />
+                <?php } ?>
+
+                <dl>
+                    <dt><?= $this->translate(
+                        '%s Size',
+                        ucfirst($this->farm->getPreferences()->get('share', 'shares', 'share'))
+                    ) ?></dt>
+                    <dd>
+                        <?= $this->escape($item->getSize()->name); ?>
+                    </dd>
+
+                    <dt><?= $this->translate('Pickup Location') ?></dt>
+                    <dd>
+                        <?php if (isset($this->mapLinks) && $this->mapLinks == true) { ?>
+                        <a href="#" data-id="<?= $item->getLocation()->id ?>" class="location"><?= $this->escape($item->getLocation()->name); ?></a>
+                        <?php } else { ?>
+                        <?= $this->escape($item->getLocation()->name); ?>
+                        <?php } ?>
+                        <?php if (!empty($item->getLocation()->pricePerDelivery) && !empty($item->getShare()->locationPrice)) { ?>
+                            <br />
+                            <?= $this->translate(
+                                'Fee: %s per delivery',
+                                $this->currency($item->getLocation()->pricePerDelivery)
+                            ); ?>
+                        <?php } ?>
+                    </dd>
+                    
+                    <?php if (!empty($item->getLocation()->details)) { ?>
+                        <dt><?= $this->translate('Pickup Location Details'); ?></dt>
+                        <dd><?= $item->getLocation()->details ?></dd>
+                    <?php } ?>
+
+                    <dt><?= $this->translate('Deliveries'); ?></dt>
+                    <dd>
+                        <?php 
+                            switch($item->getShare()->deliverySchedule) {
+                                case HHF_Domain_Share::DELIVERY_SCHEDULE_WEEKLY :
+                                    echo $this->translate(
+                                        '%s weekly deliveries, running %s to %s',
+                                        $item->getIterations(),
+                                        $item->getStartDate()->get(Zend_Date::DATE_LONG),
+                                        $item->getEndDate()->get(Zend_Date::DATE_LONG)
+                                    );
+                                    
+                                    echo '<br />';
+                                    echo $this->translate(
+                                        'Fee: %s per week',
+                                        $this->currency($item->getCostPerDelivery(false))
+                                    );
+                                    break;
+                                case HHF_Domain_Share::DELIVERY_SCHEDULE_SEMI_MONTHLY :
+                                    echo $this->translate(
+                                        '%s semi-monthly deliveries, running %s to %s',
+                                        $item->getIterations(),
+                                        $item->getStartDate()->get(Zend_Date::DATE_LONG),
+                                        $item->getEndDate()->get(Zend_Date::DATE_LONG)
+                                    );
+                                    
+                                    echo '<br />';
+                                    echo $this->translate(
+                                        'Fee: %s each semi-month',
+                                        $this->currency($item->getCostPerDelivery(false))
+                                    );
+                                    break;
+                                case HHF_Domain_Share::DELIVERY_SCHEDULE_MONTHLY :
+                                    echo $this->translate(
+                                        '%s monthly deliveries, running %s to %s',
+                                        $item->getIterations(),
+                                        $item->getStartDate()->get(Zend_Date::DATE_LONG),
+                                        $item->getEndDate()->get(Zend_Date::DATE_LONG)
+                                    );
+                                    
+                                    echo '<br />';
+                                    echo $this->translate(
+                                        'Fee: %s per month',
+                                        $this->currency($item->getCostPerDelivery(false))
+                                    );
+                                    break;
+                            }
+
+                            
+                        ?>
+                    </dd>
+                </dl>
+            </td>
+            <td><?= $this->escape($item->getQuantity()) ?></td>
+            <td>
+                <?= $this->escape($this->currency($item->getFullSharePrice())); ?>
+                <?php if ($this->orderEdit) { ?>
+                <br />
+                <a href="<?= $this->escape($this->Url()) ?>?step=<?= $this->step - 1  ?>&key=<?= addslashes($this->key) ?>">
+                    <?= $this->translate('Modify'); ?>
+                </a>
+                <?php } ?>
+            </td>
+        </tr>
+        <?php } ?>
+    </tbody>
+    <tfoot>
+        <?php if (isset($this->paymentMethod) && $this->paymentMethod == true) { ?>
+        <tr>
+            <td colspan="2">
+                <strong><?= $this->translate('Payment Method'); ?></strong>
+            </td>
+            <td>
+                <?php
+                    switch ($this->paymentMethod) {
+                        case HHF_Domain_Transaction::TYPE_CASH :
+                            echo $this->translate('Cash');
+                            break;
+                        case HHF_Domain_Transaction::TYPE_PAYPAL :
+                            echo $this->translate('Paypal');
+                            break;
+                    }
+                ?>
+            </td>
+        </tr>
+        <?php } ?>
+        
+        <?php $deliveryTotal = $this->order->getDeliveryTotal(); ?>
+        <?php if (!empty($deliveryTotal)) { ?>
+        <tr>
+            <td colspan="2">
+                <strong><?= $this->translate('Delivery Fee'); ?></strong>
+            </td>
+            <td>
+                <strong><?= $this->currency($deliveryTotal); ?></strong>
+            </td>
+        </tr>
+        <?php } ?>
+
+        <?php $adminTotal = $this->order->getAdministrativeTotal(); ?>
+        <?php if (!empty($adminTotal)) { ?>
+            <tr>
+                <td colspan="2">
+                    <strong><?= $this->translate('Administrative Fee'); ?></strong>
+                </td>
+                <td>
+                    <strong><?= $this->currency($adminTotal); ?></strong>
+                </td>
+            </tr>
+        <?php } ?>
+
+        <tr>
+            <td colspan="2">
+                <strong>
+                    <?php 
+                        if (!$this->order->getPaymentPlan()->canHaveInstalments()) {
+                            $dueDate = $this->order->getPaymentPlan()
+                                ->getInstalmentStartDate();
+
+                            if ($dueDate->compareDate(Zend_Date::now()) != 0) {
+                                echo $this->translate(
+                                    'Total Due %s',
+                                    $dueDate->get(Zend_Date::DATE_LONG)
+                                );
+                            } else {
+                                echo $this->translate('Total');
+                            }
+                        } else {
+                            echo $this->translate('Total');
+                        }
+                    ?>
+                </strong>
+            </td>
+            <td>
+                <strong><?= $this->currency($this->order->getTotal()); ?></strong>
+            </td>
+        </tr>
+        
+        <?php if ($this->order->getPaymentPlan()->canHaveInstalments() && $this->order->getPaymentPlan()->count()) { ?>
+        <tr>
+            <td colspan="2">
+                <dl>
+                    <dt><strong><?= $this->translate('Payment Plan'); ?></strong></dt>
+                    <dd>
+                        <?php
+
+                            switch ($this->order->getPaymentPlan()) {
+                                case HHF_Order_Share::PAYMENT_PLAN_FIXED :                                    
+                                    ?>
+
+                                    <?php if ($this->order->getPaymentPlan()->count() > 1) { ?>
+
+                                    <?= $this->translate(
+                                        '%s installments starting %s and ending %s',
+                                        $this->order->getPaymentPlan()->count(),
+                                        $this->order->getPaymentPlan()->getInstalmentStartDate()->get(Zend_Date::DATE_LONG),
+                                        $this->order->getPaymentPlan()->getInstalmentEndDate()->get(Zend_Date::DATE_LONG)
+                                    ); ?></dd>
+                    
+                                    <dt><strong><?= $this->translate('Payment Plan Schedule'); ?></strong></dt>
+                                    <dd>
+                                        <?php foreach ($this->order->getPaymentPlan() as $i => $instalment) { ?>
+                                            <?= $i + 1 ?>. <?= $this->translate(
+                                                    '%s - %s',
+                                                    $instalment['date']->get(Zend_Date::DATE_LONG),
+                                                    $this->escape($this->currency($instalment['total']))
+                                                ); ?><br />
+                                        <?php } ?>
+                                    </dd>
+
+                                    <?php } else { ?>
+
+                                        <?php foreach ($this->order->getPaymentPlan() as $i => $instalment) { ?>
+                                            <?= $this->translate(
+                                                'Installment due %s - %s',
+                                                $instalment['date']->get(Zend_Date::DATE_LONG),
+                                                $this->escape($this->currency($instalment['total']))
+                                            ); ?>
+                                        <?php } ?>
+                                    <?php } ?>
+
+                                    <?php
+                                    break;
+                                case HHF_Order_Share::PAYMENT_PLAN_MONTHLY :
+                                    ?>
+                                    <?= $this->translate(
+                                        '%s installments starting %s and ending %s',
+                                        $this->order->getPaymentPlan()->count(),
+                                        $this->order->getPaymentPlan()->getInstalmentStartDate()->get(Zend_Date::DATE_LONG),
+                                        $this->order->getPaymentPlan()->getInstalmentEndDate()->get(Zend_Date::DATE_LONG)
+                                    ); ?></dd>
+                    
+                                    <dt><strong><?= $this->translate('Monthly Payment Plan Schedule'); ?></strong></dt>
+                                    <dd>
+                                        <?php foreach ($this->order->getPaymentPlan() as $i => $instalment) { ?>
+                                            <?= $i + 1 ?>. <?= $this->translate(
+                                                    '%s - %s',
+                                                    $instalment['date']->get(Zend_Date::DATE_LONG),
+                                                    $this->escape($this->currency($instalment['total']))
+                                                ); ?><br />
+                                        <?php } ?>
+                                    </dd>
+                        
+                                    <?php
+                                    break;
+                                case HHF_Order_Share::PAYMENT_PLAN_WEEKLY :
+                                    ?>
+                                    <?= $this->translate(
+                                        '%s installments starting %s and ending %s',
+                                        $this->order->getPaymentPlan()->count(),
+                                        $this->order->getPaymentPlan()->getInstalmentStartDate()->get(Zend_Date::DATE_LONG),
+                                        $this->order->getPaymentPlan()->getInstalmentEndDate()->get(Zend_Date::DATE_LONG)
+                                    ); ?></dd>
+                    
+                                    <dt><strong><?= $this->translate('Weekly Payment Plan Schedule'); ?></strong></dt>
+                                    <dd>
+                                        <?php foreach ($this->order->getPaymentPlan() as $i => $instalment) { ?>
+                                            <?= $i + 1 ?>. <?= $this->translate(
+                                                    '%s - %s',
+                                                    $instalment['date']->get(Zend_Date::DATE_LONG),
+                                                    $this->escape($this->currency($instalment['total']))
+                                                ); ?><br />
+                                        <?php } ?>
+                                    </dd>
+                        
+                                    <?php
+                                    break;
+                            }
+
+                        ?>
+                </dl>
+            </td>
+            <td valign="bottom" style="vertical-align: bottom">
+                <strong><?= $this->currency($this->order->getPaymentPlan()->getInstalmentsTotal()); ?></strong>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <strong><?= $this->translate('Payable Now'); ?></strong>
+            </td>
+            <td>
+                <strong><?= $this->currency($this->order->getPaymentPlan()->getUpfrontTotal()); ?></strong>
+            </td>
+        </tr>
+        <?php } ?>
+    </tfoot>
+</table>
+
+<?php if (isset($this->mapLinks) && $this->mapLinks == true) { ?>
+
+    <?php 
+        $renderedLocations = array();
+        $date = Zend_Date::now();
+
+        foreach ($this->order as $item) { ?>
+        <?php
+            $location = $item->getLocation();
+            if (!empty($location) && !isset($renderedLocations[$location->id])) {
+                $renderedLocations[$location->id] = true;
+            } else {
+                continue;
+            }
+        ?>
+
+    <div 
+        class="locationWindow" 
+        title="<?= $this->escape($location['name']); ?>" 
+        style="display: none"
+        data-id="<?= $location['id'] ?>"
+        data-longitudeDegrees="<?= $location['longitudeDegrees'] ?>"
+        data-latitudeDegrees="<?= $location['latitudeDegrees'] ?>"
+        data-address="<?= $this->escape($location['address']) ?>"
+        data-city="<?= $this->escape($location['city']) ?>"
+        data-state="<?= $this->escape($location['state']) ?>"
+        data-country="<?= $this->escape($location['country']) ?>"
+        data-zipCode="<?= $this->escape($location['zipCode']) ?>">
+
+        <dl>
+            <dt><?= $this->translate('Location') ?></dt>
+            <dd>
+                <?php if (!empty($location['address'])) { ?>
+                    <?= $this->escape($location['address']); ?><br />
+                <?php } ?>    
+                <?php if (!empty($location['address2'])) { ?>
+                    <?= $this->escape($location['address2']); ?><br />
+                <?php } ?>
+                <?php if (!empty($location['city'])) { ?>
+                    <?= $this->escape($location['city']); ?>
+                    <?php if (!empty($location['state'])) { ?>
+                        , <?= $this->escape($location['state']); ?>
+                    <?php } ?>
+                    <?php if (!empty($location['zipCode'])) { ?>
+                        <?= $this->escape($location['zipCode']); ?>
+                    <?php } ?>
+                <?php } ?>
+            </dd>
+
+            <dt><?= $this->translate('Delivery Day') ?></dt>
+            <dd>
+                <?php
+                    $date->setWeekday($location['dayOfWeek']);
+
+                    echo $this->escape(
+                        sprintf(
+                            '%s, %s - %s',
+                            $date->get(Zend_Date::WEEKDAY),
+                            $location['timeStart'],
+                            $location['timeEnd']
+                        )
+                    );
+                ?>
+            </dd>
+
+            <?php if (!empty($location['pricePerDelivery'])) { ?>
+                <dt class="locationPrice"><?= $this->translate('Delivery Fee'); ?></dt>
+                <dd class="locationPrice"><?= 
+                        $this->translate(
+                            '%s per delivery',
+                            $this->currency($location['pricePerDelivery'])
+                        ); 
+                    ?></dd>
+            <?php } ?>
+        </dl>
+
+        <?= $location['details'] ?>
+
+        <div class="map" id="map-<?= $this->escape($location->id) ?>"></div>
+    </div>
+    <?php } ?>
+<?php } ?>

@@ -1,0 +1,955 @@
+<?php
+    $appId = Bootstrap::getZendConfig()->resources->yahoo->applicationId;
+
+    $this->loader()->append('jquery_ui_spinner')
+        ->append('jquery_ui_selectmenu')
+        ->append('jquery_tmpl');
+
+    $this->headScript()
+		->appendFile('http://js.api.here.com/se/2.5.4/jsl.js');
+        //->appendFile('http://api.maps.yahoo.com/ajaxymap?v=3.8&appid=' . $appId);
+
+    $locations = array('' => $this->translate('Choose a location'));
+    $locationOptions = array();
+    $date = Zend_Date::now();
+
+    foreach ($this->locations as $location) {
+
+        $date->setWeekday($location['dayOfWeek']);
+        $date->setTime($location['timeStart'], 'H:m:s');
+        $endDate = clone $date;
+        $endDate->setTime($location['timeEnd'], 'H:m:s');
+
+        if (!empty($location['address'])) {
+            $address = $this->translate(
+                'Location: %s, %s',
+                $location['address'],
+                $location['city']
+            );
+        } else {
+            $address = $this->translate(
+                'Location: %s',
+                $location['city']
+            );
+        }
+
+        $name = sprintf(
+            '%s ~ %s | %s',
+            $location['name'],
+            $this->translate(
+                'Day: %s, %s - %s',
+                $date->get(Zend_Date::WEEKDAY),
+                $date->toString('h:mm a'),
+                $endDate->toString('h:mm a')
+            ),
+            $address
+        );
+
+        $pricePerDelivery = (float) $location['pricePerDelivery'];
+
+        if (!empty($pricePerDelivery)) {
+            $name .= ' | ' .
+                $this->translate(
+                    'Fee: %s per delivery',
+                    $this->currency($location['pricePerDelivery'])
+                );
+        }
+
+        $name .= ' (' . $this->translate('Click here for more information') . ')';
+
+        $locations[$location['id']] = $name;
+        $locationOptions[] = array(
+            'id'=> $location['id'],
+            'name' => $name
+        );
+
+    }
+
+    $durationLocations = array();
+    $sizes = array();
+    $locationPrices = array();
+
+    foreach ($this->shares as $share) {
+        if (empty($share['durations'])) {
+            continue;
+        }
+        foreach ($share['durations'] as $duration) {
+            foreach ($duration['locations'] as $location) {
+                $durationLocations[] = $location->toArray();
+            }
+
+            $sizeData = array();
+
+            foreach ($share['sizes'] as $size) {
+                 $sizeData[] = array(
+                     'id' => $size['id'],
+                     'name' => $size['name'],
+                     'limitToShareDurationId' => $size['limitToShareDurationId']
+                 );
+            }
+
+            $sizes[$share->id] = $sizeData;
+        }
+        $locationPrices[$share->id] = $share->locationPrice;
+    }
+?>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+
+	// hhint.com (added by GW)
+	//var appID = "MeamKyl1McRnC6BiTRpJ";
+	//var appCode = "rO1NJeVJJUr4Q86wteZMMw";
+
+	// harvesthand.com
+	var appID = "S1jRX4Odksnnqq9fQ1Qs";
+	var appCode = "xeEwrEC0xeYFClKL8rIv5g";
+
+	nokia.Settings.set("app_id", appID);
+      nokia.Settings.set("app_code", appCode);
+
+
+    var durationLocations = <?= Zend_Json::encode($durationLocations) ?>,
+        locationOptions = <?= Zend_Json::encode($locationOptions) ?>,
+        sizes = <?= Zend_Json::encode($sizes) ?>,
+        locationPrices = <?= Zend_Json::encode($locationPrices); ?>,
+        selectedLocation = null,
+        map = null,
+        didInitValidation = false;
+
+    $(document).ready(function(){
+        $(".quantity").spinner({
+            max: 99,
+            min: 0
+        });
+        $("select.size").selectmenu({
+            change: function() {
+                if (didInitValidation) {
+                    $("#register").valid();
+                }
+            }
+        });
+        $("select.duration").change(function(){
+            var $this = $(this),
+                shareId = $this.data('shareid'),
+                shareDurationId = $this.val(),
+                locations = [],
+                modified = false,
+                $locationSelector = $("#share_" + shareId + "_locationId"),
+                $quantitySelector = $("#share_" + shareId + "_quantity"),
+                hasLimitedShare = false;
+
+            if (shareDurationId && shareDurationId.length > 0) {
+                var qty = $quantitySelector.val();
+                if (!qty || qty == '0') {
+                    $quantitySelector.val('1');
+                }
+            }
+
+            for (var i in sizes[shareId]) {
+                if (sizes[shareId][i].limitToShareDurationId != null && sizes[shareId][i].limitToShareDurationId.length) {
+                    hasLimitedShare = true;
+                    break;
+                }
+            }
+
+            if (hasLimitedShare && sizes[shareId].length) {
+                var $size = $("#share_" + shareId + "_shareSizeId");
+
+                if ($size.length) {
+                    $size.empty();
+
+                    $size.append('<option value="" label="<?= addslashes($this->translate(
+                        'Choose a %s size',
+                        $this->farm->getPreferences()->get('share', 'shares', 'share')
+                    )) ?>"><?= addslashes($this->translate(
+                        'Choose a %s size',
+                        $this->farm->getPreferences()->get('share', 'shares', 'share')
+                    )) ?></option>');
+
+                    for (var i in sizes[shareId]) {
+                        if (sizes[shareId][i].limitToShareDurationId != null && sizes[shareId][i].limitToShareDurationId != shareDurationId) {
+                            continue;
+                        }
+
+                        $size.append('<option value="' + sizes[shareId][i]['id'] + '" label="' + sizes[shareId][i]['name'] + '">' + sizes[shareId][i]['name'] + '</option>');
+                    }
+
+                    $size.selectmenu("destroy");
+                    $size.selectmenu();
+                }
+            }
+
+            for (var i in durationLocations) {
+                if (durationLocations[i].shareId == shareId && durationLocations[i].shareDurationId == shareDurationId) {
+                    locations.push(durationLocations[i].locationId);
+                }
+            }
+
+            if (locations.length > 0) {
+                if ($locationSelector.length > 0) {
+                    modified = true;
+                    $locationSelector.children().remove();
+
+                    $locationSelector.append('<option value="" label="<?= addslashes($this->translate('Choose a location')) ?>"><?= addslashes($this->translate('Choose a location')) ?></option>');
+
+                    for (var i in locationOptions) {
+                        if (jQuery.inArray(locationOptions[i].id, locations) == -1) {
+                            continue;
+                        }
+                        $locationSelector.append('<option value="' + locationOptions[i].id + '" label="' + locationOptions[i].name + '">' + locationOptions[i].name + '</option>');
+                    }
+                }
+            } else {
+                if ($locationSelector.length > 0) {
+
+                    var inUse = [];
+
+                    $locationSelector.find("option").each(function() {
+                        inUse.push($(this).attr("value"));
+                    });
+
+                    for (var i in locationOptions) {
+                        if (jQuery.inArray(locationOptions[i].id, inUse) == -1) {
+                            modified = true;
+                        }
+                    }
+
+                    if (modified) {
+                        $locationSelector.children().remove();
+
+                        $locationSelector.append('<option value="" label="<?= addslashes($this->translate('Choose a location')) ?>"><?= addslashes($this->translate('Choose a location')) ?></option>');
+
+                        for (var i in locationOptions) {
+                            $locationSelector.append('<option value="' + locationOptions[i].id + '" label="' + locationOptions[i].name + '">' + locationOptions[i].name + '</option>');
+                        }
+                    }
+                }
+            }
+
+            if (modified) {
+                $locationSelector.selectmenu("destroy");
+                $locationSelector.selectmenu({
+                    menuWidth: '400px',
+                    format: optionFormater,
+                    maxHeight: parseInt($(window).height() * .4),
+                    open: function(event, ui) {
+                        selectedLocation = $(this);
+                    }
+                });
+
+                $(".more-info")
+                    .bind('mouseup', locationDetails)
+                    .hover(function(){
+                            $(this).addClass("hover");
+                        }, function(){
+                            $(this).removeClass("hover");
+                    }
+                    );
+            }
+
+        }).selectmenu({
+            menuWidth: '400px',
+            format: optionFormater,
+            change: function() {
+                if (didInitValidation) {
+                    $("#register").valid();
+                }
+            }
+        });
+        $("select.location").selectmenu({
+            menuWidth: '400px',
+            maxHeight: parseInt($(window).height() * .4),
+            format: optionFormater,
+            open: function(event, ui) {
+                selectedLocation = $(this);
+            },
+            change: function() {
+                if (didInitValidation) {
+                    $("#register").valid();
+                }
+            }
+        }).change(function(){
+            var $this = $(this);
+                shareId = $this.data('shareid'),
+                $quantitySelector = $("#share_" + shareId + "_quantity");
+
+            if ($this.val()) {
+                var qty = $quantitySelector.val();
+                if (!qty || qty == '0') {
+                    $quantitySelector.val('1');
+                }
+            }
+        });
+
+        var height = parseInt($(window).height() * .8);
+
+        $(".locationWindow").dialog({
+            modal: true,
+            autoOpen: false,
+            width: 440,
+            height: ((height > 600) ? 'auto' : height)
+        });
+
+        $(".more-info")
+            .bind('mouseup', locationDetails)
+            .hover(function(){
+                    $(this).addClass("hover");
+                }, function(){
+                    $(this).removeClass("hover");
+                });
+
+       $(".more-details").click(function() {
+           var $this = $(this);
+           $this.parents(".share").find(".details").toggle('normal', function(){
+               if ($(this).is(":hidden")) {
+                   $this.text("<?= $this->translate('More Details') ?>");
+               } else {
+                   $this.text("<?= $this->translate('Less') ?>");
+               }
+           });
+       });
+
+        jQuery.validator.addMethod(
+            "registerRequired",
+            function(value, element, params) {
+                var shareId = $(element).data('shareid');
+                var shareQty = $("#share_" + shareId + "_quantity");
+
+                if (shareQty.length < 1) {
+                    return true;
+                }
+
+                var quantity = shareQty.val();
+
+                if (quantity.length < 1) {
+                    return true;
+                }
+
+                if (parseInt(quantity) > 0 && value.length < 1) {
+                    return false
+                }
+
+                return true;
+            },
+            jQuery.format("<?= addslashes($this->translate('Please make a selection')); ?>")
+        );
+
+       $("#register").bind("submit", function(){
+           didInitValidation = true;
+       }).validate({
+            errorContainer: $("#formError"),
+            errorPlacement: function(error, element) {
+                error.insertAfter(element.siblings().last());
+            },
+            ignore: ""
+       });
+    });
+
+    function locationDetails (e) {
+        if (selectedLocation) {
+            var index = $("option", selectedLocation).get($(this).closest('li').data('index')).value,
+                shareId = selectedLocation.data('shareid');
+
+            $(".locationWindow").each(function(){
+                var $this = $(this);
+
+                if ($this.data('id') == index) {
+
+                    var mapBox = $this.find('.map').first();
+
+                    $(mapBox).css({height: 400,width:400});
+
+                    var mapEl = document.getElementById($(mapBox).attr('id'));
+
+                    var location = '',
+                            zoom = 13,
+                            lat = $this.data('latitudedegrees'),
+                            long = $this.data('longitudedegrees'),
+                            address = $this.data('address'),
+                            city = $this.data('city'),
+                            state = $this.data('state'),
+                            country = $this.data('country'),
+                            zipCode = $this.data('zipcode'),
+                            coords,
+                            map;
+
+                    var sm = nokia.places.search.manager,
+                   		resultSet,
+                   		search;
+
+
+                  //console.log($.fn.jquery);
+                    //var geoUrl = "http://geocoder.api.here.com/6.2/geocode.json?gen=5&app_id="+appID+"&app_code="+appCode;
+
+                   if (jQuery.type(lat) == 'number' && jQuery.type(long) == 'number') {
+                   		coords = [ lat , long];
+                   } else {
+                    	if (address && address.length) {
+							search = address + ', ' +
+                                    (city || '<?= addslashes($this->farm->city) ?>') + ', ' + state + ', ' + country;
+                    	} else if (city && city.length) {
+                    		search = city + ', ' + state + ', ' + country;
+                    	} else {
+                    		search = '<?= addslashes($this->farm->city) ?>, ' + state + ', ' + country;
+                    	}
+                    	coords = [0,0];
+                   }
+
+                    map = new nokia.maps.map.Display(mapEl, {
+                   		zoomLevel: 13,
+                   		center: coords,
+                    	components: [
+                    		new nokia.maps.map.component.Behavior(),
+                    		new nokia.maps.map.component.ZoomBar(),
+                    		new nokia.maps.map.component.ScaleBar()
+                    	]
+                   });
+
+                   map.addListener('displayready', function () {
+                   		sm.geoCode({
+                   			searchTerm: search,
+                   			onComplete: processResults
+                   		});
+                   });
+
+                  var customMarker = 'http://www.<?= Bootstrap::$rootDomain ?>/_images/mapMarker.png';
+                   function processResults(data, status, rID) {
+
+                   		if (status == 'OK') {
+                   			location = data.location;
+
+                   			if (resultSet) map.objects.remove(resultSet);
+                   			resultSet = new nokia.maps.map.Container();
+
+                   			var marker = new nokia.maps.map.Marker(location.position, {
+                   					icon: customMarker,
+                   					anchor: new nokia.maps.util.Point(0, 26)
+                   					});
+                   			resultSet.objects.add(marker);
+
+                   			map.objects.add(resultSet);
+                   			map.setCenter(location.position);
+                   			map.setZoomLevel(zoom);
+                   		}
+                   }
+
+					/*
+                    if (mapBox.hasOwnProperty(0)) {
+
+                        map = new YMap(
+                            mapBox[0],
+                            YAHOO_MAP_REG
+                        );
+                        map.addTypeControl();
+                        map.addPanControl();
+                        map.addZoomShort();
+                        map.removeZoomScale();
+                        map.disableKeyControls();
+
+                        var location = '',
+                            zoom = 5,
+                            longitudeDegrees = $this.data('longitudedegrees'),
+                            latitudeDegrees = $this.data('latitudedegrees'),
+                            address = $this.data('address'),
+                            city = $this.data('city'),
+                            state = $this.data('state'),
+                            country = $this.data('country'),
+                            zipCode = $this.data('zipcode');
+
+
+                        if (jQuery.type(longitudeDegrees) == 'number' && jQuery.type(latitudeDegrees) == 'number') {
+                            location = new YGeoPoint(latitudeDegrees, longitudeDegrees);
+                            zoom = 2;
+
+                            var myImage = new YImage();
+
+                            myImage.src = 'http://www.<?= Bootstrap::$rootDomain ?>/_images/mapMarker.png';
+                            myImage.size = new YSize(27,26);
+                            myImage.offsetSmartWindow = new YCoordPoint(0,0);
+
+                            var marker = new YMarker(location, myImage);
+                            marker.setSmartWindowColor("black");
+                            map.addOverlay(marker);
+                        } else {
+                            if (address && address.length) {
+                                location = address + ', ' +
+                                    (city || '<?= addslashes($this->farm->city) ?>') + ', ' + state + ', ' + country;
+                                if (zipCode && zipCode.length) {
+                                    location += ', ' + zipCode;
+                                }
+                                zoom = 3;
+                            } else if (city && city.length) {
+                                location = city + ', ' + state + ', ' + country;
+                                if (zipCode && zipCode.length) {
+                                    location += ', ' + zipCode;
+                                }
+
+                                zoom = 4;
+                            } else {
+                                location = '<?= addslashes($this->farm->city) ?>, ' + state + ', ' + country;
+                                zoom = 6;
+                            }
+
+                            YEvent.Capture(map, EventsList.endMapDraw, function(event){
+                                var myImage = new YImage();
+
+                                myImage.src = 'http://www.<?= Bootstrap::$rootDomain ?>/_images/mapMarker.png';
+                                myImage.size = new YSize(27,26);
+                                myImage.offsetSmartWindow = new YCoordPoint(0,0);
+
+                                var marker = new YMarker(map.getCenterLatLon(), myImage);
+                                marker.setSmartWindowColor("black");
+                                map.addOverlay(marker);
+                            });
+                        }
+
+                        map.drawZoomAndCenter(location, zoom);
+
+                    } */
+
+                    if (locationPrices.hasOwnProperty(shareId) && locationPrices[shareId] == 0) {
+                        $this.find(".locationPrice").hide();
+                    } else {
+                        $this.find(".locationPrice").show();
+                    }
+
+                    $this.dialog("open");
+                    return false;
+                }
+            });
+        }
+    }
+
+    function optionFormater (text) {
+        var newText = text;
+        //array of find replaces
+        var findreps = [
+            {find:/^([^\~]+) \~ /g, rep: '<span class="ui-selectmenu-item-header">$1</span>'},
+            {find:/([^\|><]+) \| /g, rep: '<span class="ui-selectmenu-item-content">$1</span>'},
+            {find:/([^\|><\(\)]+) (\()/g, rep: '<span class="ui-selectmenu-item-content">$1</span>$2'},
+            {find:/([^\|><\(\)]+)$/g, rep: '<span class="ui-selectmenu-item-content">$1</span>'},
+            {find:/(\([^\|><]+\))$/g, rep: '<span class="ui-selectmenu-item-footer more-info">$1</span>'}
+        ];
+
+        for(var i in findreps){
+            newText = newText.replace(findreps[i].find, findreps[i].rep);
+        }
+        return newText;
+    }
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<fieldset>
+
+    <legend>
+        <?php if (count($this->shares) < 1) { ?>
+            <?= $this->translate(
+                'Choose Your %s',
+                ucfirst($this->farm->getPreferences()->get('share', 'shares', 'share'))
+            ); ?>
+        <?php } else { ?>
+            <?= $this->translate(
+                'Choose Your %s',
+                ucfirst($this->farm->getPreferences()->get('shares', 'shares', 'shares'))
+            ); ?>
+        <?php } ?>
+    </legend>
+
+    <?php if (count($this->shares) == 0) { ?>
+    <p>
+        <?= $this->translate(
+            'No %s are currently available.  Please try back later.',
+            ucfirst($this->farm->getPreferences()->get('shares', 'shares', 'shares'))
+        ) ?>
+    </p>
+    <?php return; } ?>
+
+    <?php foreach ($this->shares as $share) { ?>
+
+    <input type="hidden" name="share[<?= $share->id ?>][shareId]" value="<?= $share->id ?>" />
+
+    <div class="share" id="share_<?= $share->id ?>">
+        <p class="name">
+            <?= $this->escape($share->name); ?>
+            <?php if (!empty($share->details)) { ?>
+            <a href="javascript:void(0)" class="more-details"><?= $this->translate('More Details') ?></a>
+            <?php } ?>
+        </p>
+        <div class="details" style="<?= (!empty($share->details)) ? 'display: none;' : '' ?>">
+            <?php if ($share->image) { ?>
+            <img
+                src="/default/file/id/<?= $this->escape($share->image) ?>/s/<?= HHF_Domain_File::IMAGE_THUMBNAIL ?>"
+                alt="<?= $this->escape($share->name) ?>"
+                align="left"
+                class="thumbnail" />
+            <?php } ?>
+            <?= $share->details ?>
+            <?php if ($share->image) { ?>
+                <br clear="all" />
+            <?php } ?>
+        </div>
+
+        <?php if (count($share->durations) > 1) { ?>
+        <p>
+            <label
+                for="<?= 'share_' . $share->id . '_shareDurationId' ?>"
+                title="<?= $this->translate(
+                    'Please choose which %s delivery option you would like',
+                    $this->farm->getPreferences()->get('share', 'shares', 'share')
+                ); ?>">
+
+                <?= $this->translate('Options'); ?>:
+            </label>
+            <?php
+                $durations = array(
+                    '' => $this->translate('Please choose a delivery option')
+                );
+
+                foreach ($share->durations as $duration) {
+
+                    $dateStart = $duration->getStartDate(null, $share->year);
+                    $dateEnd = $duration->getEndDate(
+                        $share['deliverySchedule'],
+                        null,
+                        $share->year
+                    );
+
+                    switch($share['deliverySchedule']) {
+                        case HHF_Domain_Share::DELIVERY_SCHEDULE_WEEKLY :
+                            $deliverySchedule = $this->translate('weekly');
+                            break;
+                        case HHF_Domain_Share::DELIVERY_SCHEDULE_SEMI_MONTHLY :
+                            $deliverySchedule = $this->translate('semi-monthly');
+                            break;
+                        case HHF_Domain_Share::DELIVERY_SCHEDULE_MONTHLY :
+                            $deliverySchedule = $this->translate('monthly');
+                            break;
+                    }
+
+                    $durations[$duration->id] = $this->translate(
+                        '%1$s %2$s deliveries ~ Running: %3$s to %4$s',
+                        $duration['iterations'],
+                        $deliverySchedule,
+                        $dateStart->get(Zend_Date::DATE_LONG),
+                        $dateEnd->get(Zend_Date::DATE_LONG)
+                    );
+                }
+
+                echo $this->formSelect(
+                    'share[' . $share->id . '][shareDurationId]',
+                    $this->getFormValue('shareDurationId', 'share', $share->id),
+                    array(
+                        'id' => 'share_' . $share->id . '_shareDurationId',
+                        'class' => 'duration {registerRequired: true}',
+                        'title' => $this->translate(
+                            'Please choose which %s delivery option you would like',
+                            $this->farm->getPreferences()->get('share', 'shares', 'share')
+                        ),
+                        'data-shareId' => $share->id
+                    ),
+                    $durations
+                );
+            ?>
+            <?php if (!empty($this->errors['share'][$share->id]['shareDurationId'])) { ?>
+            <label for="share_<?= $share->id ?>_shareDurationId" class="error">
+                <?= implode('; ', $this->errors['share'][$share->id]['shareDurationId']) ?>
+            </label>
+            <?php } ?>
+        </p>
+        <?php } else if (count($share->durations) == 1) { ?>
+        <p>
+            <input
+                type="hidden"
+                name="share[<?= $share->id; ?>][shareDurationId]"
+                value="<?= $share->durations[0]['id']; ?>"
+                class="duration" />
+
+            <label>
+                <?= $this->translate('Delivery') ?>:
+            </label>
+            <span>
+                <?php
+                    $dateStart = $share->durations[0]->getStartDate(
+                        null,
+                        $share->year
+                    );
+                    $dateEnd = $share->durations[0]->getEndDate(
+                        $share['deliverySchedule'],
+                        null,
+                        $share->year
+                    );
+
+                    switch($share['deliverySchedule']) {
+                        case HHF_Domain_Share::DELIVERY_SCHEDULE_WEEKLY :
+                            $deliverySchedule = $this->translate('weekly');
+                            break;
+                        case HHF_Domain_Share::DELIVERY_SCHEDULE_SEMI_MONTHLY :
+                            $deliverySchedule = $this->translate('semi-monthly');
+                            break;
+                        case HHF_Domain_Share::DELIVERY_SCHEDULE_MONTHLY :
+                            $deliverySchedule = $this->translate('monthly');
+                            break;
+                    }
+
+                    echo $this->translate(
+                        '%s %s deliveries, running %s to %s',
+                        $share->durations[0]['iterations'],
+                        $deliverySchedule,
+                        $dateStart->get(Zend_Date::DATE_LONG),
+                        $dateEnd->get(Zend_Date::DATE_LONG)
+                    );
+                ?>
+            </span>
+        </p>
+        <?php } else { ?>
+            <section class="error ui-widget ui-state-error ui-corner-all"
+                     style="margin: 10px auto 15px auto;">
+                <div>
+                    <i class="fa fa-info-circle"></i>
+                    <strong><?= $this->translate('Sorry!  We are currently sold out of this item.') ?></strong>
+                    <?= $this->translate('<a href="/contact">Drop us a note</a> and we can let you know if more become available.') ?>
+                </div>
+            </section>
+        <?php } ?>
+
+        <?php if (count($share->durations) > 0) { ?>
+            <?php if (!empty($share->sizes) && count($share->sizes) > 1) { ?>
+            <p>
+                <label
+                    for="<?= 'share_' . $share->id . '_shareSizeId' ?>"
+                    title="<?= $this->translate(
+                        'Please specify a %s size',
+                        $this->farm->getPreferences()->get('share', 'shares', 'share')
+                    ) ?>">
+
+                    <?= $this->translate('Size'); ?>:
+                </label>
+
+                <?php
+                    $sizes = array(
+                        '' => $this->translate(
+                            'Choose a %s size',
+                            $this->farm->getPreferences()->get('share', 'shares', 'share')
+                        )
+                    );
+
+                    $currentDuration = $this->getFormValue('shareDurationId', 'share', $share->id);
+
+                    foreach ($share->sizes as $size) {
+                        if (!empty($size['limitToShareDurationId']) && $size['limitToShareDurationId'] != $currentDuration) {
+                            continue;
+                        }
+
+                        $sizes[$size->id] = $size->name;
+                    }
+
+                    echo $this->formSelect(
+                        'share[' . $share->id . '][shareSizeId]',
+                        $this->getFormValue('shareSizeId', 'share', $share->id),
+                        array(
+                            'id' => 'share_' . $share->id . '_shareSizeId',
+                            'class' => 'size {registerRequired: true}',
+                            'title' => $this->translate(
+                                'Please specify a %s size',
+                                $this->farm->getPreferences()->get('share', 'shares', 'share')
+                            ),
+                            'data-shareId' => $share->id
+                        ),
+                        $sizes
+                    );
+                ?>
+
+                <?php if (!empty($this->errors['share'][$share->id]['shareSizeId'])) { ?>
+                <label for="share_<?= $share->id ?>_shareSizeId" class="error">
+                    <?= implode('; ', $this->errors['share'][$share->id]['shareSizeId']) ?>
+                </label>
+                <?php } ?>
+            </p>
+            <?php } else { ?>
+                <input
+                    type="hidden"
+                    id="<?= 'share_' . $share->id . '_shareSizeId' ?>"
+                    name="<?= 'share[' . $share->id . '][shareSizeId]' ?>"
+                    value="<?= $share->sizes[0]['id'] ?>" />
+            <?php } ?>
+
+            <p>
+                <label
+                    for="<?= 'share_' . $share->id . '_locationId' ?>"
+                    title="<?= $this->translate(
+                        'Please specify a pickup or delivery location where you will be receiving this %s',
+                        $this->farm->getPreferences()->get('share', 'shares', 'share')
+                    ) ?>">
+                    <?= $this->translate('Location'); ?>:
+                </label>
+                <?php
+
+                    $shareDuration = $this->getFormValue('shareDurationId', 'share', $share->id);
+
+                    if (count($share->durations) == 1) {
+                        $shareDuration = $share->durations[0]['id'];
+                    }
+
+                    if (!empty($shareDuration)) {
+                        $filteredLocations = $locations;
+                        $toKeep = array();
+
+                        foreach ($durationLocations as $dl) {
+                            if ($dl['shareId'] == $share->id && $dl['shareDurationId'] == $shareDuration) {
+                                $toKeep[] = $dl['locationId'];
+                            }
+                        }
+
+                        if (!empty($toKeep)) {
+                            foreach ($filteredLocations as $key => $l) {
+                                if ($key != '' && !in_array($key, $toKeep)) {
+                                    unset($filteredLocations[$key]);
+                                }
+                            }
+                        }
+                    } else {
+                        $filteredLocations = $locations;
+                    }
+
+                    if (!$share->locationPrice) {
+
+                        $regExp = '/( \| ' . str_replace('%s', '.*', preg_quote($this->translate('Fee: %s per delivery'))) . ')/';
+
+                        foreach ($filteredLocations as &$location) {
+                            $location = preg_replace($regExp, '', $location);
+                        }
+                    }
+
+                    echo $this->formSelect(
+                        'share[' . $share->id . '][locationId]',
+                        $this->getFormValue('locationId', 'share', $share->id),
+                        array(
+                            'id' => 'share_' . $share->id . '_locationId',
+                            'class' => 'location {registerRequired:true}',
+                            'title' => $this->translate(
+                                'Please specify a pickup or delivery location where you will be receiving this %s',
+                                $this->farm->getPreferences()->get('share', 'shares', 'share')
+                            ),
+                            'data-shareId' => $share->id
+                        ),
+                        $filteredLocations
+                    );
+                ?>
+
+                <?php if (!empty($this->errors['share'][$share->id]['locationId'])) { ?>
+                <label for="share_<?= $share->id ?>_locationId" class="error">
+                    <?= implode('; ', $this->errors['share'][$share->id]['locationId']) ?>
+                </label>
+                <?php } ?>
+            </p>
+
+            <p>
+                <label
+                    for="<?= 'share_' . $share->id . '_quantity' ?>"
+                    title="<?= $this->translate(
+                        'Please choose how many %s you wish to purchase',
+                        $this->farm->getPreferences()->get('shares', 'shares', 'shares')
+                    ) ?>">
+
+                    <?= $this->translate('Quantity'); ?>:
+                </label>
+
+                <?php
+                    $value = (int) $this->getFormValue('quantity', 'share', $share->id);
+                    if (empty($value)) {
+                        $value = 0;
+                    }
+                ?>
+
+                <input
+                    id="<?= 'share_' . $share->id . '_quantity' ?>"
+                    type="number"
+                    name="<?= 'share[' . $share->id . '][quantity]' ?>"
+                    value="<?= $value  ?>"
+                    maxlength="2"
+                    class="quantity"
+                    title="<?= $this->translate(
+                        'Please choose how many %s you wish to purchase',
+                        $this->farm->getPreferences()->get('shares', 'shares', 'shares')
+                    ) ?>" />
+
+                <?php if (!empty($this->errors['share'][$share->id]['quantity'])) { ?>
+                <label for="share_<?= $share->id ?>_quantity" class="error">
+                    <?= implode('; ', $this->errors['share'][$share->id]['quantity']) ?>
+                </label>
+                <?php } ?>
+            </p>
+        <?php } ?>
+
+    </div>
+    <?php } ?>
+
+</fieldset>
+
+<?php foreach ($this->locations as $location) { ?>
+<div
+    class="locationWindow"
+    title="<?= $this->escape($location['name']); ?>"
+    style="display: none"
+    data-id="<?= $location['id'] ?>"
+    data-longitudeDegrees="<?= $location['longitudeDegrees'] ?>"
+    data-latitudeDegrees="<?= $location['latitudeDegrees'] ?>"
+    data-address="<?= $this->escape($location['address']) ?>"
+    data-city="<?= $this->escape($location['city']) ?>"
+    data-state="<?= $this->escape($location['state']) ?>"
+    data-country="<?= $this->escape($location['country']) ?>"
+    data-zipCode="<?= $this->escape($location['zipCode']) ?>">
+
+    <dl>
+        <dt><?= $this->translate('Location') ?></dt>
+        <dd>
+            <?php if (!empty($location['address'])) { ?>
+                <?= $this->escape($location['address']); ?><br />
+            <?php } ?>
+            <?php if (!empty($location['address2'])) { ?>
+                <?= $this->escape($location['address2']); ?><br />
+            <?php } ?>
+            <?php if (!empty($location['city'])) { ?>
+                <?= $this->escape($location['city']); ?>
+                <?php if (!empty($location['state'])) { ?>
+                    , <?= $this->escape($location['state']); ?>
+                <?php } ?>
+                <?php if (!empty($location['zipCode'])) { ?>
+                    <?= $this->escape($location['zipCode']); ?>
+                <?php } ?>
+            <?php } ?>
+        </dd>
+
+        <dt><?= $this->translate('Delivery Day') ?></dt>
+        <dd>
+            <?php
+                $date->setWeekday($location['dayOfWeek']);
+
+                echo $this->escape(
+                    sprintf(
+                        '%s, %s - %s',
+                        $date->get(Zend_Date::WEEKDAY),
+                        $location['timeStart'],
+                        $location['timeEnd']
+                    )
+                );
+            ?>
+        </dd>
+
+        <?php $pricePerDelivery = (float) $location['pricePerDelivery']; if (!empty($pricePerDelivery)) { ?>
+            <dt class="locationPrice"><?= $this->translate('Delivery Fee'); ?></dt>
+            <dd class="locationPrice"><?=
+                    $this->translate(
+                        '%s per delivery',
+                        $this->currency($location['pricePerDelivery'])
+                    );
+                ?></dd>
+        <?php } ?>
+    </dl>
+
+    <?= $location['details'] ?>
+
+    <div class="map" id="map-<?= $this->escape($location->id) ?>"></div>
+</div>
+<?php } ?>

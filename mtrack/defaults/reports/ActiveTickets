@@ -1,0 +1,34 @@
+SELECT
+   pri.value AS __color__,
+   (case when t.nsident is null then t.tid else t.nsident end) as ticket,
+   summary,
+   (select mtrack_group_concat(name) from
+      ticket_components tcm
+      left join components c on (tcm.compid = c.compid)
+      where tcm.tid = t.tid) as component,
+   (select mtrack_group_concat(name) from
+      ticket_milestones tm
+      left join milestones m on (tm.mid = m.mid)
+      where
+       tm.tid = t.tid
+      ) as milestone, 
+   classification as type,
+   severity,
+   creat.changedate as created
+FROM
+   tickets t
+   left join priorities pri on (t.priority = pri.priorityname)
+   left join severities sev on (t.severity = sev.sevname)
+   left join changes creat on (t.created = creat.cid) 
+WHERE
+ t.status in ('new', 'assigned', 'reopened')
+ORDER BY
+ pri.value, sev.ordinal,
+ t.created
+
+
+# Active Tickets
+
+ * List all active tickets by priority.
+ * Color each row based on priority.
+

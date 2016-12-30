@@ -1,0 +1,18 @@
+<?php $emails = 0; ?>
+
+<?php if ($this->recipients->count()) { ?>
+
+    <ul>
+    <?php foreach ($this->recipients->getService()->getEmails() as $email) { ?>
+        <li><?= $this->escape(implode(', ', $email)) ?></li>
+        <?php ++$emails; ?>
+    <?php } ?>
+    </ul>
+
+    <?php if (!$emails) { ?>
+        <p><?= $this->translate('No Emails Found') ?></p>
+    <?php } ?>
+<?php } else { ?>
+
+    <p><?= $this->translate('No Emails Found') ?></p>
+<?php } ?>

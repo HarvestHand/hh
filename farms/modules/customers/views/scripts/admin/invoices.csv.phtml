@@ -1,0 +1,74 @@
+<?php
+    while (ob_get_level()) {
+        ob_end_clean();
+    }
+
+    header('Content-Type: application/vnd.ms-excel');
+    header('Content-Disposition: attachment; filename="invoices.csv"');
+
+    set_time_limit(60);
+    ini_set('memory_limit', '128M');
+    $displayedHeader = false;
+    
+    function filter (&$data) {
+        str_replace(
+            array(
+                "\t",
+                "\r\n",
+                "\r",
+                "\n",
+                '"'
+            ),
+            array(
+                '\t',
+                '\n',
+                '\n',
+                '\n',
+                '""'
+            ),
+            $data
+        );
+
+        $data = '"' . $data . '"';
+    };
+    
+    foreach ($this->invoices as $invoice) {
+        
+        $row = array(
+            'id' => $invoice->id,
+            'customerId' => $invoice->customerId,
+            'customerFirstName' => $invoice->customerFirstName,
+            'customerLastName' => $invoice->customerLastName,
+            'customerAddress' => $invoice->customerAddress,
+            'customerAddress2' => $invoice->customerAddress2,
+            'customerCity' => $invoice->customerCity,
+            'customerTelephone' => $invoice->customerTelephone,
+            'customerEmail' => $invoice->customerEmail,
+            'customerSecondaryEmail' => $invoice->customerSecondaryEmail,
+            'type' => $invoice->type,
+            'dueDate' => $invoice->dueDate->toString('yyyy-MM-dd'),
+            'subTotal' => $invoice->subTotal,
+            'tax' => $invoice->tax,
+            'total' => $invoice->total,
+            'paid' => $invoice->paid,
+            'outstandingAmount' => $invoice->outstandingAmount,
+            'message' => $invoice->message,
+            'appliedToBalance' => $invoice->appliedToBalance,
+            'addedDatetime' => $invoice->addedDatetime,
+            'updatedDatetime' => $invoice->updatedDatetime
+        );
+        
+        if ($displayedHeader == false) {
+            $rowHeaderArray = array_keys($row);
+            array_walk($rowHeaderArray, 'filter');
+            echo implode(',', $rowHeaderArray) . "\r\n";
+            $displayedHeader = true;
+        }
+        
+        array_walk($row, 'filter');
+        
+        echo implode(',', $row) . "\r\n";
+    }
+
+    exit();
+?>

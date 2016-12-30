@@ -1,0 +1,786 @@
+<?php
+
+$this->loader()
+    ->append('jquery_tmpl', HH_View_Helper_Loader::JS)
+    ->append('hhf_modules_shares_public_shopping');
+
+$certifications = HHF_Domain_Certification::getSelectOptions();
+$categoryPairs = array();
+
+foreach ($this->categories as $key => $category) {
+    $categoryPairs[$key] = $category['name'];
+}
+?>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+    hhf.modules.shares.public.shopping.init({
+        lang: {
+            shopAdd: '<?= addslashes($this->translate('Add to Shopping List')) ?>',
+            shopRemove: '<?= addslashes($this->translate('Remove From Shopping List')) ?>',
+            allCategories: '<?= addslashes($this->translate('All Categories')) ?>'
+        },
+        week: '<?= addslashes($this->getFormValue('week')) ?>',
+        domain: '<?= addslashes(Bootstrap::$rootDomain) ?>',
+        location: <?= (int) $this->getFormValue('location') ?>,
+        categories: <?= json_encode($categoryPairs) ?>
+    });
+</script>
+<script type="text/x-jquery-tmpl" id="shopping_list_template">
+    <div class="category">
+        <h3>${title}</h3>
+        <ul class="items">
+        {{each items}}
+            <li data-id="${id}">
+                ${name}
+                 {{if source}}
+                (${source})
+                {{/if}}
+            </li>
+        {{/each}}
+        </ul>
+    </div>
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<nav class="navbar navbar-default navbar-fixed-top hidden-print" role="navigation">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#shopping-options">
+                <span class="sr-only"><?= $this->escape('View Shopping List Options') ?></span>
+                <i class="fa fa-gears"></i>
+            </button>
+            <a class="navbar-brand" href="#">
+                <img width="24" height="24" title="" alt="" src="/_farms/images/themes/shopping/Icon36.png" />
+                <?= $this->translate(
+                    'What\'s Fresh'
+                ); ?>
+            </a>
+        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="shopping-options">
+
+            <ul class="nav navbar-nav visible-xs">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#shop-filter">
+                        <i class="fa fa-search"></i>
+                        <?= $this->translate('Browse') ?>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="viewButton">
+                        <i class="fa fa-file-o"></i>
+                        <?= $this->translate('My List') ?>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="feedbackButton" data-toggle="modal" data-target="#firstTime">
+                        <i class="fa fa-life-ring"></i>
+                        <?= $this->translate('Help') ?>
+                    </a>
+                </li>
+                <?php if (!empty($this->disclaimer)) { ?>
+                    <li>
+                        <a href="#" data-toggle="modal" data-target="#disclaimer">
+                            <i class="fa fa-question"></i>
+                            <?= $this->translate('Website Disclaimer') ?>
+                        </a>
+                    </li>
+                <?php } ?>
+            </ul>
+
+
+            <div class="btn-group hidden-xs">
+
+                <button type="button" data-toggle="modal" data-target="#shop-filter" class="btn btn-default navbar-btn">
+                    <i class="fa fa-search"></i>
+                    <?= $this->translate('Browse') ?>
+                </button>
+
+                <button type="button" class="btn btn-default navbar-btn viewButton">
+                    <i class="fa fa-file-o"></i>
+                    <?= $this->translate('My List') ?>
+                </button>
+
+                <button type="button" class="btn btn-default navbar-btn feedbackButton" data-toggle="modal" data-target="#firstTime">
+                    <i class="fa fa-life-ring"></i>
+                    <?= $this->translate('Help') ?>
+                </button>
+
+                <?php if (!empty($this->disclaimer)) { ?>
+                    <button type="button" data-toggle="modal" data-target="#disclaimer" class="btn btn-default navbar-btn">
+                        <i class="fa fa-question"></i>
+                    </button>
+                <?php } ?>
+            </div>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+
+<div class="well shopping-overview hidden-print">
+
+    <dl class="dl-horizontal">
+        <dt><?= $this->translate('Date') ?></dt>
+        <dd><?= $this->escape($this->currentLocation['date']) ?></dd>
+
+        <?php if (!empty($this->category)) { ?>
+        <dt><?= $this->translate('Category') ?></dt>
+        <dd>
+            <?= $this->escape($this->categories[$this->category]['name']) ?>
+            <button type="button" class="btn btn-default btn-xs btn-success" data-toggle="modal" data-target="#shop-filter">
+                <i class="fa fa-search"></i>
+            </button>
+        </dd>
+        <?php } ?>
+
+        <?php if (!empty($this->search)) { ?>
+        <dt><?= $this->translate('Searching For') ?></dt>
+        <dd>
+            <?= $this->escape($this->search) ?>
+            <button type="button" class="btn btn-default btn-xs btn-success" data-toggle="modal" data-target="#shop-filter">
+                <i class="fa fa-search"></i>
+            </button>
+        </dd>
+        <?php } ?>
+
+        <?php if (!empty($this->source)) { ?>
+        <dt><?= $this->translate('Vendor') ?></dt>
+        <dd>
+            <?php
+                foreach ($this->sources as $source) {
+                    if ($source == $this->source) {
+                        echo $this->escape($source);
+                        break;
+                    }
+                }
+            ?>
+            <button type="button" class="btn btn-default btn-xs btn-success" data-toggle="modal" data-target="#shop-filter">
+                <i class="fa fa-search"></i>
+            </button>
+        </dd>
+        <?php } ?>
+    </dl>
+</div>
+
+<h3 class="hidden-print">
+    <?= $this->translate('Product Details') ?>
+    <?php if (!empty($this->addons)) { ?>
+        <span class="badge"><?= count($this->addons) ?></span>
+    <?php } ?>
+</h3>
+
+<?php if (!empty($this->selectedSources) || !empty($this->selectedCategories)) { ?>
+
+    <div class="sources hidden-print">
+
+        <?= $this->translate('Jump to:') ?>
+
+        <?php if (!empty($this->selectedSources)) { ?>
+        <blockquote>
+            <?php foreach ($this->selectedSources as $key => $source) { ?>
+                <a class="to-source" href="#source-<?= $key ?>">
+                    <span class="label label-success">
+                        <i class="fa fa-angle-double-right"></i>
+                        <?= $this->escape($source) ?>
+                    </span>
+                </a>
+                &nbsp;
+            <?php } ?>
+        </blockquote>
+        <?php } ?>
+
+        <?php if (!empty($this->selectedCategories)) { ?>
+            <blockquote>
+                <?php foreach ($this->selectedCategories as $key => $category) { ?>
+                    <a class="to-source" href="#category-<?= $key ?>">
+                    <span class="label label-success">
+                        <i class="fa fa-angle-double-right"></i>
+                        <?= $this->escape($category) ?>
+                    </span>
+                    </a>
+                    &nbsp;
+                <?php } ?>
+            </blockquote>
+        <?php } ?>
+
+    </div>
+
+<?php } ?>
+
+<div class="products hidden-print">
+    <?php if (!empty($this->addons)): ?>
+        <?php
+            $source = null;
+            $category = null;
+        ?>
+        <?php foreach($this->addons as $key => $addon) { ?>
+            <?php if ($source != $addon['source']) { ?>
+                <?php if ($source !== null) { ?>
+                    </blockquote>
+                <?php } ?>
+
+                <?php $source = $addon['source']; ?>
+
+                <blockquote id="source-<?= preg_replace(
+                    array(
+                        '/[ ]/msx',
+                        '/[^A-Za-z0-9\-_\.]/msx'
+                    ),
+                    array(
+                        '-',
+                        ''
+                    ),
+                    $source
+                ) ?>">
+
+                <?php if (!empty($source)) { ?>
+                    <h4>
+                        <?= $this->escape($source) ?>
+                        <?php if ($key > 0) { ?>
+                        <button type="button" class="btn btn-default btn-xs top">
+                            <a href="#body-content">
+                                <i class="fa fa-angle-up"></i>
+                            </a>
+                        </button>
+                        <?php } ?>
+                    </h4>
+                <?php } ?>
+            <?php } ?>
+
+            <?php if (empty($this->category)) { ?>
+                <?php if ($category != $addon['categoryId']) { ?>
+                    <?php if ($category !== null) { ?>
+                        </blockquote>
+                    <?php } ?>
+
+                    <?php $category = $addon['categoryId']; ?>
+
+                    <blockquote id="category-<?= preg_replace(
+                        array(
+                            '/[ ]/msx',
+                            '/[^A-Za-z0-9\-_\.]/msx'
+                        ),
+                        array(
+                            '-',
+                            ''
+                        ),
+                        $category
+                    ) ?>">
+
+                    <?php if (!empty($category)) { ?>
+                        <h4>
+                            <?= $this->escape($addon['categoryName']) ?>
+                            <?php if ($key > 0) { ?>
+                                <button type="button" class="btn btn-default btn-xs top">
+                                    <a href="#body-content">
+                                        <i class="fa fa-angle-up"></i>
+                                    </a>
+                                </button>
+                            <?php } ?>
+                        </h4>
+                    <?php } ?>
+                <?php } ?>
+            <?php } ?>
+
+            <div class="panel panel-default product"
+                 id="product<?= $this->escape($addon['id']) ?>"
+                 data-name="<?= $this->escape($addon['name']) ?>"
+                 data-categoryid="<?= $this->escape($addon['categoryId']) ?>"
+                 data-source="<?= $this->escape($addon['source']) ?>"
+                 data-id="<?= $this->escape($addon['id']) ?>">
+                <div class="panel-heading">
+
+                    <div class="row">
+                        <div class="col-md-10">
+                            <h3 class="panel-title"><?= $this->escape($addon['name']) ?></h3>
+                        </div>
+                        <div class="col-md-2" style="text-align: right">
+                            <button type="button" class="btn btn-default product-shop" title="<?= $this->translate('Add to Shopping List') ?>">
+                                <i class="fa fa-square-o"></i>
+                            </button>
+                            <button type="button" class="btn btn-default product-details" title="<?= $this->translate('Toggle Details') ?>">
+                                <i class="fa fa-chevron-down"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body" style="display: none">
+
+                    <div class="row">
+                        <div class="col-xs-<?= (!empty($addon['image'])) ? 8 : 12 ?>">
+                            <dl class="dl-horizontal">
+                                <?php if (!empty($addon['source'])) { ?>
+                                    <dt>
+                                        <?= $this->translate('Source') ?>:
+                                    </dt>
+                                    <dd>
+                                        <?= $this->escape($addon['source']) ?>
+                                    </dd>
+                                <?php } ?>
+
+                                <?php if (!empty($this->categories[$addon['categoryId']])) { ?>
+                                    <dt>
+                                        <?= $this->translate('Category') ?>:
+                                    </dt>
+                                    <dd>
+                                        <?= $this->escape($this->categories[$addon['categoryId']]['name']) ?>
+                                    </dd>
+                                <?php } ?>
+
+                                <?php if (!empty($addon['certification']) && in_array($addon['certification'], $certifications)) { ?>
+                                    <dt>
+                                        <?= $this->translate('Method') ?>:
+                                    </dt>
+                                    <dd>
+                                        <?php
+                                        echo $this->escape($certifications[$addon['certification']]);
+                                        ?>
+                                    </dd>
+                                <?php } ?>
+                                </dl>
+                        </div>
+                        <?php if (!empty($addon['image'])) { ?>
+                        <div class="col-xs-4">
+                            <?php if (is_numeric($addon['image'])) { ?>
+                                <img
+                                    src="/default/file/id/<?= $this->escape($addon['image']) ?>/s/<?= HHF_Domain_File::IMAGE_THUMBNAIL ?>"
+                                    class="img-thumbnail img-responsive pull-right showImage"
+                                    data-srclarge="/default/file/id/<?= $this->escape($addon['image']) ?>/s/<?= HHF_Domain_File::IMAGE_LARGE ?>"
+                                    alt="<?= $this->escape($addon['name']) ?>" />
+                            <?php } else { ?>
+                                <?php
+                                $path = parse_url($addon['image'], PHP_URL_PATH);
+
+                                sscanf($path, '/default/file/id/%d/s/T', $imageId);
+
+                                if (!empty($imageId)) {
+                                    $largeImage = str_replace(
+                                        '/s/T',
+                                        '/s/' . HHF_Domain_File::IMAGE_LARGE,
+                                        $addon['image']
+                                    );
+                                } else {
+                                    $largeImage = false;
+                                }
+                                ?>
+
+                                <?php if ($largeImage) { ?>
+                                    <img
+                                        src="<?= $this->escape($addon['image']) ?>"
+                                        class="img-thumbnail img-responsive pull-right showImage"
+                                        alt="<?= $this->escape($addon['name']) ?>"
+                                        data-srclarge="<?= $this->escape($largeImage) ?>" />
+                                <?php } else { ?>
+                                    <img
+                                        src="<?= $this->escape($addon['image']) ?>"
+                                        class="img-thumbnail img-responsive pull-right"
+                                        alt="<?= $this->escape($addon['name']) ?>" />
+                                <?php } ?>
+                            <?php } ?>
+                        </div>
+                        <?php } ?>
+                    </div>
+
+                    <?php if (!empty($addon['details'])) { ?>
+                    <div class="well">
+                        <?= $addon['details'] ?>
+                    </div>
+                    <?php } ?>
+                </div>
+            </div>
+        <?php } ?>
+        </blockquote>
+    <?php else: ?>
+        <div>
+            <?= $this->translate('There are no products to display') ?>
+        </div>
+    <?php endif; ?>
+</div>
+
+<footer class="hidden-print">
+    <?= $this->translate(
+        'Powered by local food communities and <a href="%s">HarvestHand</a>',
+        'http://www.' . Bootstrap::$rootDomain . '/') ?>
+</footer>
+
+<div class="modal fade" id="shop-filter" tabindex="-1" role="dialog" aria-labelledby="shop-filter-label" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="shop-filter-label">
+                    <img width="24" height="24" title="" alt="" src="/_farms/images/themes/shopping/Icon36.png" />
+                    <?= $this->escape('What Are You Looking For?') ?>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal"
+                      role="form"
+                      id="browse"
+                      action="<?= $this->escape($this->Url()); ?>"
+                      method="get"
+                      accept-charset="utf-8">
+
+                    <input type="hidden" id="week" name="week" value="<?= $this->escape($this->getFormValue('week')) ?>" />
+
+                    <div class="form-group">
+                        <label for="locations" class="col-sm-2 control-label">
+                            <?= $this->translate('Day') ?>
+                        </label>
+                        <div class="col-sm-10">
+                            <select id="location"
+                                    name="location"
+                                class="form-control">
+                            <?php foreach ($this->locations as $location) { ?>
+                                <option value="<?= $this->escape($location['id']) ?>"
+                                    <?= ($this->getFormValue('location') == $location['id']) ? 'selected="selected"' : null ?>
+                                    title="<?= $this->escape($location['title']) ?>"
+                                    data-week="<?= $this->escape($location['week']) ?>">
+                                    <?= $this->escape($location['value']) ?>
+                                </option>
+                            <?php } ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="category" class="col-sm-2 control-label">
+                            <?= $this->translate('Product Category') ?>
+                        </label>
+                        <div id="categories" class="col-sm-10">
+                            <?php
+                                $currentSource = $this->getFormValue('source');
+
+                                if (!empty($currentSource)) {
+                                    $categoryPairs = array('' => $this->translate('All Categories')) + $categoryPairs;
+                                }
+                            ?>
+
+                            <?php foreach ($categoryPairs as $id => $name) { ?>
+                                <figure class="category-container <?= ($this->getFormValue('category') == $id) ? 'checked' : '' ?> />">
+                                    <label for="category-<?= $this->escape($id) ?>">
+
+                                        <?php if (!empty($this->categories[$id]['image'])) { ?>
+                                            <?php if (is_numeric($this->categories[$id]['image'])) { ?>
+                                                <img
+                                                    src="/default/file/id/<?= $this->escape($this->categories[$id]['image']) ?>/s/<?= HHF_Domain_File::IMAGE_THUMBNAIL ?>"
+                                                    class="img-thumbnail img-responsive"
+                                                    alt="<?= $this->escape($this->categories[$id]['name']) ?>" />
+                                            <?php } else { ?>
+                                                <img
+                                                    src="<?= $this->escape($this->categories[$id]['image']) ?>"
+                                                    class="img-thumbnail img-responsive"
+                                                    alt="<?= $this->escape($this->categories[$id]['name']) ?>" />
+                                            <?php } ?>
+                                        <?php } else { ?>
+                                            <img
+                                                src="/_farms/images/themes/shopping/category.png"
+                                                class="img-thumbnail img-responsive"
+                                                alt="<?= $this->escape($name) ?>" />
+                                        <?php } ?>
+                                    </label>
+                                    <figcaption>
+                                        <input type="radio"
+                                            name="category"
+                                            class="category"
+                                            id="category-<?= $this->escape($id) ?>"
+                                            value="<?= $this->escape($id) ?>"
+                                            title="<?= $this->escape($name) ?>"
+                                            <?= ($this->getFormValue('category') == $id) ? 'checked="checked"' : '' ?> />
+                                        <label for="category-<?= $this->escape($id) ?>">
+                                            <?= $this->escape($name) ?>
+                                        </label>
+                                    </figcaption>
+                                </figure>
+                            <?php } ?>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="source" class="col-sm-2 control-label">
+                            <?= $this->translate('Vendor') ?>
+                        </label>
+                        <div class="col-sm-10">
+                            <?=
+                            $this->formSelect(
+                                'source',
+                                $this->getFormValue('source'),
+                                array(
+                                    'id' => 'source',
+                                    'class' => 'form-control'
+                                ),
+                                array('' => $this->translate('All Vendors')) + array_combine($this->sources, $this->sources)
+                            );
+                            ?>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="search" class="col-sm-2 control-label">
+                            <?= $this->translate('Search') ?>
+                        </label>
+                        <div class="col-sm-10">
+                            <input id="search"
+                                   name="search"
+                                   class="form-control"
+                                   placeholder="<?= $this->translate('Product name to search by') ?>" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-default">
+                                <i class="fa fa-search"></i>
+                                <?= $this->translate('Go!') ?>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="firstTime" tabindex="-1" role="dialog" aria-labelledby="firstTime-label" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="firstTime-label">
+                    <img width="24" height="24" title="" alt="" src="/_farms/images/themes/shopping/Icon36.png" />
+                    <?= $this->escape('Welcome!') ?>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info">
+                    <?= $this->translate('Welcome to our shopping list application, where you can browse what\'s fresh and build a shopping list.') ?>
+                </div>
+
+                <ul>
+                    <li>
+                        <?= $this->translate('To add items to your shopping list, click <i class="fa fa-square-o"></i>.  To remove items, click <i class="fa fa-check-square-o"></i>.  To view all the details about a product, click the <i class="fa fa-chevron-down"></i> button.') ?>
+                    </li>
+                    <li>
+                        <?= $this->translate('You can browse different days, product categories and vendors by choosing the <i class="fa fa-search"></i> button.'); ?>
+                    </li>
+                    <li>
+                        <?= $this->translate('Once you are done building your shopping list you can <i class="fa fa-file-o"></i> view it, <i class="fa fa-print"></i> print it, or <i class="fa fa-envelope-o"></i> email it to yourself.'); ?>
+                    </li>
+                    <li class="toBookmark">
+                        <?= $this->translate('For quick access, be sure to <a href="#">add What\'s Fresh to your home screen</a>.'); ?>
+                    </li>
+                </ul>
+
+                <h2><?= $this->translate('Happy Shopping!') ?></h2>
+            </div>
+            <div class="modal-footer">
+
+                <div class="btn-group" role="group" aria-label="<?= $this->translate('Help Buttons') ?>">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" data-target="#feedback">
+                        <i class="fa fa-bolt"></i>
+                        <?= $this->translate('Feedback') ?>
+                    </button>
+
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        <i class="fa fa-times"></i>
+                        <?= $this->translate('Close') ?>
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="disclaimer" tabindex="-1" role="dialog" aria-labelledby="disclaimer-label" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="disclaimer-label">
+                    <img width="24" height="24" title="" alt="" src="/_farms/images/themes/shopping/Icon36.png" />
+                    <?= $this->escape('Website Disclaimer') ?>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <?php if(!empty($this->disclaimer)): ?>
+                    <p><?= $this->disclaimer ?></p>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="view" tabindex="-1" role="dialog" aria-labelledby="view-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="view-label">
+                    <img width="24" height="24" title="" alt="" src="/_farms/images/themes/shopping/Icon36.png" />
+                    <?php
+                    if (!empty($this->currentLocation)) {
+                        echo $this->translate(
+                            'Shopping List For %s',
+                            $this->escape($this->farm->name)
+                        );
+                    }
+                    ?></h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="well">
+                    <dl class="dl-horizontal">
+                        <dt><?= $this->translate('Date') ?></dt>
+                        <dd><?= $this->escape($this->currentLocation['date']) ?></dd>
+                    </dl>
+                </div>
+
+                <div class="shoppingList"></div>
+
+            </div>
+            <div class="modal-footer">
+
+                <div class="btn-group" role="group" aria-label="<?= $this->translate('My List Buttons') ?>">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        <i class="fa fa-times"></i>
+                        <?= $this->translate('Close') ?>
+                    </button>
+
+                    <button type="button" class="btn btn-default emailButton" data-dismiss="modal" data-toggle="modal" data-target="#email">
+                        <i class="fa fa-envelope-o"></i>
+                        <?= $this->translate('Email') ?>
+                    </button>
+
+                    <button type="button" class="btn btn-default printButton">
+                        <i class="fa fa-print"></i>
+                        <?= $this->translate('Print') ?>
+                    </button>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade" id="email" tabindex="-1" role="dialog" aria-labelledby="email-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="view-label">
+                    <img width="24" height="24" title="" alt="" src="/_farms/images/themes/shopping/Icon36.png" />
+                    <?php
+                    if (!empty($this->currentLocation)) {
+                        echo $this->translate(
+                            'Email Shopping List For %s',
+                            $this->escape($this->currentLocation['value'])
+                        );
+                    }
+                    ?></h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="well">
+                    <?= $this->escape($this->currentLocation['date']) ?>
+                </div>
+
+                <form class="form-horizontal"
+                      role="form"
+                      id="emailForm"
+                      action="<?= $this->escape($this->Url()); ?>"
+                      method="get"
+                      accept-charset="utf-8">
+
+                    <input type="hidden"
+                           id="emailWeek"
+                           name="week"
+                           value="<?= $this->escape($this->getFormValue('week')) ?>" />
+
+                    <input type="hidden"
+                           id="emailLocation"
+                           name="location"
+                           value="<?= $this->escape($this->getFormValue('location')) ?>" />
+
+                    <div class="form-group">
+                        <label for="emailAddress" class="col-sm-2 control-label">
+                            <?= $this->translate('Email') ?>
+                        </label>
+                        <div class="col-sm-10">
+                            <input id="emailAddress"
+                                    name="emailAddress"
+                                    class="form-control"
+                                    placeholder="<?= $this->translate('me@example.com') ?>" />
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    <i class="fa fa-times"></i>
+                    <?= $this->translate('Close') ?>
+                </button>
+                <button type="button" class="btn btn-primary emailFinalButton">
+                    <i class="fa fa-envelope-o"></i>
+                    <?= $this->translate('Email') ?>
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade" id="feedback" tabindex="-1" role="dialog" aria-labelledby="feedback-label" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="height: 100%">
+        <div class="modal-content" style="height: 90%">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="view-label">
+                    <img width="24" height="24" title="" alt="" src="/_farms/images/themes/shopping/Icon36.png" />
+                    <?php
+                    echo $this->translate(
+                        'Feedback is Good Food'
+                    );
+                    ?></h4>
+            </div>
+            <div class="modal-body" style="height: 90%">
+
+                <iframe src="https://docs.google.com/forms/d/1DUcgzDh4StV907nqYQLt8q8Hrb5Jx0VgFFTpRpyRyiE/viewform?embedded=true" width="100%" height="100%" seamless frameborder="0" marginheight="0" marginwidth="0">
+                    Loading...
+                </iframe>
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade" id="productImageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="imageModalLabel"></h4>
+            </div>
+            <div class="modal-body">
+                <img src="" class="img-responsive" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="well shopping-overview visible-print">
+    <h1>
+        <?php
+            echo $this->translate(
+                'Shopping List For %s',
+                $this->escape($this->farm->name)
+            );
+        ?>
+    </h1>
+    <dl class="dl-horizontal">
+        <dt><?= $this->translate('Date') ?></dt>
+        <dd><?= $this->escape($this->currentLocation['date']) ?></dd>
+    </dl>
+</div>
+
+<div id="shoppingList" class="visible-print"></div>

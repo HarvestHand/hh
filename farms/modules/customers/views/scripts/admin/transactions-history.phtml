@@ -1,0 +1,254 @@
+<?php
+    $this->headTitle($this->translate('Customer Payments'));
+
+    $this->loader()->append('jquery_dataTables');
+    
+    $this->loadDatejs(Bootstrap::$locale);
+?>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+    $(document).ready(function(){
+
+        var table = $("#transactions").dataTable({
+            "bJQueryUI": true,
+            "bAutoWidth": false,
+            "bDeferRender": true,
+            "bLengthChange": false,
+            "bProcessing": true,
+            "iDisplayLength": 50,
+            "iDeferLoading": <?= $this->foundRows ?>,
+            "aaSorting": [[1, "desc"]],
+            "aoColumns": [ 
+                {
+                    "sType": "string",
+                    "mDataProp": "id"
+                },
+                {
+                    "sType": "text",
+                    "mDataProp": "transactionDate",
+                    "fnRender": function (oObj) {
+                        if (!oObj.aData.hasOwnProperty("DT_RowId")) {
+                            return oObj.aData.transactionDate;
+                        } else {
+                            return oObj.aData.transactionDate.replace(/&/g,'&amp;')
+                                    .replace(/</g,'&lt;')
+                                    .replace(/>/g,'&gt;');
+                        }
+                    }
+                },
+                {
+                    "sType": "text",
+                    "mDataProp": "total"
+                },
+                {
+                    "sType": "text",
+                    "mDataProp": "remainingToApply"
+                },
+                {
+                    "sType": "text",
+                    "mDataProp": "appliedToInvoices",
+                    "fnRender": function (oObj) {
+                        if (!oObj.aData.hasOwnProperty("DT_RowId")) {
+                            return oObj.aData.appliedToInvoices;
+                        } else {
+                            if (oObj.aData.appliedToInvoices != '0' && oObj.aData.appliedToInvoices.length) {
+                                var $invoices = [],
+                                    $return = '';
+                                if (oObj.aData.appliedToInvoices.indexOf(',') != -1) {
+                                    $invoices = oObj.aData.appliedToInvoices.split(',');
+                                } else {
+                                    $invoices = [oObj.aData.appliedToInvoices];
+                                }
+                                
+                                for (var $count = $invoices.length, $c = 0; $c < $count; ++$c) {
+                                    $return += '<a href="/admin/customers/invoice?id=' + parseInt($invoices[$c]) + '">' + parseInt($invoices[$c]) + '</a>';
+                        
+                                    if ($c + 1 != $count) {
+                                        $return += '; '
+                                    }
+                                }
+                                
+                                return $return;
+                            } else {
+                                return '';
+                            }
+                        }
+                    }
+                },
+                { 
+                    "bSortable": false,
+                    "bSearchable": false,
+                    "mDataProp": "_actions",
+                    "sClass": "right",
+                    "fnRender": function (oObj) {
+                        if (!oObj.aData.hasOwnProperty("DT_RowId")) {
+                            return oObj.aData._actions;
+                        }
+                        var menu = '<ul class="dropdown-container">' +
+                            '<li class="dropdown btn-group">' +
+                            '<a href="/admin/customers/transaction?id=' + parseInt(oObj.aData.id) + '" ' +
+                            'title="<?= addslashes($this->translate('View payment')) ?>" class="btn"> ' +
+                            '<?= addslashes($this->translate('View')) ?></a>';
+                            
+                        menu += '<button type="button" class="btn dropdown-toggle" data-toggle="dropdown">' +
+                            '<span class="caret"></span></button>' +
+                            '<ul class="dropdown-menu">';
+
+                        if (parseFloat(oObj.aData.remainingToApply) > 0) {
+                            menu += '<li><a href="/admin/customers/transaction?a=applynew&id=' + parseInt(oObj.aData.id) + '" class="apply-new">' +
+                                '<?= addslashes($this->translate('Apply to New Invoice')) ?></a></li>';
+                        }
+
+                        menu += '<li class="divider"></li>' +
+                            '<li><a class="delete" href="/admin/customers/transaction?a=delete&id=' + parseInt(oObj.aData.id) + '"><?= addslashes($this->translate('Delete')) ?>' + 
+                            '</a></li></ul></li></ul>';
+                        
+                        return menu;
+                    }
+                }
+            ],
+            "bSortClasses": false,
+            "sAjaxSource": "<?= addslashes($this->Url()) ?>/d/1/cid/<?= $this->customerId ?>",
+            "bServerSide": true,
+            "sDom": '<"H"<"clear">r<"right"ip>>t<"F"<"right"ip>>'
+        })
+        .delegate("tbody tr", "mouseover mouseout", function(e) {
+            if (e.type == "mouseover") {
+                $(e.currentTarget).addClass('hover');
+            } else {
+                $(e.currentTarget).removeClass('hover');
+            }
+        })
+        .delegate(".delete", "click", function(){
+            return window.confirm("<?= $this->translate('Are you sure you want to delete this payment?  No turning back after a payment delete.'); ?>");
+        }).delegate(".apply-new", "click", function(){
+            return window.confirm("<?= $this->translate('Are you sure you want to apply this transaction to a misc. invoice?'); ?>");
+        });
+        
+        
+    });
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<h2><?= $this->translate('Payments History') ?></h2>
+
+<?php if (count($this->transactions)) { ?>
+        
+    <table id="transactions" class="display">
+        <thead>
+            <tr>
+                <th
+                    width="7%"
+                    title="<?= $this->translate('Payment ID') ?>">
+                        <?= $this->translate('ID'); ?>
+                </th>
+                <th
+                    width="14%"
+                    title="<?= $this->translate('Payment Date') ?>">
+                        <?= $this->translate('Date') ?>
+                </th>
+                <th
+                    width="22%"
+                    title="<?= $this->translate('Payment Amount') ?>">
+                        <?= $this->translate('Amount') ?>
+                </th>
+                <th
+                    width="20%"
+                    title="<?= $this->translate('Payment Amount to be Applied to Customer Invoices') ?>">
+                        <?= $this->translate('To Apply') ?>
+                </th>
+                <th
+                    width="20%"
+                    title="<?= $this->translate('Invoice Payment Applied To') ?>">
+                        <?= $this->translate('Invoice') ?>
+                </th>
+                <th
+                    width="17%"
+                    title="<?= $this->translate('Payment Actions') ?>">
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($this->transactions as $transaction) { ?>
+                <tr>
+                    <td>
+                        <?= $this->escape($transaction['id']); ?>
+                    </td>
+                    <td>
+                        <?= $this->escape($transaction['transactionDate']->toString('yyyy-MM-dd')); ?>
+                    </td>
+                    <td>
+                        <?= $this->currency($transaction['total']) ?>
+                    </td>
+                    <td>
+                        <?= $this->currency($transaction['remainingToApply']) ?>
+                    </td>
+                    <td>
+                        <?php if (!empty($transaction['appliedToInvoices'])) { ?>
+                            <?php
+                                if (strpos($transaction['appliedToInvoices'], ',')) {
+                                    $invoices = explode(',', $transaction['appliedToInvoices']);
+                                } else {
+                                    $invoices = array($transaction['appliedToInvoices']);
+                                }
+                            ?>
+                            <?php for ($count = count($invoices), $c = 0; $c < $count; ++$c) { ?>
+                                <a href="/admin/customers/invoice?id=<?= (int) $invoices[$c] ?>"><?= (int) $invoices[$c] ?></a><?= ($c + 1 != $count) ? '; ' : '' ?>
+                            <?php } ?>
+                        <?php } ?>
+                    </td>
+                    <td class="right">
+                        <ul class="dropdown-container">
+                            <li class="dropdown btn-group">
+                                <a href="/admin/customers/transaction?id=<?= (int) $transaction->id ?>"
+                                   title="<?= $this->translate('View payment') ?>"
+                                   class="btn">
+                                    <?= $this->translate('View') ?>
+                                </a>
+                                
+                                <button type="button"
+                                        class="btn dropdown-toggle"
+                                        data-toggle="dropdown">
+                                    <span class="caret"></span>
+                                </button>
+
+                                <ul class="dropdown-menu">
+                                    <?php if ($transaction['remainingToApply'] > 0) { ?>
+                                    <li>
+                                        <a href="/admin/customers/transaction?a=applynew&id=<?= (int) $transaction->id ?>" class="apply-new">
+                                            <?= $this->translate('Apply to New Invoice') ?>
+                                        </a>
+                                    </li>
+                                    <?php } ?>
+                                    <li class="divider"></li>
+                                    <li>
+                                        <a class="delete" href="/admin/customers/transaction?a=delete&id=<?= (int) $transaction->id ?>">
+                                            <?= $this->translate('Delete') ?>
+                                        </a>
+                                    </li>
+                                </ul>
+                                
+                            </li>
+                        </ul>
+
+                    </td>
+                </tr>
+            <?php } ?>
+        </tbody>
+    </table>
+
+    <?php 
+        if ($this->embedded) { 
+            echo $this->placeholder('foot');
+        }
+    ?>
+
+<?php } else { ?>
+
+    <p><?=
+        $this->translate(
+            'Customer doesn\'t have any payments yet.'
+        ); ?></p>
+
+<?php } ?>

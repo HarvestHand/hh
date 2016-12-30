@@ -1,0 +1,165 @@
+<?php
+    $this->headTitle($this->translate('Newsletter'));
+?>
+
+<style>
+    body.modal-open {
+        overflow: visible;
+    }
+</style>
+
+<h2><?= $this->translate('Newsletter'); ?></h2>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+
+
+    function showNewsletter(href, title) {
+        //test code
+        jQuery.noConflict();
+        var $newsletterFrame = $('#modal-newsletter-iframe');
+        $newsletterFrame.attr('src', href);
+        $('#modal-newsletter-title').text(title);
+        $newsletterFrame.css('height',$( window ).height()*0.5);
+        $('#modal-newsletter').modal('show');
+
+        //end test code
+
+//        var horizontalPadding = 30;
+//        var verticalPadding = 30;
+//
+//        $('<iframe id="externalSite" name="externalSite" class="externalSite" src="' + href + '" />').dialog({
+//            title: (title) ? title : '<?//= addslashes($this->translate('Newsetter')) ?>//',
+//            autoOpen: true,
+//            width: 800,
+//            height: 500,
+//            modal: true,
+//            resizable: true,
+//            autoResize: true,
+//            open: function (e) {
+//            	if (!$.browser.msie) {
+//                    $(document).bind("keyup.printHandling keydown.printHandling", printKeyHandler);
+//                }
+//            },
+//            close: function (e) {
+//            	if (!$.browser.msie) {
+//                    $(document).unbind(".printHandling", printKeyHandler);
+//                }
+//            }
+//        }).width(800 - horizontalPadding).height(500 - verticalPadding);
+    }
+
+    function printKeyHandler(e) {
+
+		if (e.ctrlKey && e.keyCode == 80) {
+			if (!$.browser.msie) {
+                setTimeout(function() {
+                    window.frames["externalSite"].print();
+                }, 0);
+			}
+            e.stopPropagation();
+            e.preventDefault();
+			return false;
+		}
+    }
+
+    function detectIE() {
+    	var rv = -1;
+		  if (navigator.appName == 'Microsoft Internet Explorer')
+		  {
+		    var ua = navigator.userAgent;
+		    var re  = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
+		    if (re.exec(ua) != null)
+		      rv = parseFloat( RegExp.$1 );
+		  }
+		  else if (navigator.appName == 'Netscape')
+		  {
+		    var ua = navigator.userAgent;
+		    var re  = new RegExp("Trident/.*rv:([0-9]{1,}[\.0-9]{0,})");
+		    if (re.exec(ua) != null)
+		      rv = parseFloat( RegExp.$1 );
+		  }
+		  return rv;
+    }
+
+    $(document).ready(function() {
+        if(window.location.hash) {
+            var id = String(window.location.hash).slice(1);
+            showNewsletter("/newsletter/issue/id/" + id);
+        }
+
+        $(".issues").on(
+            'click',
+            'a.issue',
+            function(e) {
+                e.preventDefault();
+                showNewsletter(this.href, $(this).attr('title'));
+            }
+        );
+
+
+    });
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<?php
+    $currentYear = null;
+    $first = true;
+?>
+
+<?php foreach ($this->issues as $issue) { ?>
+    <?php
+        $year = $issue['publishedDatetime']->toString('yyyy');
+
+        //displays list of newsletters
+        if ($year != $currentYear) {
+            if (!$first) {
+                echo '</ul>';
+            } else {
+                $first = false;
+            }
+
+            echo '<h2>' . $year . '</h2>';
+            echo '<ul class="issues">';
+
+            $currentYear = $year;
+        }
+    ?>
+
+    <li>
+        <a class="issue"
+           title="<?php echo $this->escape($issue['title']); ?>"
+           target="_blank"
+           href="/newsletter/issue/id/<?= $this->escape($issue['token']); ?>"
+           >
+            <?php echo $this->escape($issue['title']); ?>
+        </a>
+        &ndash;
+        <time datetime="<?= $this->escape($issue->publishedDatetime->get(Zend_Date::ISO_8601)) ?>" pubdate>
+            <?= $this->escape($issue->publishedDatetime->toString('yyyy-MM-dd')) ?>
+        </time>
+    </li>
+<?php } ?>
+</ul>
+
+
+<div id="modal-newsletter" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h1 class="modal-title" id="modal-newsletter-title"></h1>
+            </div>
+            <div class="modal-body" height="100%">
+                <iframe src="" id="modal-newsletter-iframe" width="100%">
+                </iframe>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>

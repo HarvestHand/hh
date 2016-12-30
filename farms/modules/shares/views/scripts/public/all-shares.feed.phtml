@@ -1,0 +1,222 @@
+<?php
+$feed = new Zend_Feed_Writer_Feed();
+
+$feed->setTitle(
+    $this->translate(
+        '%s %s',
+        $this->farm->name,
+        ucfirst($this->farm->getPreferences()->get('shares', 'shares', 'shares'))
+    )
+);
+$feed->setDescription(
+    $this->translate(
+        '%s upcoming %s',
+        $this->farm->name,
+        $this->farm->getPreferences()->get('shares', 'shares', 'shares')
+    )
+);
+$feed->setLink($this->farm->getBaseUri());
+$feed->setFeedLink(
+    $this->farm->getBaseUri() . 'shares?format=atom',
+    'atom'
+);
+$feed->setFeedLink(
+    $this->farm->getBaseUri() . 'shares?format=rss',
+    'rss'
+);
+$feed->addAuthor(
+    array(
+        'name' => $this->farm->name,
+        'email' => $this->farm->email,
+        'uri' => $this->farm->getBaseUri()
+    )
+);
+$feed->addCategory(array('term' => 'shares'));
+$feed->setIcon(
+    array(
+        'uri' => $this->farm->getBaseUri() . '_images/favicon.png'
+    )
+);
+$feed->setImage(
+    array(
+        'uri' => $this->farm->getBaseUri() . '_images/apple-touch-icon.png',
+        'title' => $this->farm->name,
+        'link' => $this->farm->getBaseUri(),
+        'width' => 129,
+        'height' => 129
+    )
+);
+$feed->setGenerator('HarvestHand');
+
+$currentYear = null;
+$currentWeek = null;
+$entry = null;
+$body = null;
+$date = new Zend_Date();
+$first = null;
+
+if (!empty($this->deliveries)) {
+
+    foreach ($this->deliveries as $delivery) {
+
+        if ($first === null) {
+            $feed->setDateModified($delivery->updatedDatetime);
+            $feed->setDateCreated($delivery->addedDatetime);
+            $first = false;
+        }
+
+        list($year, $week) = explode('W', $delivery['week']);
+        if ($year != $currentYear || $currentWeek != $week) {
+            $currentYear = $year;
+            $currentWeek = $week;
+
+            if ($entry !== null) {
+                $entry->setDescription($body);
+                $feed->addEntry($entry);
+                $body = null;
+            }
+
+            $entry = $feed->createEntry();
+
+            $date->setYear($year)
+                ->setWeek($week)
+                ->set(1, Zend_Date::WEEKDAY_8601);
+
+            $startDate = $date->toString('EEE, MMM dd');
+            $date->set(7, Zend_Date::WEEKDAY_8601);
+            $endDate = $date->toString('EEE, MMM dd, YYYY');
+
+            $entry->setTitle(
+                $this->translate(
+                    '%s - %s',
+                    $startDate,
+                    $endDate
+                )
+            );
+            $entry->setDateModified($delivery->updatedDatetime);
+            $entry->setDateCreated($delivery->addedDatetime);
+            $entry->setLink(
+                $this->farm->getBaseUri()
+                . 'shares/index/week/' . $week . '/year/' . $year
+            );
+            $entry->addAuthor(
+                array(
+                    'name' => $this->farm->name,
+                    'email' => $this->farm->email,
+                    'uri' => $this->farm->getBaseUri()
+                )
+            );
+        }
+
+        $body .= '<p><strong>' . $this->escape($delivery->getShare()->name) . '</strong></p>';
+        $body .= '<ul>';
+
+        foreach ($delivery->getItems() as $item) {
+            $body .= '<li><strong>' . $this->escape($item->item) . '</strong>: ';
+
+            $sizes = array();
+
+            if (!empty($item->quantity_0_5)) {
+                foreach ($delivery->getShare()->sizes as $size) {
+                    if ($size->size == 0.5) {
+
+                        $sizes[] = array(
+                            'name' => $size->name,
+                            'qty' => $item->quantity_0_5
+                        );
+
+                        break;
+                    }
+                }
+            }
+
+            if (!empty($item->quantity_1)) {
+                foreach ($delivery->getShare()->sizes as $size) {
+                    if ($size->size == 1) {
+
+                        $sizes[] = array(
+                            'name' => $size->name,
+                            'qty' => $item->quantity_1
+                        );
+
+                        break;
+                    }
+                }
+            }
+
+            if (!empty($item->quantity_2)) {
+                foreach ($delivery->getShare()->sizes as $size) {
+                    if ($size->size == 2) {
+
+                        $sizes[] = array(
+                            'name' => $size->name,
+                            'qty' => $item->quantity_2
+                        );
+
+                        break;
+                    }
+                }
+            }
+
+            if (!empty($sizes)) {
+//                if (count($sizes) == 1) {
+//                    $body .= $sizes[0]['qty'];
+//                } else {
+                    for ($x = 0, $c = count($sizes); $x < $c; ++$x) {
+                        $body .= $sizes[$x]['qty'] . ' (' . $sizes[$x]['name'] . ')';
+                        if ($x + 1 != $c) {
+                            $body .= '; ';
+                        }
+                    }
+//                }
+            }
+
+            $body .= '<br />';
+
+            if (!empty($item->source)) {
+                $body .= $this->escape($item->source);
+                $body .= ' - ';
+            }
+
+            switch ($item->certification) {
+                case HHF_Domain_Certification::ORGANIC:
+                    $body .= $this->translate('Certified Organic');
+                    break;
+                case HHF_Domain_Certification::BIODYNAMIC:
+                    $body .= $this->translate('Biodynamic');
+                    break;
+                case HHF_Domain_Certification::CERTIFIED_NATURAL:
+                    $body .= $this->translate('Certified Naturally Grown');
+                    break;
+                case HHF_Domain_Certification::NATURAL:
+                    $body .= $this->translate('Naturally Grown');
+                    break;
+                case HHF_Domain_Certification::GRASS:
+                    $body .= $this->translate('Pastured');
+                    break;
+                case HHF_Domain_Certification::TRANSITIONAL:
+                    $body .= $this->translate('Transition to Organic');
+                    break;
+                case HHF_Domain_Certification::CONVENTIONAL:
+                    $body .= $this->translate('Non Organic');
+                    break;
+                case HHF_Domain_Certification::SPRAY_FREE:
+                    $body .= $this->translate('Spray Free');
+                    break;
+            }
+
+            $body .= '</li>';
+        }
+
+        $body .= '</ul>';
+    }
+} else {
+    $feed->setDateModified(Zend_Date::now());
+    $feed->setDateCreated(Zend_Date::now());
+}
+if ($entry !== null) {
+    $entry->setDescription($body);
+    $feed->addEntry($entry);
+}
+
+echo $feed->export($this->format);

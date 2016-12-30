@@ -1,0 +1,142 @@
+a[rel~="external"] {
+	background-image: url(../images/external.png);
+  background-repeat: no-repeat;
+  background-position: 3px;
+  padding-left: 15px;
+}
+
+/* default: gray */
+a.changesetlink, a.wikilink,
+span.branchname,
+span.milestone, span.milestone a,
+a.milestone,
+a.keyword, span.keyword a,
+a.ticketlink, span.ticketlink a,
+span.tagname
+{
+  padding: 1px 3px 2px;
+  font-size: 0.85em;
+  font-weight: 550;
+  color: #ffffff;
+  white-space: nowrap;
+  background-color: #bfbfbf;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+
+.completed {
+  text-decoration: line-through;
+}
+
+/* Tickets: yellow */
+a.ticketlink, span.ticketlink a
+{
+  background-color: #FFA;
+  color: #404040;
+  border: solid 1px #F89406;
+}
+a.ticketlink:hover, span.ticketlink a:hover {
+  background-color: #F89406;
+  color: #FE0;
+  text-decoration: none;
+}
+
+a.ticketlink.completed, span.ticketlink.completed a {
+  text-decoration: line-through;
+}
+
+/* changesets and wiki pages: green */
+a.changesetlink,
+a.wikilink {
+  background-color: #CFC;
+  border: solid 1px #0c3;
+  color: #404040;
+}
+a.changesetlink:hover,
+a.wikilink:hover {
+  background-color: #0c3;
+  color: white;
+  text-decoration: none;
+}
+
+/* branches, milestones, keywords: orange */
+span.branchname, a.keyword, span.keyword a {
+  background-color: #F89406
+}
+a.keyword:hover, span.keyword a:hover {
+  text-decoration: none;
+  color: #404040;
+  background-color: #FFA;
+  border: solid 1px #F89406;
+}
+
+/* milestones and tags: blue */
+span.tagname,
+a.milestone,
+span.milestone {
+  background-color: #bef;
+  border: solid 1px #62CFFC;
+  color: #444;
+}
+a.milestone:hover,
+span.milestone:hover {
+  background-color: #62CFFC;
+  border: solid 1px #62CFFC;
+  color: #444;
+}
+a.milestone:hover,
+span.milestone a:hover {
+  text-decoration: none;
+}
+span.milestone a {
+  background-color: inherit;
+  color: #444;
+}
+
+
+table.codeann tr td.changeset a.changesetlink {
+  background-image: none;
+  padding-left: 2px;
+  font-size: 0.8em;
+}
+
+span.ticketlink a:before {
+  content: "#";
+}
+
+.newticket {
+  background: url(../images/newticket.png) no-repeat;
+}
+.editticket {
+  background: url(../images/editedticket.png) no-repeat;
+}
+.closedticket {
+  background: url(../images/closedticket.png) no-repeat;
+}
+.editwiki {
+  background: url(../images/wiki.png) no-repeat;
+}
+.editmilestone {
+  background: url(../images/milestone.png) no-repeat;
+}
+.newchangeset {
+  background: url(../images/changeset.png) no-repeat;
+}
+
+@media print {
+  a.changesetlink, a.wikilink,
+  span.branchname,
+  span.milestone, span.milestone a,
+  a.milestone,
+  a.keyword, span.keyword a,
+  a.ticketlink, span.ticketlink a,
+  span.tagname {
+    border: none;
+  }
+
+}
+
+/* vim:ts=2:sw=2:et:
+ */
+

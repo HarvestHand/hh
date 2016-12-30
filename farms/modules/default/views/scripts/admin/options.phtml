@@ -1,0 +1,180 @@
+<?php $this->headTitle($this->translate('Options')); ?>
+
+<h2>
+    <span class="icon-menu icon-menu-options" style="float: left; margin: -10px 7px 0 0;"></span>
+    <?= $this->translate('Options') ?>
+</h2>
+
+<section class="container_12">
+    <article class="grid_11">
+        
+        <?php if (!empty($this->messages)) { ?>
+            <section class="info ui-widget ui-state-highlight ui-corner-all">
+                <div>
+                    <i class="fa fa-info-circle"></i>
+                    <strong><?= $this->translate('Hey!'); ?></strong>
+                    <?= $this->escape(implode('; ', $this->messages)); ?>
+                </div>
+            </section>
+        <?php } ?>
+        
+        <dl style="padding-top: 24px;">
+            
+            <dt title="<?= $this->translate('Farm Information and Contact Details') ?>">
+                <h3>
+                    <a href="/admin/default/options_farm"
+                        title="<?= $this->escape($this->translate('Farm Information and Contact Details')) ?>">
+                        
+                        <span class="icon-menu icon-menu-dashboard" style="float: left; margin: -10px 7px 0 0;"></span>
+                        <?= $this->translate('Farm Info'); ?>
+                    </a>
+                </h3>
+            </dt>
+            
+            <dd>
+                <?= $this->translate('Farm information and contact details.'); ?> 
+                <a href="/admin/default/options_farm"
+                   title="<?= $this->escape($this->translate('Farm Information and Contact Details')) ?>">
+                    <?= $this->translate('Modify...') ?>
+                </a>
+            </dd>
+
+            <?php if ($this->isMasterFarm) { ?>
+                <dt title="<?= $this->translate('List of farms.'); ?>">
+                <h3>
+                    <a href="/admin/default/farms_list"
+                       title="<?= $this->translate('List of farms.'); ?>">
+
+                        <span class="icon-menu icon-menu-dashboard" style="float: left; margin: -10px 7px 0 0;"></span>
+                        <?= $this->translate('Farms'); ?>
+                    </a>
+                </h3>
+                </dt>
+
+                <dd>
+                    <?= $this->translate('List of farms.'); ?>
+                    <a href="/admin/default/farms_list"
+                       title="<?= $this->translate('List of farms.'); ?>">
+                        <?= $this->translate('View...'); ?>
+                    </a>
+                </dd>
+            <?php } ?>
+
+            <dt>
+                <h3>
+                    <a href="/admin/default/options_users"
+                        title="<?= $this->escape($this->translate('HarvestHand Administrative Users')) ?>">
+                        
+                        <span class="icon-menu icon-menu-users" style="float: left; margin: -10px 7px 0 0;"></span>
+                        <?= $this->translate('Admin Users'); ?>
+                    </a>
+                </h3>
+            </dt>
+                
+            <dd>
+                <?= $this->translate('Modify existing administrative user accounts and set up new ones.'); ?> 
+                <a href="/admin/default/options_users"
+                   title="<?= $this->escape($this->translate('HarvestHand Administrative Users')) ?>">
+                    <?= $this->translate('Modify...') ?>
+                </a>
+            </dd>
+            
+            <!--
+            <dt title="<?= $this->escape($this->translate('HarvestHand Customers Options')) ?>">
+                <h3>
+                    <a href="/admin/customers/options"
+                        title="<?= $this->escape($this->translate('HarvestHand Customers Options')) ?>">
+                        
+                        <span class="icon-menu icon-menu-members" style="float: left; margin: -10px 7px 0 0;"></span>
+                        <?= $this->escape($this->translate('Customers')); ?>
+                    </a>
+                </h3>
+            </dt>
+            
+            <dd>
+                <?= $this->translate('Configure your HarvestHand customers options.'); ?> 
+                <a href="/admin/customers/options"
+                   title="<?= $this->escape($this->translate('HarvestHand Customers Options')) ?>">
+                    <?= $this->translate('Modify...') ?>
+                </a>
+            </dd>
+            -->
+            
+            <dt title="<?= $this->escape($this->translate('HarvestHand Shares Options')) ?>">
+                <h3>
+                    <a href="/admin/shares/options"
+                        title="<?= $this->escape($this->translate('HarvestHand Shares Options')) ?>">
+                    
+                        <span class="icon-menu icon-menu-shares" style="float: left; margin: -10px 7px 0 0;"></span>
+                        <?= $this->escape($this->translate('Shares')); ?>
+                    </a>
+                </h3>
+            </dt>
+            
+            <dd>
+                <?= $this->translate('Configure your HarvestHand shares options.'); ?> 
+                <a href="/admin/shares/options"
+                   title="<?= $this->escape($this->translate('HarvestHand Shares Options')) ?>">
+                    <?= $this->translate('Modify...') ?>
+                </a>
+            </dd>
+            
+            <dt title="<?= $this->escape($this->translate('HarvestHand Website Options')) ?>">
+                <h3>
+                    <a href="/admin/website/options"
+                       title="<?= $this->escape($this->translate('HarvestHand Website Options')) ?>">
+                    
+                        <span class="icon-menu icon-menu-website" style="float: left; margin: -10px 7px 0 0;"></span>
+                        <?= $this->escape($this->translate('Website')); ?>
+                    </a>
+                </h3>
+            </dt>
+            
+            <dd>
+                <?= $this->translate('Configure your HarvestHand website options.'); ?> 
+                <a href="/admin/website/options"
+                   title="<?= $this->escape($this->translate('HarvestHand Website Options')) ?>">
+                    <?= $this->translate('Modify...') ?>
+                </a>
+            </dd>
+            
+            <dt title="<?= $this->escape($this->translate('HarvestHand Newsletter Options')) ?>">
+                <h3>
+                    <a href="/admin/newsletter/options"
+                       title="<?= $this->escape($this->translate('HarvestHand Newsletter Options')) ?>">
+                        
+                        <span class="icon-menu icon-menu-newsletter" style="float: left; margin: -10px 7px 0 0;"></span>
+                        <?= $this->escape($this->translate('Newsletter')); ?>
+                    </a>
+                </h3>
+            </dt>
+            
+            <dd>
+                <?= $this->translate('Configure your HarvestHand newsletter options.'); ?> 
+                <a href="/admin/newsletter/options"
+                   title="<?= $this->escape($this->translate('HarvestHand Newsletter Options')) ?>">
+                    <?= $this->translate('Modify...') ?>
+                </a>
+            </dd>
+            
+            <dt title="<?= $this->translate('HarvestHand Networking Options') ?>">
+                <h3>
+                    <a href="/admin/default/options_general"
+                        title="<?= $this->escape($this->translate('HarvestHand Networking Options')) ?>">
+                        
+                        <span class="icon-menu icon-menu-network" style="float: left; margin: -10px 7px 0 0;"></span>
+                        <?= $this->translate('Network'); ?>
+                    </a>
+                </h3>
+            </dt>
+                
+            <dd>
+                <?= $this->translate('PayPal, Facebook, Twitter, HarvestHand distribution network.  Set it up here.'); ?>
+                <a href="/admin/default/options_general"
+                   title="<?= $this->escape($this->translate('HarvestHand Networking Options')) ?>">
+                    <?= $this->translate('Modify...') ?>
+                </a>
+            </dd>
+        </dl>
+    </article>
+</section>

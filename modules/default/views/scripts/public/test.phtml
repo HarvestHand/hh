@@ -1,0 +1,517 @@
+<?php if (!empty($_POST)) { ?>
+    <?php phpinfo(INFO_VARIABLES); ?>
+<?php } ?>
+
+<?php
+$this->headTitle($this->translate('Sign Up'));
+
+$this->loader()->append('jquery_validate');
+$this->loader()->append('jquery_cookie');
+?>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+    function updateStates(states) {
+        $("#farm_state").empty();
+
+        if (states != '' && !$.isEmptyObject(states)) {
+            if (!$("#farm_state").is('select')) {
+                $("#farm_state").replaceWith(
+                    '<select id="farm_state" class="required" title="<?= $this->translate('Please enter the state your farm is located in') ?>" name="farm[state]"></select>'
+                );
+            }
+
+            $("#farm_state").append('<option value=""></option>');
+
+            jQuery.each(states, function(k, v) {
+                $("#farm_state").append('<option value="' + k + '">' + v + '</option>');
+            });
+            $("#farm_state")[0].selectedIndex = 0;
+
+        } else {
+            if (!$("#farm_state").is('input')) {
+                $("#farm_state").replaceWith(
+                    '<input id="farm_state" type="text" title="<?= $this->translate('Please enter the state your farm is located in') ?>" maxlength="45" value="" name="farm[state]"/>'
+                );
+            }
+        }
+    }
+
+    $(document).ready(function(){
+        if (top.location != self.location) {
+            top.location = self.location;
+        }
+
+        var cache = {};
+
+        $("#farm_country").live("change", {}, function(eventObj) {
+            $.get(
+                "<?= $this->Url() ?>",
+                {country : $(eventObj.target).val(), subdivisions : true},
+                function(states) {
+                    updateStates(states);
+                },
+                'json'
+            );
+        });
+
+        $("#farm_city").autocomplete({
+            source: function(request, response) {
+                $.get("<?= $this->Url() ?>",
+                    {
+                        country : $("#farm_country").val(),
+                        subdivision : $("#farm_state").val(),
+                        unlocode: request.term
+                    },
+                    function(unlocodes) {
+                        response(unlocodes);
+                    },
+                    'json'
+                );
+            }
+        });
+
+        jQuery.validator.addMethod("subdomain", function(value, element) {
+            return this.optional(element) || /^[^-][0-9a-z-]+[^-]$/i.test(value);
+        }, "<?= $this->translate('Letters, numbers and dashes only please (no dashes at the beginning or end)'); ?>");
+
+        $("#newFarm").validate({
+            rules: {
+                "farmer[password]" : {
+                    minlength : 4
+                },
+                "farmer[userName]" : {
+                    remote : "<?= $this->Url(); ?>"
+                },
+                "passwordConfirm" : {
+                    equalTo : "#farmer_password"
+                },
+                "farm[subdomain]" : {
+                    subdomain : true,
+                    remote : "<?= $this->Url(); ?>"
+                }
+            },
+            messages: {
+                "farmer[password]" : {
+                    minlength: "<?=  $this->translate('A password needs to be at least 4 words or letters long'); ?>"
+                },
+                "farmer[email]" : {
+                    email: "<?= $this->translate('That doesn\'t look like an email address'); ?>"
+                },
+                "farmer[userName]" : {
+                    remote : function() {
+                        return $.format(
+                            "<?= $this->translate('The user name {0} is already in use'); ?>",
+                            $("#farmer_userName").val()
+                        );
+                    }
+                },
+                "passwordConfirm" : {
+                    equalTo : "<?= $this->translate('Your passwords are not the same'); ?>"
+                },
+                "farm[subdomain]" : {
+                    subdomain : "<?= $this->translate('Letters, numbers and dashes only please (no dashes at the beginning or end)'); ?>",
+                    remote : function() {
+                        return $.format(
+                            "<?= $this->translate('{0} is already in use'); ?>",
+                            $("#farm_subdomain").val()
+                        );
+                    }
+                }
+            },
+            errorContainer: $("#formError"),
+            errorPlacement: function(error, element) {
+                if (element.attr("name") == "farm[subdomain]") {
+                    error.appendTo(element.parent());
+                } else {
+                    error.insertAfter(element);
+                }
+            }
+        });
+
+        $('#farm_name').change(function(){
+            var $farmName = $(this),
+                name = $farmName.val(),
+                $farmSubdomain = $('#farm_subdomain'),
+                subDomain = $farmSubdomain.val();
+
+            if (subDomain == $farmSubdomain.data('generated')) {
+                $farmSubdomain.val('');
+                subDomain = '';
+            }
+
+            if ((!name || !name.length) || (subDomain && subDomain.length)) {
+                return;
+            }
+
+            if (!/^[^-][0-9a-z-]+[^-]$/i.test(name)) {
+                name = name.replace(/[^0-9a-z-]/ig, '');
+            }
+
+            name = name.substr(0, 100);
+
+            $farmSubdomain.data('generated', name);
+
+            $farmSubdomain.val(name);
+        });
+
+        if ($.cookie("geo")) {
+            $("#geo").show();
+        }
+    });
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<h2><?= $this->translate('Sign Up'); ?></h2>
+
+<p><?= $this->translate('Signing up with HarvestHand is your first step toward building your online presence.  <strong>It costs you nothing to try it out.</strong> After giving it a spin, we\'re confident you will find HarvestHand to be an indispensable part of your farm operations.'); ?></p>
+
+<form id="newFarm" action="<?= $this->Url(); ?>" method="post" class="cmxform large" accept-charset="utf-8">
+
+    <section id="formError" class="error ui-widget ui-state-error ui-corner-all" style="<?= (!empty($this->errors)) ? '' : 'display:none;' ?>">
+        <div>
+            <i class="fa fa-exclamation-triangle"></i>
+            <strong><?= $this->translate('Oh No!'); ?></strong>
+            <?= $this->translate('Something is not right with what you entered.  Check below for hints on how to fix things up.'); ?>
+        </div>
+    </section>
+
+    <fieldset>
+        <legend title="<?= $this->translate('Please supply us with some details about your farm'); ?>">
+            <?= $this->translate('About Your Farm'); ?>
+        </legend>
+
+        <p>
+            <label for="farm_name" class="required" title="<?= $this->translate('Please enter the name of your farm'); ?>">
+                <?= $this->translate('Name'); ?>:
+                <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+            </label>
+            <input
+                id="farm_name"
+                name="farm[name]"
+                type="text"
+                title="<?= $this->translate('Please enter the name of your farm'); ?>"
+                value="<?= $this->getFormValue('name', 'farm'); ?>"
+                class="required"
+                maxlength="255" />
+
+            <?php if (!empty($this->errors['farm']['name'])) { ?>
+                <label for="farm_name" class="error">
+                    <?= implode('; ', $this->errors['farm']['name']) ?>
+                </label>
+            <?php } ?>
+        </p>
+
+        <p>
+            <label for="farm_address" class="required" title="<?= $this->translate('Please enter the address of your farm'); ?>">
+                <?= $this->translate('Address'); ?>:
+                <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+            </label>
+            <input
+                id="farm_address"
+                name="farm[address]"
+                type="text"
+                title="<?= $this->translate('Please enter the address of your farm'); ?>"
+                value="<?= $this->getFormValue('address', 'farm'); ?>"
+                class="required"
+                maxlength="100" />
+
+            <?php if (!empty($this->errors['farm']['address'])) { ?>
+                <label for="farm_address" class="error">
+                    <?= implode('; ', $this->errors['farm']['address']) ?>
+                </label>
+            <?php } ?>
+        </p>
+
+        <p>
+            <label for="farm_address2" title="<?= $this->translate('Please enter the address of your farm'); ?>">
+                <?= $this->translate('Address'); ?>:
+            </label>
+            <input
+                id="farm_address2"
+                name="farm[address2]"
+                type="text"
+                title="<?= $this->translate('Please enter the address of your farm'); ?>"
+                value="<?= $this->getFormValue('address2', 'farm'); ?>"
+                class=""
+                maxlength="100" />
+
+            <?php if (!empty($this->errors['farm']['address2'])) { ?>
+                <label for="farm_address2" class="error">
+                    <?= implode('; ', $this->errors['farm']['address2']) ?>
+                </label>
+            <?php } ?>
+        </p>
+
+        <p>
+            <label for="farm_city" class="required" title="<?= $this->translate('Please enter the town that your farm is located in'); ?>">
+                <?= $this->translate('Town'); ?>:
+                <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+            </label>
+            <input
+                id="farm_city"
+                name="farm[city]"
+                type="text"
+                title="<?= $this->translate('Please enter the town that your farm is located in'); ?>"
+                value="<?= $this->getFormValue('city', 'farm'); ?>"
+                class="required"
+                maxlength="100" />
+
+            <?php if (!empty($this->errors['farm']['city'])) { ?>
+                <label for="farm_city" class="error">
+                    <?= implode('; ', $this->errors['farm']['city']) ?>
+                </label>
+            <?php } ?>
+        </p>
+
+        <p>
+            <label for="farm_state" class="required" title="<?= $this->translate('Please enter the state your farm is located in'); ?>">
+                <?= $this->translate('Province / State'); ?>:
+                <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+            </label>
+            <?php
+            $country = $this->getFormValue('country', 'farm');
+
+            if (!empty($country)) {
+                $country = substr($country, 0, 2);
+
+                $states = HH_Tools_Countries::getSubdivisions($country);
+            }
+            ?>
+            <?php if (!empty($states)) { ?>
+                <?=
+                $this->formSelect(
+                    'farm[state]',
+                    $this->getFormValue('state', 'farm'),
+                    array(
+                        'id' => 'farm_state',
+                        'class' => 'required',
+                        'title' => $this->translate('Please enter the state your farm is located in')
+                    ),
+                    array('' => '') + $states
+                );
+                ?>
+            <?php } else { ?>
+                <input
+                    id="farm_state"
+                    name="farm[state]"
+                    type="text"
+                    title="<?= $this->translate('Please enter the state your farm is located in'); ?>"
+                    value="<?= $this->getFormValue('state', 'farm'); ?>"
+                    class="required"
+                    maxlength="45" />
+            <?php } ?>
+
+            <?php if (!empty($this->errors['farm']['state'])) { ?>
+                <label for="farm_state" class="error">
+                    <?= implode('; ', $this->errors['farm']['state']) ?>
+                </label>
+            <?php } ?>
+        </p>
+
+        <p>
+            <label for="farm_zipCode" class="required" title="<?= $this->translate('Please enter your farm\'s zip code'); ?>">
+                <?= $this->translate('Postal / Zip Code'); ?>:
+                <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+            </label>
+            <input
+                id="farm_zipCode"
+                name="farm[zipCode]"
+                type="text"
+                title="<?= $this->translate('Please enter your farm\'s zip code'); ?>"
+                value="<?= $this->getFormValue('zipCode', 'farm'); ?>"
+                class="required"
+                maxlength="45" />
+
+            <?php if (!empty($this->errors['farm']['zipCode'])) { ?>
+                <label for="farm_zipCode" class="error">
+                    <?= implode('; ', $this->errors['farm']['zipCode']) ?>
+                </label>
+            <?php } ?>
+        </p>
+
+        <p>
+            <label for="farm_country" class="required" title="<?= $this->translate('Please enter your farm\'s country'); ?>">
+                <?= $this->translate('Country'); ?>:
+                <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+            </label>
+            <?=
+            $this->formSelect(
+                'farm[country]',
+                $this->getFormValue('country', 'farm'),
+                array(
+                    'id' => 'farm_country',
+                    'class' => 'required',
+                    'title' => $this->translate('Please enter your farm\'s country')
+                ),
+                array('' => '') + Zend_Locale::getTranslationList('territory', Bootstrap::$locale, 2)
+            );
+            ?>
+            <?php if (!empty($this->errors['farm']['country'])) { ?>
+                <label for="farm_country" class="error">
+                    <?= implode('; ', $this->errors['farm']['country']) ?>
+                </label>
+            <?php } ?>
+        </p>
+
+        <p>
+            <label for="farm_subdomain" class="required" title="<?= $this->translate('How do you want people to find you on HarvestHand?'); ?>">
+                <?= $this->translate('Your Address'); ?>:
+                <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+            </label>
+            http://
+            <input
+                id="farm_subdomain"
+                name="farm[subdomain]"
+                type="text"
+                title="<?= $this->translate('How do you want people to find you on HarvestHand?'); ?>"
+                value="<?= $this->getFormValue('subdomain', 'farm'); ?>"
+                class="required"
+                maxlength="100"
+                style="width: 140px; margin-right: 5px;"/>.HarvestHand.com
+            <?php if (!empty($this->errors['farm']['subdomain'])) { ?>
+                <label for="farm_subdomain" class="error">
+                    <?= implode('; ', $this->errors['farm']['subdomain']) ?>
+                </label>
+            <?php } ?>
+        </p>
+
+    </fieldset>
+
+    <fieldset>
+        <legend title="<?= $this->translate('Please supply us with some details about you'); ?>">
+            <?= $this->translate('About You'); ?>
+        </legend>
+
+        <p>
+            <label for="farmer_firstName" class="required" title="<?= $this->translate('Please enter your given name'); ?>">
+                <?= $this->translate('First Name'); ?>:
+                <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+            </label>
+            <input
+                id="farmer_firstName"
+                name="farmer[firstName]"
+                type="text"
+                title="<?= $this->translate('Please enter your given name'); ?>"
+                value="<?= $this->getFormValue('firstName', 'farmer'); ?>"
+                class="required"
+                maxlength="50" />
+
+            <?php if (!empty($this->errors['farmer']['firstName'])) { ?>
+                <label for="farmer_firstName" class="error">
+                    <?= implode('; ', $this->errors['farmer']['firstName']) ?>
+                </label>
+            <?php } ?>
+        </p>
+
+        <p>
+            <label for="farmer_lastName" class="required" title="<?= $this->translate('Please enter your family name'); ?>">
+                <?= $this->translate('Last Name'); ?>:
+                <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+            </label>
+            <input
+                id="farmer_lastName"
+                name="farmer[lastName]"
+                type="text"
+                title="<?= $this->translate('Please enter your family name'); ?>"
+                value="<?= $this->getFormValue('lastName', 'farmer'); ?>"
+                class="required"
+                maxlength="50" />
+
+            <?php if (!empty($this->errors['farmer']['lastName'])) { ?>
+                <label for="farmer_lastName" class="error">
+                    <?= implode('; ', $this->errors['farmer']['lastName']) ?>
+                </label>
+            <?php } ?>
+        </p>
+
+        <p>
+            <label for="farmer_email" title="<?= $this->translate('Please enter your email address'); ?>">
+                <?= $this->translate('Email'); ?>:
+            </label>
+            <input
+                id="farmer_email"
+                name="farmer[email]"
+                type="text"
+                title="<?= $this->translate('Please enter your email address'); ?>"
+                value="<?= $this->getFormValue('email', 'farmer'); ?>"
+                class="email"
+                maxlength="150" />
+
+            <?php if (!empty($this->errors['farmer']['email'])) { ?>
+                <label for="farmer_email" class="error">
+                    <?= implode('; ', $this->errors['farmer']['email']) ?>
+                </label>
+            <?php } ?>
+        </p>
+
+        <p>
+            <label for="farmer_userName" class="required" title="<?= $this->translate('Please enter a user name to log in with'); ?>">
+                <?= $this->translate('User Name'); ?>:
+                <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+            </label>
+            <input
+                id="farmer_userName"
+                name="farmer[userName]"
+                type="text"
+                title="<?= $this->translate('Please enter a user name to log in with'); ?>"
+                value="<?= $this->getFormValue('userName', 'farmer'); ?>"
+                class="required"
+                maxlength="50" />
+
+            <?php if (!empty($this->errors['farmer']['userName'])) { ?>
+                <label for="farmer_userName" class="error">
+                    <?= implode('; ', $this->errors['farmer']['userName']) ?>
+                </label>
+            <?php } ?>
+        </p>
+
+        <p>
+            <label for="farmer_password" class="required" title="<?= $this->translate('Please enter a password to log in with'); ?>">
+                <?= $this->translate('Password'); ?>:
+                <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+            </label>
+            <input
+                id="farmer_password"
+                name="farmer[password]"
+                type="password"
+                title="<?= $this->translate('Please enter a password to log in with'); ?>"
+                value="<?= $this->getFormValue('password', 'farmer'); ?>"
+                class="required"
+                maxlength="32" />
+
+            <?php if (!empty($this->errors['farmer']['password'])) { ?>
+                <label for="farmer_password" class="error">
+                    <?= implode('; ', $this->errors['farmer']['password']) ?>
+                </label>
+            <?php } ?>
+        </p>
+
+        <p>
+            <label for="passwordConfirm" class="required" title="<?= $this->translate('Please confirm your password'); ?>">
+                <?= $this->translate('Confirm Password'); ?>:
+                <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+            </label>
+            <input
+                id="passwordConfirm"
+                name="passwordConfirm"
+                type="password"
+                title="<?= $this->translate('Please confirm your password'); ?>"
+                value="<?= $this->getFormValue('passwordConfirm'); ?>"
+                class="required"
+                maxlength="32" />
+        </p>
+
+    </fieldset>
+
+    <p>
+        <button type="submit" class="submit fieldset-align ui-button ui-widget ui-corner-all ui-button-text-only ui-state-default">
+            <span class="ui-button-text">
+                <i class="fa fa-check"></i>
+                <?= $this->translate('Sign Up!'); ?>
+            </span>
+        </button>
+    </p>
+</form>
+
+<p id="geo" style="display: none; font-size: 78%">Your location information was kindly provided by the good people at <a href="http://maxmind.com" target="_blank">Maxmind.com</a></p>

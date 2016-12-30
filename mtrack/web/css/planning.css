@@ -1,0 +1,153 @@
+div#plan-banner {
+	position: fixed;
+	left: 0px;
+	top: 3em;
+	right: 0px;
+	height: 5em;
+	z-index: 25;
+	border-bottom: solid 1px #ccc;
+	background: white;
+	padding-left: 1em;
+}
+
+/* top level ticket lists have padding to push them below the fixed banner */
+ul.tickets {
+  padding: 1em 0;
+  padding-top: 6em;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+ul.tickets li span.loe, li.draggingTicket span.loe {
+  position: absolute;
+  right: 42px;
+  top: 4px;
+  font-weight: bold;
+  font-size: larger;
+  width: 3.5em;
+  text-align: right;
+}
+
+ul.tickets li div.tktowner {
+  float: right;
+}
+ul.tickets li img.gravatar, li.draggingTicket img.gravatar {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+}
+
+ul.tickets li, li.draggingTicket, li.draggingTicket ul li {
+  position: relative;
+  margin: 0 5px 5px 5px;
+  padding: 5px;
+  width: 28em;
+  min-height: 36px;
+  color: #444;
+  border: solid 1px #bbb;
+  background-color: #eee;
+  list-style-type: none;
+}
+
+/* inner ticket lists for children have smaller padding */
+ul.tickets ul, li.draggingTicket ul {
+  padding-top: 0.5em;
+}
+
+/* child tickets are not as wide so they fit inside their
+ * parents */
+ul.tickets li ul li, li.draggingTicket ul li {
+  width: 26em;
+}
+
+
+ul.tickets div.handle {
+  cursor: move;
+}
+
+ul.tickets li div.summary, li.draggingTicket div.summary {
+  width: 22em;
+  overflow: hidden;
+}
+
+li.draggingTicket {
+  position: absolute;
+  z-index: 100;
+  -webkit-transform:rotate(3deg);
+  -moz-transform:rotate(3deg);
+  -o-transform:rotate(3deg);
+  -ms-transform:rotate(3deg);
+}
+
+.ticketDragTarget {
+  height: 5em;
+  background-color: #444 !important;
+}
+
+#plan-rsrc-summary {
+	position: absolute;
+	font-weight: bold;
+	right: 1em;
+	top: 1em;
+}
+
+#plan-rsrc-list {
+  position: fixed;
+  top: 9em;
+  right: 1em;
+  width: 15em;
+}
+
+#plan-rsrc-list div.allocated-resource {
+  position: relative;
+  background-color: #eee;
+  border: solid 1px #ccc;
+  margin: 0.5em;
+  height: 40px;
+  padding: 0.2em;
+}
+#plan-rsrc-list div.allocated-resource span.loe {
+  font-weight: bold;
+  font-size: larger;
+  float: right;
+  padding-right: 0.5em;
+}
+#plan-rsrc-list div.allocated-resource img.gravatar {
+  float: right;
+}
+
+#plan-ticket-list {
+  width: 30em;
+  display: inline-block;
+}
+#plan-ticket-other {
+  width: 30em;
+  position: absolute;
+  left: 35em;
+  top: 3em;
+}
+
+#plan-banner #milestone-name {
+	display: inline-block;
+	text-overflow: ellipsis;
+	width: 18.8em;
+	overflow: hidden;
+	margin-top: 0.5em;
+	word-wrap: normal;
+	white-space: nowrap;
+}
+#plan-banner #newtkt {
+	position: relative;
+	top: -1.5em;
+}
+
+#plan-milestone-other-selector {
+	display: inline;
+	position: absolute;
+	left: 35em;
+	top: 1em;
+}
+#plan-milestone-other-selector select {
+  width: 30em;
+}
+

@@ -1,0 +1,412 @@
+/* Styles for wiki related markup */
+
+div#wiki-error {
+  position: fixed;
+  left: 1em;
+  right: 1em;
+  top: 3.5em;
+}
+
+a.wikipmark {
+  margin-left: 0.25em;
+  color: #eee !important;
+}
+
+a.wikipmark:hover {
+  margin-left: 0.25em;
+  color: #aaa !important;
+}
+
+div.wikipreview {
+  background-color: #eee;
+  margin-bottom: 2em;
+}
+
+ol.wikilist li, ul.wikilist li {
+  width: 50em;
+  line-height: 1.6em;
+}
+
+.underline { text-decoration: underline; }
+ol.loweralpha { list-style-type: lower-alpha; }
+ol.upperalpha { list-style-type: upper-alpha; }
+ol.lowerroman { list-style-type: lower-roman; }
+ol.upperroman { list-style-type: upper-roman; }
+ol.arabic { list-style-type: decimal; }
+
+:link, :visited {
+  text-decoration: none;
+  color: #0069D6;
+}
+
+:link:hover, :visited:hover {
+  color: #00438a;
+  text-decoration: underline;
+}
+
+h1 :link, h1 :visited,
+h2 :link, h2 :visited,
+h3 :link, h3 :visited,
+h4 :link, h4 :visited,
+h5 :link, h5 :visited,
+h6 :link, h6 :visited {
+  color: inherit;
+}
+
+.anchor:link, .anchor:visited {
+  border: none;
+  color: #d7d7d7;
+  font-size: 0.8em;
+  vertical-align: text-top;
+}
+
+* > .anchor:link, * > .anchor:visited {
+  visibility: hidden;
+}
+
+h1:hover .anchor,
+h2:hover .anchor,
+h3:hover .anchor,
+h4:hover .anchor,
+h5:hover .anchor,
+h6:hover .anchor {
+  visibility: visible;
+}
+
+table.wiki {
+  border-collapse: collapse;
+}
+
+table.wiki tr td {
+  border: solid 1px #bbb;
+  padding: 0.2em 0.5em;
+}
+
+blockquote.citation, blockquote {
+  border-left: solid 2px #b00;
+  padding-left: 0.5em;
+  margin-left: inherit;
+  font-style: italic;
+  color: #444;
+}
+
+blockquote p:first-child {
+  margin-top: 0.25em !important;
+}
+
+dt:first-child {
+  margin-top: 1em;
+}
+
+dt {
+  font-weight: bold;
+}
+
+dd {
+  margin-bottom: 1.2em;
+  margin-left: 2em;
+}
+
+textarea.code {
+  font-family: monospace;
+  font-size: 1em;
+}
+
+textarea.wiki {
+  width: 100%;
+  font-family: monospace;
+  font-size: 1em;
+}
+
+textarea.shortwiki.markItUpEditor {
+  height: 5em;
+}
+
+
+/* wiki tables; they use the report class because they were copied
+ * from the report module... */
+table.report {
+  border-collapse: collapse;
+  width: 100%;
+  clear: both;
+}
+
+table.report tr th {
+  border: solid 1px #bbb;
+  padding: 0.2em 0.5em;
+  font-weight: bold;
+  text-align: left;
+}
+table.report tr th[align=right] {
+  text-align: right;
+}
+
+table.report tr th[align=center] {
+  text-align: center;
+}
+
+
+table.report tr td {
+  border: solid 1px #bbb;
+  padding: 0.2em 0.5em;
+}
+
+table.report tr td.ticket {
+  text-align: right;
+  padding-right: 2em;
+  width: 5em;
+}
+
+table.report tr td.ord,
+table.report tr td.remaining {
+  text-align: right;
+  width: 4em;
+}
+
+table.report tr.is_child td {
+  background-color: #eee;
+}
+table.report tr.is_child td.summary {
+  padding-left: 2em;
+}
+
+table.report tr td.ticket.is_child {
+  text-align: right;
+  padding-right: 0px;
+  padding-left: 0px;
+}
+
+/* sortable report tables */
+
+table.report thead tr th {
+  cursor: pointer;
+}
+
+table.report thead tr .header {
+  background-image: url(../images/sort/bg.gif);
+  background-repeat: no-repeat;
+  background-position: center right;
+  padding-right: 16px;
+}
+
+table.report thead tr .headerSortUp {
+  background-image: url(../images/sort/asc.gif);
+}
+
+table.report thead tr .headerSortDown {
+  background-image: url(../images/sort/desc.gif);
+}
+
+table.report tbody tr.statusclosed td {
+  background-color: #eee !important;
+  color: #777;
+}
+
+table.report tbody tr.statusclosed td.summary,
+    table.report tbody tr.statusclosed td.ticket {
+  text-decoration: line-through;
+}
+
+table.report tbody tr.color1 td {
+  background-color: rgb(255, 221, 204);
+  color: rgb(170, 34, 34);
+}
+table.report tbody tr.color2 td {
+  background-color: rgb(255, 255, 187);
+  color: rgb(136, 136, 0);
+}
+table.report tbody tr.color4 td {
+  background-color: rgb(221, 255, 255);
+  color: rgb(0, 153, 153);
+}
+
+table.report tbody tr.color5 td {
+  background-color: rgb(221, 231, 255);
+  color: rgb(68, 102, 153);
+}
+
+table.report tbody tr td a {
+  color: inherit;
+}
+
+/* general reports; don't wrap lines */
+table.report tbody tr td {
+  white-space: nowrap;
+}
+
+/* general tables in a wiki, wrap */
+table.report.wiki tbody tr td {
+  white-space: normal;
+}
+
+table.report tbody tr td.summary {
+  white-space: normal;
+}
+
+div.pager button {
+  height: 16px;
+  width: 16px;
+  border: none;
+  background: transparent;
+  color: transparent;
+}
+
+div.pager button.first {
+  background-image: url(../images/sort/first.png);
+}
+div.pager button.next {
+  background-image: url(../images/sort/next.png);
+}
+div.pager button.prev {
+  background-image: url(../images/sort/prev.png);
+}
+div.pager button.last {
+  background-image: url(../images/sort/last.png);
+}
+
+#wikiview {
+  padding: 1em;
+}
+#outlinetoggle {
+  position: fixed;
+  right: 2em;
+  top: 4em;
+}
+#wikiinfo {
+  position: fixed;
+  right: 0.5em;
+  top: 6em;
+  width: 19em;
+  background: white;
+  border: solid 1px #eee;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding-top: 1em;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  padding-bottom: 1em;
+  margin-top: 8px; /* don't collide with breadcrumbs */
+}
+
+ol#outline {
+  margin-top: 1em;
+}
+
+ol#outline li {
+  list-style: none;
+  margin-left: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  margin-right: 1em;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+}
+
+ol#outline li a {
+  text-decoration: none;
+  border: none;
+  text-weight: bold;
+}
+
+ol#outline li a.H2 {
+  margin-left: 1em;
+}
+ol#outline li a.H3 {
+  margin-left: 2em;
+}
+ol#outline li a.H4 {
+  margin-left: 3em;
+}
+ol#outline li a.H5 {
+  margin-left: 4em;
+}
+ol#outline li a.H6 {
+  margin-left: 5em;
+}
+
+#wikiinfo label {
+  font-weight: bold;
+}
+#wiki-change-info img.gravatar {
+  float: right;
+}
+#wiki-change-info {
+  padding-right: 0.5em;
+  padding-bottom: 1em;
+}
+
+@media screen {
+  div.wiki-change-desc {
+    max-height: 10em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+  }
+}
+
+div.wikipage {
+  font-size: 1.1em;
+  margin: 0;
+}
+div.wikipage, div.wikipage ul, div.wikipage ol, div.wikipage p {
+  width: 48em !important;
+}
+div.wikipage li {
+  width: 45em;
+}
+
+#wiki-buttons {
+ padding-top: 1em;
+}
+
+/* make them stack on top of each other and line up
+ * nicely */
+#wiki-buttons button {
+  width: 11em;
+  display: block;
+}
+
+#wiki-buttons button.hide-until-change {
+  display: none;
+}
+
+#wikilastchange {
+  float: right;
+  padding: 0.5em;
+  margin: 1em 0 1.5em 1.5em;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  border-radius: 8px;
+  border: solid 1px #bbb;
+  background-color: #eee;
+  font-size: 0.8em;
+  width: 15em;
+}
+
+#wikilastchange a.userlink.wikilastchange {
+  float: left;
+  padding: 0 0.5em 0.5em 0;
+  border: none;
+}
+
+
+@media print {
+  /* Wiki page print styling */
+  #wikiinfo, #outlinetoggle {
+    display: none;
+  }
+  #wikiview {
+    position: relative;
+    overflow: visible;
+  }
+  select.select-hl-scheme {
+    display: none;
+  }
+  a.wikipmark {
+    display: none;
+  }
+}
+
+/* vim:ts=2:sw=2:et:
+ */
+

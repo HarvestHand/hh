@@ -1,0 +1,11 @@
+#!/bin/sh
+if test -x "$INCUB_COVERAGE" ; then
+	$INCUB_COVERAGE zero
+fi
+if test -z "$INCUB_PHP_RUNNER" ; then
+  INCUB_PHP_RUNNER=php
+fi
+$INCUB_PHP_RUNNER -c $INCUB_ROOT/build $1
+if test -x "$INCUB_COVERAGE" ; then
+	$INCUB_COVERAGE capture --testname=$1 --php $INCUB_ROOT/build/.covdata
+fi

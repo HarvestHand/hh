@@ -1,0 +1,156 @@
+<?php
+    $dateFormatter = new IntlDateFormatter(
+        Bootstrap::$locale,
+        IntlDateFormatter::LONG,
+        IntlDateFormatter::NONE
+    );
+?>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $(".paypal").button({
+                    icons : {
+                        primary:'ui-icon-locked'
+                    }
+                });
+        });
+    </script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<section class="info ui-widget ui-state-highlight ui-corner-all">
+    <div>
+        <i class="fa fa-info-circle"></i>
+        <strong><?= $this->translate('Order Placed.'); ?></strong>
+        <?= $this->translate('Thank you for your order!'); ?>
+    </div>
+</section>
+
+<?php if (!empty($this->invoice) && $this->invoice['pending']) { ?>
+<p>
+    <strong>
+        <?= $this->translate(
+        'We\'re manually processing your order and will send you an update with the final confirmed invoice ASAP.'
+    ) ?>
+    </strong>
+</p>
+<?php } ?>
+
+<p><?= $this->translate(
+        'To recap, you have added the following to your %s for %s',
+        $this->farm->getPreferences()->get('share', 'shares', 'share'),
+        $this->escape(
+            $dateFormatter->format(
+                (
+                    !empty($this->addonWeek)
+                        ? (int) $this->addonWeek->getTimestamp()
+                        : new DateTime($this->purchases->offsetGet(0)->week)
+                )
+            )
+        )
+    ); ?>:</p>
+
+<table width="100%" class="tablesorter">
+    <thead>
+        <tr>
+            <th class="ui-corner-left"><?= $this->translate('Add On'); ?></th>
+            <th><?= $this->translate('Quantity'); ?></th>
+            <th><?= $this->translate('Price'); ?></th>
+            <th class="right ui-corner-right"><?= $this->translate('Total'); ?></th>
+        </tr>
+    </thead>
+    <?php
+        $total = 0;
+        foreach ($this->purchases as $purchase) {
+            $addon = $this->purchases->getRelatedAddon($purchase['addonId']);
+    ?>
+    <tr>
+        <td><?= $this->escape($addon['name']) ?></td>
+        <td>
+            <?= $this->escape($purchase['quantity']) ?>
+            <?php if ($addon['priceBy'] == HHF_Domain_Addon::PRICE_BY_WEIGHT) { ?>
+                <?= $this->translate(strtolower($addon['unitType'])) ?>
+            <?php } ?>
+        </td>
+        <td><?php
+                if (is_numeric($addon['price'])) {
+                    echo $this->escape($this->currency($addon['price']));
+                } else {
+                    echo $this->escape($this->currency(0));
+                }
+            ?><?php if ($addon['priceBy'] == HHF_Domain_Addon::PRICE_BY_WEIGHT) { ?>
+                / <?= $this->translate(strtolower($addon['unitType'])) ?>
+            <?php } ?></td>
+        <td><?php
+                if (is_numeric($addon['price'])) {
+                    $lineTotal = $addon['price'] * $purchase['quantity'];
+
+                    echo $this->escape($this->currency($lineTotal));
+                    $total += $lineTotal;
+                } else {
+                    echo $this->escape($this->currency(0));
+                }
+            ?></td>
+    </tr>
+    <?php } ?>
+    <tfoot>
+        <tr>
+            <td colspan="3">
+                <strong><?= $this->translate('Total') ?></strong>
+            </td>
+            <td>
+                <strong><?= $this->escape($this->currency($total)) ?></strong>
+                <?php if (!empty($this->invoice) && $this->invoice['pending']) { ?>
+                    (<?= $this->translate('Estimate') ?>)
+                <?php } ?>
+            </td>
+        </tr>
+    </tfoot>
+</table>
+
+<?php if (!(!empty($this->invoice) && $this->invoice['pending'])) { ?>
+    <?php if ($this->purchases->offsetGet(0)->payment == HHF_Domain_Transaction::TYPE_PAYPAL) { ?>
+
+        <?php if (!empty($total)) { ?>
+
+        <p><?= $this->translate('To complete payment for your add ons, you will be redirected to Paypal.  Click to continue:'); ?></p>
+
+        <div align="center">
+            <?php echo $this->paypalButton(
+                $this->farm,
+                $this->translate(
+                    '%s Add On Purchase',
+                    $this->farm->name
+                ),
+                'hhi:' . $this->invoice->id,
+                $total
+            ); ?>
+        </div>
+
+        <?php } ?>
+
+        <br />
+
+    <?php } else { ?>
+
+        <?php if (!empty($total)) { ?>
+
+            <?php
+                $paymentTo = $this->farm->getPreferences()->get('paymentTo', 'shares');
+                if (empty($paymentTo)) {
+                    $paymentTo = $this->farm->name;
+                }
+            ?>
+
+            <p><?= $this->translate(
+                'To complete payment for your add ons, please provide a cheque or cash for %s when picking up your %s. Cheques should be made payable to "%s".  Please reference your customer number %s.',
+                $this->escape($this->currency($total)),
+                $this->farm->getPreferences()->get('share', 'shares', 'share'),
+                $this->escape($paymentTo),
+                $this->escape($this->farmer->getCustomer()->id)
+            ) ?></p>
+
+        <?php } ?>
+
+    <?php } ?>
+<?php } ?>

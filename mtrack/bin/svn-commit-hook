@@ -1,0 +1,104 @@
+#!/usr/bin/env php
+<?php # vim:ts=2:sw=2:et:ft=php:
+/* For licensing and copyright terms, see the file named LICENSE */
+// called as:
+// svn-commit-hook what svnrepopath svntxn [mtrackconfig]
+
+$action = $argv[1];
+$svnrepo = $argv[2];
+$svntxn = $argv[3];
+
+if (isset($argv[4])) {
+  putenv("MTRACK_CONFIG_FILE=" . $argv[4]);
+}
+
+if ($action == 'pre') {
+  $svntxn = "-t $svntxn";
+} else {
+  $svntxn = "-r $svntxn";
+}
+
+include dirname(__FILE__) . '/../inc/common.php';
+if (file_exists(MTrackConfig::get('core', 'vardir') . '/.initializing')) {
+  exit(0);
+}
+
+
+class SvnCommitHookBridge implements IMTrackCommitHookBridge,
+    IMTrackCommitHookBridge2
+{
+  var $repo;
+  var $svnlook;
+  var $svnrepo;
+  var $svntxn;
+
+  function __construct($repo, $svnrepo, $svntxn) {
+    $this->repo = $repo;
+    $this->svnlook = MTrackConfig::get('tools', 'svnlook');
+    $this->svnrepo = $svnrepo;
+    $this->svntxn = $svntxn;
+  }
+
+  function enumChangedOrModifiedFileNames() {
+    $files = array();
+    $fp = popen("$this->svnlook changed $this->svntxn $this->svnrepo", 'r');
+    while (($line = fgets($fp)) !== false) {
+      if (preg_match("/^(\w)\s+(.*)$/", trim($line), $M)) {
+        $action = $M[1];
+        $path = $M[2];
+        if ($action == 'A' || $action == 'U' || $action == 'UU') {
+          $files[] = $path;
+        }
+      }
+    }
+    return $files;
+  }
+
+  function getCommitMessage() {
+    $fp = popen("$this->svnlook log $this->svntxn $this->svnrepo", 'r');
+    $log = stream_get_contents($fp);
+    $log = preg_replace('/\[(\d+)\]/',
+      "[changeset:" . $this->repo->getBrowseRootName() . ",\$1]", $log);
+    return $log;
+  }
+
+  function getFileStream($path) {
+    return popen(
+      "$this->svnlook cat $this->svntxn $this->svnrepo $path", 'r');
+  }
+
+  function getChangesetDescriptor() {
+    $rev = trim(str_replace('-r ', '', $this->svntxn));
+    return '[changeset:' . $this->repo->getBrowseRootName() . ",$rev]";
+  }
+
+  function getChanges() {
+    $c = new MTrackCommitHookChangeEvent;
+    $rev = trim(str_replace('-r ', '', $this->svntxn));
+    $c->hash = $rev;
+    $c->rev = $this->getChangesetDescriptor();
+    $c->changelog = $this->getCommitMessage();
+    $c->changeby = MTrackAuth::whoami();
+    $c->ctime = time();
+    return array($c);
+  }
+}
+
+try {
+  $repo = MTrackRepo::loadByLocation($svnrepo);
+  $bridge = new SvnCommitHookBridge($repo, $svnrepo, $svntxn);
+  $author = trim(shell_exec("$bridge->svnlook author $svntxn $svnrepo"));
+  $author = mtrack_canon_username($author);
+  MTrackAuth::su($author);
+  $checker = new MTrackCommitChecker($repo);
+  if ($action == 'pre') {
+    $checker->preCommit($bridge);
+  } else {
+    $checker->postCommit($bridge);
+  }
+  exit(0);
+} catch (Exception $e) {
+  fwrite(STDERR, "\n" . $e->getMessage() . "\n\n ** Commit failed [$action]\n");
+  exit(1);
+}
+

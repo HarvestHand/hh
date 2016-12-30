@@ -1,0 +1,23 @@
+<?= '<?xml'; ?> version="1.0" encoding="UTF-8" <?= '?>' ?>
+<?= '<?xml-stylesheet' ?> type="text/xsl" href="/_css/sitemap.xsl" <?= '?>' ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <?php foreach ($this->urls as $url) { ?>
+    <url>
+        <?php if (!empty($url['loc'])) { ?>
+        <loc><?= $this->escape($url['loc']); ?></loc>
+        <?php } ?>
+        
+        <?php if (!empty($url['lastmod'])) { ?>
+        <lastmod><?= $this->escape($url['lastmod']); ?></lastmod>
+        <?php } ?>
+        
+        <?php if (!empty($url['changefreq'])) { ?>
+        <changefreq><?= $this->escape($url['changefreq']); ?></changefreq>
+        <?php } ?>
+        
+        <?php if (!empty($url['priority'])) { ?>
+        <priority><?= $this->escape($url['priority']); ?></priority>
+        <?php } ?>
+    </url>
+    <?php } ?>
+</urlset>

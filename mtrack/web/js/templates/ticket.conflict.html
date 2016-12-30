@@ -1,0 +1,66 @@
+<div class='modal hide ticketconflict'>
+  <style>
+    div.ticketconflict table {
+      margin-top: 1em;
+      border: solid 1px #ddd;
+      border-collapse: collapse;
+    }
+    div.ticketconflict table thead tr td {
+      text-align: center;
+      font-weight: bold;
+    }
+    div.ticketconflict table tr td {
+      vertical-align: middle;
+      border: solid 1px #ddd;
+      padding: 0.5em;
+    }
+    div.ticketconflict table tr td.fieldname {
+      color: #777;
+    }
+    div.ticketconflict table tr td.fieldvalue {
+      width: 50%;
+      text-align: center;
+    }
+
+  </style>
+  <div class='modal-header'>
+    <a class='close' data-dismiss='modal'>&times;</a>
+    <h3>Resolve Conflicting Changes: #<%- nsident %> <%- summary %></h3>
+  </div>
+  <div class='modal-body'>
+    <p>
+      A conflicting change was made:
+    </p>
+    <p>
+      <img class='gravatar' height='32' width='32'
+        src="<%= ABSWEB %>avatar.php?u=<%- updated.who %>&amp;s=32">
+      <abbr class='timeinterval' title='<%- updated.when %>'
+        ><%- updated.when %></abbr> by
+      <a href="<%= ABSWEB %>user.php/<%- updated.who %>"><%- updated.who %></a>
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <td>Field</td>
+          <td>Mine</td>
+          <td>Theirs</td>
+        </tr>
+      </thead>
+      <tbody>
+        <% _.each(conflict, function (item, field) {
+        %>
+        <tr>
+          <td class='fieldname'><%- field %></td>
+          <td class='fieldvalue mine'><%- item[0] %></td>
+          <td class='fieldvalue theirs'><%- item[1] %></td>
+        </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+  <div class='modal-footer'>
+    <button class='btn' data-dismiss='modal'>Cancel (lose all edits)</button>
+    <button class='btn mine'>Keep my changes</button>
+    <button class='btn theirs'>Take their changes</button>
+  </div>
+</div>

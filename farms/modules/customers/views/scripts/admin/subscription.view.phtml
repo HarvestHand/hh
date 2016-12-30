@@ -1,0 +1,345 @@
+<?php
+    $title = $this->translate('Customer Purchased Share');
+
+    $this->headTitle($title);
+
+    $this->loader()->append('jquery_dropdown');
+?>
+
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('.dropdown-toggle').dropdown();
+        $("body").delegate(".delete", "click", function(){
+            return window.confirm("<?= $this->translate('Are you sure you want to delete this purchased share?  No turning back after a share delete.'); ?>");
+        }).delegate(".toggle-invoice", "click", function(event){
+            var $this = $(this)
+                invoiceId = $this.data('id'),
+                $invoice = $("#invoice-" + invoiceId);
+
+            if ($invoice.is(":visible")) {
+                $invoice.hide('normal');
+                $this.text('<?= addslashes($this->translate('View')) ?>');
+            } else {
+                $invoice.show();
+                $this.text('<?= addslashes($this->translate('Hide')) ?>');
+            }
+
+            return false;
+        });
+
+        $(".tooltip").qtip({
+            style: {
+                classes: 'ui-tooltip-shadow ui-tooltip-rounded',
+                widget: true
+            },
+            position: {
+                my: 'bottom right',
+                at: 'top center',
+                method: 'flip'
+            }
+        });
+    });
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<h2 style="display: inline-block; vertical-align: middle; margin-right: 15px; margin-bottom: 11px;">
+    <span class="icon-menu icon-menu-members" style="float: left; margin: -10px 7px 0 0;"></span>
+    <?= $title ?>
+</h2>
+
+<ul class="dropdown-container" style="display: inline-block; vertical-align: top;">
+    <li class="dropdown btn-group">
+        <a href="#"
+            title="<?= $this->translate('Actions') ?>"
+            class="btn dropdown-toggle"
+            data-toggle="dropdown">
+            <?= $this->translate('Actions') ?>
+            <span class="caret"></span>
+        </a>
+
+        <ul class="dropdown-menu">
+            <li><a href="/admin/customers/subscription?a=edit&id=<?= (int) $this->object->id ?>">
+                <?= $this->translate('Edit Subscription') ?>
+            </a></li>
+            <?php if (count($this->invoices) == 1 && !$this->invoices[0]['paid']) { ?>
+            <li><a href="/admin/customers/subscription?a=payment&id=<?= (int) $this->object->id ?>&iid=<?= (int) $this->invoices[0]['id'] ?>">
+                    <?= $this->translate('Mark Invoice as Paid') ?>
+                </a></li>
+            <?php } ?>
+            <li><a href="/admin/customers/subscription?customerId=<?= (int) $this->object->customerId ?>">
+                <?= $this->translate('New Subscription') ?></a></li>
+            <?php if (!empty($this->customer->email) || !empty($this->customer->secondaryEmail)) { ?>
+            <li><a href="/admin/customers/email?id=<?= (int) $this->object->customerId ?>"><?= $this->translate('Email Customer') ?></a></li>
+            <?php } ?>
+            <li class="divider"></li>
+            <li><a class="delete" href="/admin/customers/subscription?a=delete&id=<?= (int) $this->object->id ?>"
+                   title="<?= $this->translate('Delete this subscription') ?>"><?= $this->translate('Delete') ?></a></li>
+        </ul>
+    </li>
+</ul>
+
+<?php if (!empty($this->messages)) { ?>
+    <section class="info ui-widget ui-state-highlight ui-corner-all">
+        <div>
+            <i class="fa fa-info-circle"></i>
+            <strong><?= $this->translate('Hey!'); ?></strong>
+            <?= $this->escape(implode('; ', $this->messages)); ?>
+        </div>
+    </section>
+<?php } ?>
+
+<dl class="cmxlist">
+    <dt>
+        <?= $this->translate('Customer') ?>:
+    </dt>
+    <dd>
+        <a href="/admin/customers/customer?id=<?= $this->customer->id ?>">
+            <?php if (!empty($this->customer->firstName)) { ?>
+                <?= $this->escape($this->customer->firstName) ?>,
+            <?php } ?>
+            <?= $this->escape($this->customer->lastName) ?>
+        </a>
+    </dd>
+
+    <dt>
+        <?= $this->translate('Subscription') ?>:
+    </dt>
+    <dd>
+        <?php
+            echo $this->translate(
+                'Running from calendar week %s, %s through to week %s, %s',
+                substr($this->customerShare['startWeek'], 5, 2),
+                substr($this->customerShare['startWeek'], 0, 4),
+                substr($this->customerShare['endWeek'], 5, 2),
+                substr($this->customerShare['endWeek'], 0, 4)
+            );
+        ?>
+    </dd>
+
+    <dt>
+        <?= $this->translate('Share') ?>:
+    </dt>
+    <dd>
+        <a href="/admin/shares/share?id=<?= $this->share->id ?>">
+            <?= $this->escape($this->share->name) ?></a>
+        <span class="tooltip"
+              title="<?= $this->translate(
+                  'Starts calendar week %s, %s with %s deliveries a year',
+                  $this->shareDuration->startWeek,
+                  $this->share->year,
+                  $this->shareDuration->iterations
+              ); ?>">
+            [?]
+        </span>
+    </dd>
+
+    <dt>
+        <?= $this->translate('Location') ?>:
+    </dt>
+    <dd>
+        <a href="/admin/shares/location?id=<?= $this->location->id ?>">
+            <?= $this->escape($this->location->name) ?>
+        </a>
+    </dd>
+
+    <dt>
+        <?= $this->translate('Size') ?>:
+    </dt>
+    <dd>
+        <?php
+            $found = false;
+            foreach ($this->share->sizes as $size) {
+                if ($size['id'] == $this->object['shareSizeId']) {
+                    echo $this->escape($size['name']);
+                    $found = true;
+                    break;
+                }
+            }
+
+            if (!$found) {
+                echo $this->object->shareSizeId;
+            }
+        ?>
+    </dd>
+
+    <?php if (count($this->invoices)) { ?>
+        <?php foreach ($this->invoices as $key => $invoice) { ?>
+            <dt>
+                <?php if (count($this->invoices) > 1) { ?>
+                    <?= $this->translate('Instalment #%d', $key + 1) ?>:
+                <?php } else { ?>
+                    <?= $this->translate('Invoice') ?>:
+                <?php } ?>
+            </dt>
+
+            <dd>
+                <div>
+                    <?php if (!$invoice['paid']) { ?>
+                        <?= $this->translate(
+                            'Invoice #%d with a total of %s due %s.',
+                            $invoice['id'],
+                            $this->escape($invoice['total']),
+                            $this->escape($invoice->dueDate->get('yyyy-MM-dd'))
+                        ) ?>
+                    <?php } else { ?>
+                        <?= $this->translate(
+                            'Invoice #%d with a total of %s.',
+                            $invoice['id'],
+                            $this->escape($invoice['total'])
+                        ) ?>
+                    <?php } ?>
+
+                    <ul class="dropdown-container" style="display: inline-block; vertical-align: top;">
+                        <li class="dropdown btn-group">
+                            <a href="#"
+                                title="<?= $this->translate('View / hide invoice details') ?>"
+                                data-id="<?= (int) $invoice['id'] ?>"
+                                class="btn toggle-invoice">
+                                <?= $this->translate('View') ?>
+                            </a>
+
+                            <button type="button"
+                                    class="btn dropdown-toggle"
+                                    data-toggle="dropdown">
+                                <span class="caret"></span>
+                            </button>
+
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="/admin/customers/invoice?id=<?= (int) $invoice['id'] ?>">
+                                        <?= $this->translate('View Invoice Record') ?>
+                                    </a>
+                                </li>
+                                <?php if (!$invoice['paid']) { ?>
+                                <li>
+                                    <a href="/admin/customers/subscription?a=payment&id=<?= (int) $this->object->id ?>&iid=<?= (int) $invoice['id'] ?>">
+                                        <?= $this->translate('Mark Invoice as Paid') ?>
+                                    </a>
+                                </li>
+                                <?php } ?>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <br />
+
+                    <?php if ($invoice['outstandingAmount']) { ?>
+                        <?= $this->translate(
+                            'Outstanding amount of %s due.',
+                            $this->escape($invoice['outstandingAmount'])
+                        ) ?>
+                    <?php } else { ?>
+                        <?= $this->translate('Paid in full.') ?>
+                    <?php } ?>
+                </div>
+                <table id="invoice-<?= (int) $invoice['id'] ?>"
+                       data-id="<?= (int) $invoice['id'] ?>"
+                       style="display: none; margin-top: 17px;">
+                    <thead>
+                        <tr>
+                            <th style="width: 360px">
+                                <?= $this->translate('Description') ?>
+                            </th>
+                            <th>
+                                <?= $this->translate('Unit Price') ?>
+                            </th>
+                            <th>
+                                <?= $this->translate('Qty') ?>
+                            </th>
+                            <th>
+                                <?= $this->translate('Total') ?>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($invoice->getLines() as $line) { ?>
+                        <tr>
+                            <td>
+                                <?php if ($line['referenceId'] == $this->object['id'] || $line['type'] != 'SHARE') { ?>
+                                <?= $this->escape($line['description']) ?>
+                                <?php } else { ?>
+                                <a href="/admin/customers/subscription?id=<?= (int) $line['referenceId'] ?>">
+                                    <?= $this->escape($line['description']) ?>
+                                </a>
+                                <?php } ?>
+                            </td>
+                            <td><?= $this->escape($line['unitPrice']) ?></td>
+                            <td><?= $this->escape($line['quantity']) ?></td>
+                            <td><?= $this->escape($line['total']) ?></td>
+                        </tr>
+                    <?php } ?>
+                    </tbody>
+                    <tfoot>
+                        <tr style="border-top: 1px solid #444;">
+                            <td colspan="3">
+                                <?= $this->translate('Sub-Total') ?>
+                            </td>
+                            <td>
+                                <?= $this->escape($invoice['subTotal']) ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                <?= $this->translate('Tax') ?>
+                            </td>
+                            <td>
+                                <?= $this->escape($invoice['tax']) ?>
+                            </td>
+                        </tr>
+                        <tr style="<?= ($invoice['total'] == $invoice['outstandingAmount']) ? 'font-weight: bold;' : '' ?>">
+                            <td colspan="3">
+                                <?= $this->translate(
+                                    'Total (Due %s)',
+                                    $this->escape($invoice->dueDate->get('yyyy-MM-dd'))
+                                ) ?>
+                            </td>
+                            <td>
+                                <?= $this->escape($invoice['total']) ?>
+                            </td>
+                        </tr>
+
+                        <?php if ($invoice['total'] != $invoice['outstandingAmount']) { ?>
+                        <tr style="font-weight: bold;">
+                            <td colspan="3">
+                                <?= $this->translate('Outstanding Amount Due') ?>
+                            </td>
+                            <td>
+                                <?= $this->escape($invoice['outstandingAmount']) ?>
+                            </td>
+                        </tr>
+                        <?php } ?>
+                    </tfoot>
+                </table>
+            </dd>
+        <?php } ?>
+    <?php } ?>
+    <?php if(!empty($this->customerShare->notes)){ ?>
+    <dt>
+        <?= $this->translate('Notes') ?>:
+    </dt>
+    <dd>
+        <?= $this->escape($this->customerShare->notes) ?>
+    </dd>
+    <?php } ?>
+    <dt>
+        <?= $this->translate('Added') ?>:
+    </dt>
+    <dd>
+        <time datetime="<?= $this->escape($this->object->addedDatetime->get(Zend_Date::ISO_8601)) ?>"
+              title="<?= $this->escape($this->object->addedDatetime->get(Zend_Date::ISO_8601)) ?>" pubdate="pubdate">
+            <?= $this->escape($this->object->addedDatetime->get('yyyy-MM-dd')) ?>
+        </time>
+    </dd>
+
+    <dt>
+        <?= $this->translate('Updated') ?>:
+    </dt>
+    <dd>
+        <time datetime="<?= $this->escape($this->object->updatedDatetime->get(Zend_Date::ISO_8601)) ?>"
+              title="<?= $this->escape($this->object->updatedDatetime->get(Zend_Date::ISO_8601)) ?>">
+            <?= $this->escape($this->object->updatedDatetime->get('yyyy-MM-dd')) ?>
+        </time>
+    </dd>
+</dl>

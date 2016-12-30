@@ -1,0 +1,147 @@
+<?php
+    /** @var Zend_View_Abstract $this */
+
+    $dateFormatter = new IntlDateFormatter(
+        Bootstrap::$locale,
+        IntlDateFormatter::LONG,
+        IntlDateFormatter::NONE
+    );
+?>
+
+<h1><?= $this->translate('New Add On Products Purchased From HarvestHand') ?></h1>
+
+<?php if (!empty($this->invoice) && $this->invoice['pending']) { ?>
+    <p>
+        <strong>
+            <?= $this->translate(
+                'This order is marked as pending and needs to be approved before the invoice can be finalized.  <a href="%s">Follow me</a> to review and approve the invoice.',
+                $this->farm->getBaseUri() . '/admin/customers/invoice?id=' . $this->invoice['id']
+            ) ?>
+        </strong>
+    </p>
+<?php } ?>
+
+<h3><?= $this->translate('Customer') ?></h3>
+
+<dl>
+    <dt><?= $this->translate('Name'); ?></dt>
+    <dd><?= $this->escape($this->customer->firstName); ?> <?= $this->escape($this->customer->lastName); ?></dd>
+
+    <dt><?= $this->translate('Customer #'); ?></dt>
+    <dd><?= $this->escape($this->customer->id); ?></dd>
+
+    <?php if (!empty($this->customer->email)) { ?>
+        <dt><?= $this->translate('Email'); ?></dt>
+        <dd><a href="mailto:<?= $this->escape($this->customer->email); ?>"><?= $this->escape($this->customer->email); ?></a></dd>
+    <?php } ?>
+
+    <?php if (!empty($this->customer->telephone)) { ?>
+        <dt><?= $this->translate('Telephone'); ?></dt>
+        <dd><?= $this->escape($this->customer->telephone); ?></dd>
+    <?php } ?>
+
+    <dt><?= $this->translate('Address'); ?></dt>
+    <dd>
+        <?= $this->escape($this->customer->address); ?>,
+        <?php if (!empty($this->customer->address2)) { ?><br />
+            <?= $this->escape($this->customer->address2); ?><br />
+        <?php } ?>
+        <?= $this->escape($this->customer->city); ?>, <?= $this->escape($this->customer->state); ?>  <?= $this->escape($this->customer->zipCode); ?>
+    </dd>
+
+    <?php if (!empty($this->location)) { ?>
+    <dt><?= $this->translate('Delivery Location'); ?></dt>
+    <dd>
+        <?= $this->escape($this->location->name); ?>,
+        <?= $this->escape($this->location->city); ?>
+    </dd>
+   <?php } ?>
+</dl>
+
+<h3><?= $this->translate('Products') ?></h3>
+
+<table width="100%">
+    <thead>
+        <tr>
+            <th align="left">
+                <strong><?= $this->translate('Add On'); ?></strong>
+            </th>
+            <th align="left">
+                <strong><?= $this->translate('Quantity'); ?></strong>
+            </th>
+            <th align="left">
+                <strong><?= $this->translate('Week'); ?></strong>
+            </th>
+            <th align="left">
+                <strong><?= $this->translate('Payment'); ?></strong>
+            </th>
+            <th align="left">
+                <strong><?= $this->translate('Price'); ?></strong>
+            </th>
+            <th align="left">
+                <strong><?= $this->translate('Total'); ?></strong>
+            </th>
+        </tr>
+    </thead>
+    <?php
+        $total = 0;
+        foreach ($this->purchases as $purchase) {
+            $addon = $this->purchases->getRelatedAddon($purchase['addonId']);
+    ?>
+    <tr>
+        <td><?= $this->escape($addon['name']) ?></td>
+        <td>
+            <?= $this->escape($purchase['quantity']) ?>
+            <?php if ($addon['priceBy'] == HHF_Domain_Addon::PRICE_BY_WEIGHT) { ?>
+                <?= $this->translate(strtolower($addon['unitType'])) ?>
+            <?php } ?>
+        </td>
+        <td>
+            <?php
+                $addonDate = $this->escape(
+                    $dateFormatter->format(
+                        (!empty($this->deliveryDate)
+                            ? (int) $this->deliveryDate
+                            : new DateTime($purchase['week']))
+                    )
+                );
+
+                echo $this->translate(
+                    'Week of %s',
+                    $addonDate
+                );
+            ?>
+        </td>
+        <td><?= $this->escape($purchase['payment']) ?></td>
+        <td><?php
+                if (is_numeric($addon['price'])) {
+                    echo $this->escape($this->currency($addon['price']));
+                } else {
+                    echo $this->escape($this->currency(0));
+                }
+            ?><?php if ($addon['priceBy'] == HHF_Domain_Addon::PRICE_BY_WEIGHT) { ?>
+                / <?= $this->translate(strtolower($addon['unitType'])) ?>
+            <?php } ?></td>
+        <td><?php
+                if (is_numeric($addon['price'])) {
+                    $lineTotal = $addon['price'] * $purchase['quantity'];
+
+                    echo $this->escape($this->currency($lineTotal));
+                    $total += $lineTotal;
+                } else {
+                    echo $this->escape($this->currency(0));
+                }
+            ?></td>
+    </tr>
+    <?php } ?>
+    <tfoot>
+        <tr>
+            <td colspan="5">
+                <strong><?= $this->translate('Total') ?></strong>
+            </td>
+            <td>
+                <strong><?= $this->escape($this->currency($total)) ?></strong>
+            </td>
+        </tr>
+    </tfoot>
+</table>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="HarvestHand" default="build" basedir=".">
+  <target name="build" depends="checkout,lint,php-documentor,php-codesniffer,phpmd,phpcpd,phpunit"/>
+  <target name="checkout">
+    <exec executable="svn" dir="${basedir}/source" failonerror="on">
+      <arg line="up"/>
+    </exec>
+  </target>
+  <target name="lint">
+    <apply executable="php" dir="${basedir}/source" failonerror="on" logerror="on">
+      <arg line="-l"/>
+      <fileset dir="${basedir}/source" defaultexcludes="yes" excludes="**/Zend/**,**/ZFDebug/**">
+        <include name="**/*.php"/>
+        <include name="**/*.phtml"/>
+      </fileset>
+    </apply>
+  </target>
+  <target name="php-documentor" depends="lint">
+    <exec executable="phpdoc" dir="${basedir}/source" logerror="on">
+      <arg line="--title '${ant.project.name}' -ue on -t ${basedir}/build/api -d ${basedir}/source/library -tb '/usr/share/php/data/phpUnderControl/data/phpdoc' -o HTML:Phpuc:phpuc -i 'Zend/,ZFDebug/'"/>
+    </exec>
+  </target>
+  <target name="php-codesniffer" depends="lint">
+    <exec executable="phpcs" dir="${basedir}/source" output="${basedir}/build/logs/checkstyle.xml" error="/tmp/checkstyle.error.log">
+      <arg line="--report=checkstyle --standard=Zend --extensions=php --ignore=*/tests/*,*/Zend/*,*/ZFDebug/* ${basedir}/source"/>
+    </exec>
+  </target>
+  <target name="phpcpd">
+    <exec executable="phpcpd" dir="${basedir}/source" logerror="on" failonerror="false">
+      <arg line="--suffixes php --exclude library/Zend --exclude library/ZFDebug --exclude tests --log-pmd ${basedir}/build/logs/pmd-cpd.xml ."/>
+    </exec>
+  </target>
+  <target name="phpunit" depends="lint">
+    <exec executable="phpunit" dir="${basedir}/source" failonerror="on">
+      <arg line=" --log-junit ${basedir}/build/logs/phpunit.xml --coverage-clover ${basedir}/build/logs/phpunit.coverage.xml --coverage-html ${basedir}/build/coverage --bootstrap ${basedir}/source/scripts/phpunit_auto_prepend.php ${basedir}/source/tests"/>
+    </exec>
+  </target>
+ <target name="phpmd">
+   <exec executable="phpmd" dir="${basedir}/source" output="${basedir}/build/logs/pmd.xml">
+     <arg line="--suffixes php --exclude */tests/*,*/Zend/*,*/ZFDebug/* . xml codesize,unusedcode,naming"/>
+   </exec>
+ </target>
+</project>

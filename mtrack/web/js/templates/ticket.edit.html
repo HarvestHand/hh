@@ -1,0 +1,104 @@
+<style>
+  div.ticketeditor table tr td {
+    vertical-align: middle;
+    padding-top: 0.5em;
+  }
+  div.ticketeditor table tr td.fieldvalue label {
+    font-weight: bold;
+  }
+  div.ticketeditor table tr td.fieldvalue input {
+    width: 25em;
+    font-size: 1.2em;
+  }
+  div.ticketeditor table tr td.fieldvalue textarea.multi {
+    font-size: 1.2em;
+    width: 45em;
+  }
+  div.ticketeditor table tr td.fieldvalue ul.chzn-choices {
+    border: solid 1px #d7d7d7;
+    font-size: 1.2em;
+    margin: 2px;
+  }
+  div.ticketeditor table tr td.fieldvalue div.mf_container {
+    border: solid 1px #d7d7d7;
+    margin: 2px;
+  }
+  div.ticketeditor table tr td.fieldvalue div.mf_container,
+  div.ticketeditor table tr td.fieldvalue ol.mp_list {
+    font-size: 1.2em;
+    width: 26em;
+  }
+  div.ticketeditor table tr td.fieldname {
+    width: 10em;
+    font-weight: bold;
+    text-align: right;
+  }
+  .ticketeditor .modal-header {
+    border-bottom: none;
+    padding-bottom: 0px;
+  }
+  .ticketeditor .modal-body {
+    padding-top: 0px;
+  }
+  .ticketeditor #attach-list {
+    padding-bottom: 1em;
+    margin-bottom: 1em;
+    border-bottom: solid 1px #ddd;
+  }
+</style>
+<div class='modal hide ticketeditor'>
+  <div class='modal-header'>
+    <a class='close' data-dismiss='modal'>&times;</a>
+    <% if (isnew) { %>
+    <h3>Create a new Ticket</h3>
+    <% } else { %>
+    <h3>Edit Ticket #<%- nsident %> <%- summary %></h3>
+    <% } %>
+    <ul class="nav nav-tabs">
+      <li><a href='#' data-toggle='tab'></a></li>
+      <li><a href='#tkt-edit-attachments'
+          data-toggle='tab'>Attachments</a></li>
+    </ul>
+
+  </div>
+  <div class='modal-body'>
+    <div class='tab-content'>
+      <div class='tab-pane'>
+        <table>
+          <tr>
+            <td class='fieldname'></td>
+            <td class='fieldvalue'></td>
+          </tr>
+        </table>
+      </div>
+
+      <div class='tab-pane' id='tkt-edit-attachments'>
+    <% if (isnew) { %>
+        <p>Attachments available after saving</p>
+      <% } else { %>
+        <div id='attach-list'></div>
+
+        <form action="<%= ABSWEB %>post-attachment.php" method="POST"
+          id="upload-form" enctype="multipart/form-data" target="upload_target">
+          <input type="hidden" name="object" value="ticket:<%- id %>">
+          <label for='attachments[]'>Select file(s) to be attached</label>
+          <input name="attachments[]" class='btn multi' type="file">
+          <iframe id="upload_target" name="upload_target"
+            src="<%= ABSWEB %>/post-attachment.php">
+          </iframe>
+          <br>
+          <input type="submit" class='btn'
+            id="confirm-upload" value="Upload">
+        </form>
+      <% } %>
+      </div>
+    </div>
+  </div>
+  <div class='modal-footer'>
+    <!-- button class='btn conflict'>Conflict</button -->
+    <button class='btn' data-dismiss='modal'>Cancel</button>
+    <button class='btn btn-primary'
+      ><% if (isnew) { %>Submit<% } else { %>Save<% } %> Ticket</button>
+  </div>
+</div>
+

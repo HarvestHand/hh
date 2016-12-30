@@ -1,0 +1,197 @@
+#!/usr/bin/env php
+<?php # vim:ts=2:sw=2:et:ft=php:
+/* For licensing and copyright terms, see the file named LICENSE */
+// called as:
+// git-commit-hook what [mtrackconfig]
+// the cwd is the repo path
+// a list of "oldrev newrev refname" lines is presented to us on stdin
+
+if (function_exists('date_default_timezone_set')) {
+  date_default_timezone_set('UTC');
+}
+
+$action = $argv[1];
+if (isset($argv[2])) {
+  putenv("MTRACK_CONFIG_FILE=" . $argv[2]);
+}
+include dirname(__FILE__) . '/../inc/common.php';
+if (file_exists(MTrackConfig::get('core', 'vardir') . '/.initializing')) {
+  exit(0);
+}
+
+ini_set('display_errors', true);
+$GIT = MTrackConfig::get('tools', 'git');
+# For extra debugging, uncomment this line
+#putenv("GIT_TRACE=1");
+
+class GitCommitHookBridge implements IMTrackCommitHookBridge2 {
+  var $repo;
+  var $files = array();
+  var $log = array();
+  var $commits = array();
+  var $changes = array();
+
+  function __construct($repo) {
+    global $GIT;
+
+    $this->repo = $repo;
+
+    while (($line = fgets(STDIN)) !== false) {
+      list($old, $new, $ref) = explode(' ', trim($line), 3);
+      $this->commits[] = $new;
+
+      if (preg_match("/^0+$/", $old)) {
+        // initial push to bare repo
+        $fp = run($GIT, 'log', '--no-color', '--name-status',
+          '--date=rfc', $new);
+      } else {
+        $fp = run($GIT, 'log', '--no-color', '--name-status',
+          '--date=rfc', $ref, "$old..$new");
+      }
+
+      $nofiles = false;
+      while($nofiles || ($line = fgets($fp)) !== false) {
+        $nofiles = false;
+        $props = array();
+        $log = array();
+        $files = array();
+        if (!preg_match("/^commit\s+(\S+)$/", $line, $M)) {
+          throw new Exception("unexpected output from git log: $line");
+        }
+        $rev = $M[1];
+        while (($line = fgets($fp)) !== false) {
+          $line = rtrim($line);
+          if (!strlen($line)) break;
+          if (preg_match("/^(\S+):\s*(.*)\s*$/", $line, $M)) {
+            $props[$M[1]] = $M[2];
+          }
+        }
+        while (($line = fgets($fp)) !== false) {
+          if (strncmp($line, '    ', 4)) {
+            break;
+          }
+          $this->log[] = substr($line, 4);
+          $log[] = substr($line, 4);
+        }
+        while(($line = fgets($fp)) !== false) {
+          if(preg_match("/^commit /", $line)) {
+            $nofiles = true;
+            break;
+          }
+          $line = rtrim($line);
+          if (!strlen($line)) break;
+          if (preg_match("/^(.+)\s+(\S+)\s*$/", $line, $M)) {
+            $st = $M[1];
+            $file = $M[2];
+            $this->files[$file] = $st;
+            $files[$file] = $st;
+          }
+          else {
+            throw new Exception("unexpected file from git log: $line");
+          }
+        }
+        $c = new MTrackCommitHookChangeEvent;
+        $c->rev = '[changeset:' . $this->repo->getBrowseRootName() . ",$rev]";
+        $c->hash = $rev;
+        $c->files = $files;
+        $c->changelog = join("\n", $log);
+        $c->changeby = MTrackAuth::whoami();
+        if(isset($props['Date']))
+          $c->ctime = strtotime($props['Date']);
+        if(!$c->ctime)
+          $c->ctime = time();
+        $this->changes[] = $c;
+      }
+    }
+  }
+  function getChanges() {
+    return $this->changes;
+  }
+
+  function enumChangedOrModifiedFileNames() {
+    return array_keys($this->files);
+  }
+
+  function getCommitMessage() {
+    $log = join("\n", $this->log);
+    $log = preg_replace('/\[([a-fA-F0-9]+)\]/',
+      "[changeset:" . $this->repo->getBrowseRootName() . ",\$1]", $log);
+    return $log;
+  }
+
+  function getFileStream($path) {
+    global $GIT;
+    $rev = $this->files[$path];
+
+    // There may be a better way...
+    // ls-tree to determine the hash of the file from this change:
+    $fp = run($GIT, 'ls-tree', '-r', $rev, $path);
+    $line = fgets($fp);
+    $fp = null;
+    list($mode, $type, $hash, $name) = preg_split("/\s+/", $line);
+    // now we can cat that blob
+    return run($GIT, 'cat-file', 'blob', $hash);
+  }
+
+  function getChangesetDescriptor() {
+    $cs = array();
+    foreach ($this->commits as $ref) {
+      $cs[] = '[changeset:' . $this->repo->getBrowseRootName() . ",$ref]";
+    }
+    return join(", ", $cs);
+  }
+}
+
+try {
+  $repo = MTrackRepo::loadByLocation(getcwd());
+  $bridge = new GitCommitHookBridge($repo);
+  $author = MTrackAuth::whoami();
+  if ($author == 'anonymous') {
+    throw new Exception("cannot determine who you are");
+  }
+  $author = mtrack_canon_username($author);
+  MTrackAuth::su($author);
+  $checker = new MTrackCommitChecker($repo);
+  switch ($action) {
+    case 'pre':
+      $checker->preCommit($bridge);
+      break;
+    default:
+      $checker->postCommit($bridge);
+  }
+  exit(0);
+} catch (Exception $e) {
+  fwrite(STDERR, "\n" . $e->getMessage() .
+    "\n\n" .
+    $e->getTraceAsString() .
+    "\n\n ** Commit failed [$action]\n");
+
+  exit(1);
+}
+
+function run()
+{
+  $args = func_get_args();
+  $all_args = array();
+  foreach ($args as $a) {
+    if (is_array($a)) {
+      foreach ($a as $arg) {
+         $all_args[] = $arg;
+      }
+    } else {
+      $all_args[] = $a;
+    }
+  }
+
+  $cmd = '';
+
+  foreach ($all_args as $i => $arg) {
+    if ($i > 0) {
+      $cmd .= ' ';
+    }
+    $cmd .= escapeshellarg($arg);
+  }
+
+//  echo $cmd, "\n";
+  return popen($cmd, 'r');
+}

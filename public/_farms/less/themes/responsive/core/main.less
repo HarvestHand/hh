@@ -1,0 +1,67 @@
+@import "../bootstrap/main.less";
+
+#header, #footer {
+  background-color: #5A6633;
+}
+
+#footer, #footer a {
+  color: #D6E1BD;
+  padding-bottom: 20px;
+}
+#footer-support h3 {
+  visibility: hidden;
+}
+#footer ul {
+  margin: 0 0 0 2px;
+}
+#footer ul li {
+  list-style: none;
+}
+#footer-contact ul {
+  list-style: none;
+}
+#footer-contact li {
+  float: left;
+  list-style: none;
+  padding: 0px 8px 0px 0px;
+}
+#footer-support a {
+  font-size: 73%;
+  text-align: right;
+}
+
+#header-nav {
+  border-bottom: #565A43 2px solid;
+}
+
+#header button.navbar-toggle {
+  color: #D6E1BD;
+  border-color: #D6E1BD;
+}
+
+.navbar-brand, .navbar-nav > li > a, .dropdown-menu > li > a {
+  color: #D6E1BD;
+}
+
+.nav > li > a:hover, .nav > li > a:focus {
+  color: #000000;
+}
+
+
+
+@media (min-width: @screen-sm-min) {
+  .dropdown-menu > li > a {
+    color: @navbar-default-link-hover-color;
+  }
+
+  .navbar-brand {
+    display: none;
+  }
+
+  .navbar-nav{
+    float:none;
+    margin: 0 auto;
+    display: table;
+    table-layout: fixed;
+  }
+}

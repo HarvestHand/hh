@@ -1,0 +1,805 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-09-08 07:37-0400\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Michael Caplan <michael@harvesthand.com>\n"
+"Language-Team: \n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: English\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: translate\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SearchPath-0: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers\n"
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/controllers/AdminController.php:35
+msgid "Administration"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/controllers/AdminController.php:150
+#, php-format
+msgid "Customer \"%s %s\" added!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/controllers/AdminController.php:174
+#, php-format
+msgid "Customer \"%s %s\" deleted!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/controllers/AdminController.php:291
+#, php-format
+msgid "Customer \"%s %s\" updated!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/controllers/AdminController.php:406
+#, php-format
+msgid "Subscription added!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/controllers/AdminController.php:430
+#, php-format
+msgid "Subscription deleted!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/controllers/AdminController.php:495
+#, php-format
+msgid "Subscription updated!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/controllers/PublicController.php:245
+#, php-format
+msgid "Account created!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/controllers/PublicController.php:308
+#, php-format
+msgid "Account updated!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/controllers/PublicController.php:351
+msgid "New Payment From HarvestHand"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin-sub-nav.phtml:2
+msgid "Where To?"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin-sub-nav.phtml:6
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin-sub-nav.phtml:12
+msgid "View and edit existing customers"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin-sub-nav.phtml:7
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/index.phtml:1
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/index.phtml:33
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customers.phtml:2
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customers.phtml:79
+msgid "Customers"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin-sub-nav.phtml:15
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin-sub-nav.phtml:39
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscriptions.phtml:169
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customers.phtml:186
+msgid "Edit"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin-sub-nav.phtml:20
+msgid "Add new customer"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin-sub-nav.phtml:23
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin-sub-nav.phtml:47
+msgid "New"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin-sub-nav.phtml:30
+msgid "View and edit customer subscriptions"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin-sub-nav.phtml:31
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscriptions.phtml:51
+msgid "Subscriptions"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin-sub-nav.phtml:36
+msgid "View and edit existing customer subscriptions"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin-sub-nav.phtml:44
+msgid "Add new customer subscription"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/payment-payment.phtml:1
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/payment-payment.phtml:15
+msgid "Online Account Payment"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/payment-payment.phtml:20
+msgid "Payment Confirmation"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/payment-payment.phtml:21
+msgid "Please confirm your payment!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/payment-payment.phtml:27
+#, php-format
+msgid "To complete your payment of <strong>%s</strong>, please click the below button:"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/payment-payment.phtml:36
+#, php-format
+msgid "%s Payment"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/index.phtml:1
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/index.phtml:3
+msgid "Members"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/index.phtml:9
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscriptions.phtml:60
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customers.phtml:89
+msgid "Hey!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:3
+msgid "New Account"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:7
+msgid "Edit Account"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:35
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:33
+msgid "The user name {0} is already in use"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:41
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:39
+msgid "Your passwords are not the same"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:73
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/payment.phtml:24
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:330
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:77
+msgid "Oh No!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:74
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/payment.phtml:25
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:331
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:78
+msgid "Something is not right with what you entered.  Check below for hints on how to fix things up."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:81
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:85
+msgid "Contact Info"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:84
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:92
+msgid "Please enter your first name"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:85
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:398
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:89
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:361
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customers.phtml:126
+msgid "First Name"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:86
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:107
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:128
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:169
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:190
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:255
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:322
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:354
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:378
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/payment.phtml:35
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:246
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:277
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:300
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:340
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:376
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:411
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:446
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:476
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:511
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:544
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:572
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:607
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:90
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:111
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:192
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:317
+msgid "This field is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:105
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:113
+msgid "Please enter your last name"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:106
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:418
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:110
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:381
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customers.phtml:132
+msgid "Last Name"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:126
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:134
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:147
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:154
+msgid "Please enter your address"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:127
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:148
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/payment-email-farm.phtml:17
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:131
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:151
+msgid "Address"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:167
+msgid "Please enter your town or city"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:168
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:171
+msgid "Town"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:175
+msgid "Please enter the your town or city"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:188
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:209
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:219
+msgid "Please enter your state"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:189
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:191
+msgid "State"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:233
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:240
+msgid "Please enter your zip code"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:234
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:236
+msgid "Zip Code"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:253
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:261
+msgid "Please enter your email"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:254
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:438
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/payment-email-farm.phtml:8
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:256
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:401
+msgid "Email"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:274
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:281
+msgid "Please enter your telephone"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:275
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/payment-email-farm.phtml:13
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:276
+msgid "Telephone"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:294
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:301
+msgid "Please enter your fax"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:295
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:296
+msgid "Fax"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:316
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:421
+msgid "Login Details"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:319
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:332
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:424
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:431
+msgid "Please enter a user name to log in with"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:320
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:425
+msgid "User Name"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:351
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:361
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:444
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:451
+msgid "Please enter a password to log in with"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:352
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:445
+msgid "Password"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:375
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:385
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:465
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:472
+msgid "Please confirm your password"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:376
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:466
+msgid "Confirm Password"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:395
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:358
+msgid "Secondary Contact"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:397
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:404
+msgid "Please enter a secondary contact first name"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:417
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:424
+msgid "Please enter a secondary contact last name"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:437
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:444
+msgid "Please enter a secondary contact email"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/customer.phtml:461
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:665
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:485
+msgid "Save!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/payment.phtml:2
+msgid "Make Online Account Payment"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/payment.phtml:17
+msgid "Make An Online Account Payment"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/payment.phtml:30
+msgid "Payment"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/payment.phtml:33
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/payment.phtml:41
+msgid "Please enter an amount to pay"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/payment.phtml:34
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/payment-email-farm.phtml:27
+msgid "Amount"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/payment.phtml:58
+msgid "Pay"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/payment-email-farm.phtml:1
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:339
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscriptions.phtml:95
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscriptions.phtml:97
+msgid "Customer"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/public/payment-email-farm.phtml:4
+msgid "Name"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:4
+msgid "New Subscription"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:7
+msgid "Edit Subscription"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:84
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:263
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:267
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscriptions.csv.phtml:76
+#, php-format
+msgid "Starts week %s with %s deliveries a year"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:244
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:252
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:409
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:423
+msgid "Specify which share duration this subscription is for"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:245
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:410
+msgid "Duration"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:275
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:283
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:474
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:488
+msgid "Specify which share size this subscription is for"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:276
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:475
+msgid "Size"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:298
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:306
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:444
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:456
+msgid "Specify which pickup or delivery location this subscription is for"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:299
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:445
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscriptions.phtml:109
+msgid "Location"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:336
+msgid "Subscription Info"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:338
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:352
+msgid "Please select a customer"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:374
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:387
+msgid "Please select a share"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:375
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscriptions.phtml:102
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscriptions.phtml:103
+msgid "Share"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:509
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:525
+msgid "Specify which year this subscription is for"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:510
+msgid "Year"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:542
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:553
+msgid "How many subscriptions?"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:543
+msgid "Quantity"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:570
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:584
+msgid "Please choose a payment method"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:571
+msgid "Payment Method"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:587
+msgid "Choose a payment method"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:588
+msgid "Cash or Check"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:589
+msgid "Online Payment"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:605
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:644
+msgid "Please choose a payment plan"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:606
+msgid "Payment Plan"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:615
+msgid "Payed in Full"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:620
+msgid "Weekly Installments"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:625
+msgid "Monthly Installments"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscription.phtml:632
+#, php-format
+msgid "%s Installments"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/index.phtml:40
+msgid "Summary"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/index.phtml:45
+msgid "On File"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/index.phtml:52
+msgid "Quick Jump"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/index.phtml:57
+msgid "Type customer name"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:3
+msgid "New Customer"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:6
+msgid "Edit Customer"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:88
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:96
+msgid "Please enter the first name of your customer"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:109
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:117
+msgid "Please enter the last name of your customer"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:130
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:137
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:150
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:157
+msgid "Please enter the address of your customer"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:170
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:177
+msgid "Please enter the customer's town or city"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:190
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:211
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:221
+msgid "Please enter the customer's state"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:235
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:242
+msgid "Please enter the customer's zip code"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:255
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:262
+msgid "Please enter the customer's email"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:275
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:282
+msgid "Please enter the customer's telephone"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:295
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:302
+msgid "Please enter the customer's fax"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:315
+msgid "Should this add on be disabled?"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:316
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customers.phtml:144
+msgid "Enabled"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:326
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:328
+msgid "Don't enabled enable add on for purchase"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:329
+msgid "Disable"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:336
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:345
+msgid "Add on should be enabled"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:346
+msgid "Enable"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:360
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:367
+msgid "Please enter the secondary contact first name"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:380
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:387
+msgid "Please enter the secondary contact last name"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:400
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customer.phtml:407
+msgid "Please enter the secondary contact email"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/options.phtml:1
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/options.phtml:5
+msgid "Customers Options"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscriptions.phtml:2
+msgid "Subscritions"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscriptions.phtml:45
+msgid "Are you sure you want to delete this subscription?  No turning back after a subscription delete."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscriptions.phtml:72
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscriptions.phtml:75
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscriptions.phtml:195
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscriptions.phtml:198
+msgid "Export subscribers"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscriptions.phtml:82
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscriptions.phtml:85
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscriptions.phtml:205
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscriptions.phtml:208
+msgid "Add subscriber"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscriptions.phtml:108
+msgid "Share Delivery Location"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscriptions.phtml:114
+msgid "Subscription Quantity"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscriptions.phtml:115
+msgid "Qty"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscriptions.phtml:120
+msgid "Subscription Actions"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscriptions.phtml:165
+msgid "Edit subscription"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscriptions.phtml:178
+msgid "Delete subscription"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscriptions.phtml:181
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customers.phtml:198
+msgid "Delete"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/subscriptions.phtml:220
+#, php-format
+msgid "You haven't added any subscriptions yet.  <a href=\"%s\">Let's add one now.</a>"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customers.phtml:71
+msgid "Are you sure you want to delete this customer?  No turning back after a share delete."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customers.phtml:101
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customers.phtml:104
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customers.phtml:211
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customers.phtml:214
+msgid "Export customers"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customers.phtml:111
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customers.phtml:114
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customers.phtml:221
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customers.phtml:224
+msgid "Add customer"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customers.phtml:124
+msgid "Customer First Name"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customers.phtml:131
+msgid "Customer Last Name"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customers.phtml:137
+msgid "Date Customer Added"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customers.phtml:138
+msgid "Added"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customers.phtml:143
+msgid "Customer Status"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customers.phtml:149
+msgid "Customer Actions"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customers.phtml:174
+msgid "Yes"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customers.phtml:175
+msgid "No"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customers.phtml:182
+msgid "Edit customer"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customers.phtml:195
+msgid "Delete customer"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/customers/views/scripts/admin/customers.phtml:236
+#, php-format
+msgid "You haven't added any customers yet.  <a href=\"%s\">Let's add one now.</a>"
+msgstr ""
+

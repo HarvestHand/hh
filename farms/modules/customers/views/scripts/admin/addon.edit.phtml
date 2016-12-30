@@ -1,0 +1,406 @@
+<?php
+    $title = $this->translate('New Customer Purchased Product');
+
+    $this->headTitle($title);
+
+    $this->loader()->append('jquery_validate')
+        ->append('jquery_metadata')
+        ->append('jquery_tmpl');
+    
+    $addonsSelect = array('' => '');
+
+    foreach ($this->addons as $addon) {
+        if (is_null($addon->inventory)) {
+            $addonsSelect[$addon->id] = $addon->name;
+        } else {
+            $addonsSelect[$addon->id] = $addon->name . ' (' 
+                . $this->translate('Inventory %d',  $addon->inventory) . ')';
+        }
+    }
+    
+    $customers = array('' => '');
+    
+    foreach ($this->customers as $customer) {
+        $customers[$customer->id] = $customer->lastName . ', ' . $customer->firstName;
+    }
+    
+    $addons = $this->getFormValue(null, 'durations');
+    $addons = count($addons);
+    if ($addons == 0) {
+        $addons = 1;
+    }
+?>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#addons").validate({
+            rules: {},
+            messages : {},
+            errorContainer: $("#formError")
+        });
+        
+        $(".tooltip").qtip({
+           style: {
+               classes: 'ui-tooltip-shadow ui-tooltip-rounded',
+               widget: true
+           },
+           position: {
+              my: 'bottom right',
+              at: 'top center',
+              method: 'flip'
+           }
+        });
+        
+        $("button.addon-add").click(function(){
+            var addons = $("div.addon"),
+                maxId = 0;
+
+            addons.each(function(){
+                if ($(this).data("id") > maxId) {
+                    maxId = $(this).data("id");
+                }
+            });
+
+            var tmpl = $("#addonTemplate")
+                .tmpl([{d : maxId + 1}]);
+
+            tmpl.hide().insertAfter(addons.last());
+
+            tmpl.show("normal", function() {
+                $('#addons_' + (maxId + 1) + '_addonId').focus();
+            });
+        });
+        
+        $("#addons-container").delegate("button.addon-remove", "click", function () {
+            var $this = $(this),
+                id = $this.data("id"),
+                addon = false,
+                count = 0;
+                
+            $("div.addon").each(function(){
+                if ($(this).data("id") == id) {
+                    addon = $(this);
+                }
+                ++count;
+            });
+
+            if (addon !== false) {
+                addon.hide("normal", function () {
+                    $(this).remove();
+                })
+            }
+        });
+    });
+</script>
+
+<script id="addonTemplate" type="text/x-jquery-tmpl">
+    <div class="addon box" data-id="${d}">
+        <p>
+            <label for="addons_${d}_addonId" class="required" title="<?= $this->translate('Please select a product'); ?>">
+                <?= $this->translate('Product'); ?>:
+                <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+            </label>
+
+            <?=
+                $this->formSelect(
+                    'addons[${d}][addonId]',
+                    null,
+                    array(
+                        'id' => 'addons_${d}_addonId',
+                        'class' => 'required',
+                        'title' => $this->translate('Please select a product')
+                    ),
+                    $addonsSelect
+                );
+            ?>
+        </p>
+
+        <p>
+            <label for="addons_${d}_quantity" class="required" title="<?= $this->translate('How many'); ?>">
+                <?= $this->translate('Quantity'); ?>:
+                <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+            </label>
+
+            <input
+                id="addons_${d}_quantity"
+                name="addons[${d}][quantity]"
+                type="text"
+                title="<?= $this->translate('How many subscriptions?'); ?>"
+                value="1"
+                class="required digits"
+                maxlength="2" />
+        </p>
+        
+        <p>
+            <label title="<?= $this->translate('Remove this purchased product'); ?>">
+                <?= $this->translate('Remove'); ?>:
+            </label>
+
+            <button type="button" class="ui-button ui-widget ui-corner-all ui-button-icon-only ui-state-default addon-remove" data-id="${d}">
+                <span class="ui-button-icon-primary ui-icon ui-icon-minusthick"></span>
+                <span class="ui-button-text">
+                    <?= $this->translate('Remove This Addon'); ?>
+                </span>
+            </button>
+        </p>
+    </div>
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<style>
+    .addon {
+        margin : 20px;
+    }
+</style>
+
+<h2 style="display: inline-block; vertical-align: middle; margin-right: 15px; margin-bottom: 11px;">
+    <span class="icon-menu icon-menu-members" style="float: left; margin: -10px 7px 0 0;"></span>
+    <?= $title ?>
+</h2>
+
+<section class="container_12">
+    <article class="grid_11">
+
+        <form id="addons" 
+              action="/admin/customers/addon?<?= http_build_query($_GET) ?>" 
+              method="post" 
+              accept-charset="utf-8" 
+              class="cmxform large">
+
+            <section id="formError" 
+                     class="error ui-widget ui-state-error ui-corner-all"
+                     style="<?= (!empty($this->errors)) ? '' : 'display:none;' ?>">
+                <div>
+                    <i class="fa fa-exclamation-triangle"></i>
+                    <strong><?= $this->translate('Oh No!'); ?></strong>
+                    <?= $this->translate('Something is not right with what you entered.  Check below for hints on how to fix things up.'); ?>
+                </div>
+            </section>
+
+            <fieldset>
+                <legend><?= $this->translate('Customer') ?></legend>
+                
+                <p>
+                    <label for="customerId" class="required" title="<?= $this->translate('Please select a customer'); ?>">
+                        <?= $this->translate('Customer'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+                    
+                    <?=
+                        $this->formSelect(
+                            'customerId',
+                            $this->getFormValue('customerId'),
+                            array(
+                                'id' => 'customerId',
+                                'class' => 'required',
+                                'title' => $this->translate('Please select a customer')
+                            ),
+                            $customers
+                        );
+                    ?>
+
+                    <?php if (!empty($this->errors['customerId'])) { ?>
+                    <label for="customerId" class="error">
+                        <?= implode('; ', $this->errors['customerId']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+                
+                <p>
+                    <label for="week" class="required" title="<?= $this->translate('Please set the week for this product delivery'); ?>">
+                        <?= $this->translate('Delivery Week'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+
+                    <?php
+                        $weeks = array('' => '');
+
+                        $startDate = new Zend_Date();
+                        $startDate->subWeek(1);
+                        $startDate->set(1, Zend_Date::WEEKDAY_8601);
+
+                        $range = $startDate->toString(Zend_Date::DATE_MEDIUM) . ' - ';
+                        $startDate->set(7, Zend_Date::WEEKDAY_8601);
+                        $range .= $startDate->toString(Zend_Date::DATE_MEDIUM);
+
+                        $weeks[$startDate->toString('YYYYWww')] = $range;
+
+                        for ($x = 1; $x < 4; ++$x) {
+
+                            $startDate->set(1, Zend_Date::WEEKDAY_8601);
+                            $startDate->add(1, ZEND_Date::WEEK);
+
+                            $range = $startDate->toString(Zend_Date::DATE_MEDIUM) . ' - ';
+                            $startDate->set(7, Zend_Date::WEEKDAY_8601);
+                            $range .= $startDate->toString(Zend_Date::DATE_MEDIUM);
+
+                            $weeks[$startDate->toString('YYYYWww')] = $range;
+                        }
+
+                        echo $this->formSelect(
+                            'week',
+                            $this->getFormValue('week'),
+                            array(
+                                'id' => 'week',
+                                'class' => 'required',
+                                'title' => $this->translate('Please set the week for this product delivery')
+                            ),
+                            $weeks
+                        );
+                    ?>
+
+
+                    <?php if (!empty($this->errors['week'])) { ?>
+                    <label for="week" class="error">
+                        <?= implode('; ', $this->errors['week']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+            </fieldset>
+            
+            <fieldset id="addons-container">
+                <legend><?= $this->translate('Products') ?></legend>
+                
+                <?php for ($a = 0; $a < $addons; ++$a) { ?>
+                <div class="addon box" data-id="<?= $a ?>">
+                    <p>
+                        <label for="addons_<?= $a ?>_addonId" class="required" title="<?= $this->translate('Please select a product'); ?>">
+                            <?= $this->translate('Product'); ?>:
+                            <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                        </label>
+
+                        <?=
+                            $this->formSelect(
+                                'addons[' . $a . '][addonId]',
+                                $this->getFormValue('addonId', 'addons', $a),
+                                array(
+                                    'id' => 'addons_' . $a . '_addonId',
+                                    'class' => 'required',
+                                    'title' => $this->translate('Please select a product')
+                                ),
+                                $addonsSelect
+                            );
+                        ?>
+
+                        <?php if (!empty($this->errors['addons'][$a]['addonId'])) { ?>
+                        <label for="addons_<?= $a ?>_addonId" class="error">
+                            <?= implode('; ', $this->errors['addons'][$a]['addonId']) ?>
+                        </label>
+                        <?php } ?>
+                    </p>
+
+                    <p>
+                        <label for="addons_<?= $a ?>_quantity" class="required" title="<?= $this->translate('How many'); ?>">
+                            <?= $this->translate('Quantity'); ?>:
+                            <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                        </label>
+
+                        <input
+                            id="addons_<?= $a ?>_quantity"
+                            name="addons[<?= $a ?>][quantity]"
+                            type="text"
+                            title="<?= $this->translate('How many subscriptions?'); ?>"
+                            value="<?= $this->getFormValue('quantity', 'addons', $a); ?>"
+                            class="required digits"
+                            maxlength="2" />
+
+                        <?php if (!empty($this->errors['addons'][$a]['quantity'])) { ?>
+                        <label for="addons_<?= $a ?>_quantity" class="error">
+                            <?= implode('; ', $this->errors['addons'][$a]['quantity']) ?>
+                        </label>
+                        <?php } ?>
+                    </p>
+                </div>
+                <?php } ?>
+                
+                <p>
+                    <label title="<?= $this->translate('Add another product'); ?>">
+                        <?= $this->translate('Add Another'); ?>:
+                    </label>
+
+                    <button type="button" class="ui-button ui-widget ui-corner-all ui-button-icon-only ui-state-default addon-add">
+                        <span class="ui-button-icon-primary ui-icon ui-icon-plusthick"></span>
+                        <span class="ui-button-text">
+                            <?= $this->translate('Add Product'); ?>
+                        </span>
+                    </button>
+                </p>
+                
+            </fieldset>
+            
+            <fieldset>
+                <legend><?= $this->translate('Payment') ?></legend>
+                
+                <p>
+                    <label for="payment" class="required" title="<?= $this->translate('Please choose a payment method'); ?>">
+                        <?= $this->translate('Payment Method'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+
+                    <?php
+
+                        $paymentOptions = array(
+                            '' => $this->translate('Choose a payment method'),
+                            HHF_Domain_Transaction::TYPE_CASH => $this->translate('Cash, Cheque or Bank Payment')
+                        );
+
+                        if ($this->farm->getPreferences()->get('enabled', 'paypal', false)) {
+                            $paymentOptions[HHF_Domain_Transaction::TYPE_PAYPAL] = $this->translate('Online Payment');
+                        }
+
+                        echo $this->formSelect(
+                            'payment',
+                            $this->getFormValue('payment'),
+                            array(
+                                'id' => 'payment',
+                                'class' => 'required',
+                                'title' => $this->translate('Please choose a payment method')
+                            ),
+                            $paymentOptions
+                        );
+                    ?>
+
+                    <?php if (!empty($this->errors['payment'])) { ?>
+                    <label for="payment" class="error">
+                        <?= implode('; ', $this->errors['payment']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+                
+                <p>
+                    <label for="paid">
+                        <?= $this->translate('Marked Paid?'); ?>:
+                    </label>
+                    <input
+                        id="paid"
+                        name="paid"
+                        type="checkbox"
+                        value="1"
+                        class=""
+                        <?php echo (($this->getFormValue('paid') == 1) ? 'checked="checked"' : '') ?> />
+
+                    <span class="tooltip" 
+                          title="<?= $this->translate('Mark this product as paid in full, otherwise the invoice will be marked unpaid.'); ?>">
+                        [?]
+                    </span>
+                    
+                    <?php if (!empty($this->errors['paid'])) { ?>
+                    <label for="paid" class="error">
+                        <?= implode('; ', $this->errors['paid']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+            </fieldset>
+            
+            <p>
+                <button type="submit" class="submit fieldset-align ui-button ui-widget ui-corner-all ui-button-text-only ui-state-default">
+                    <span class="ui-button-text">
+                        <i class="fa fa-check"></i>
+                        <?= $this->translate('Save!'); ?>
+                    </span>
+                </button>
+            </p>
+        </form>
+    </article>
+</section>

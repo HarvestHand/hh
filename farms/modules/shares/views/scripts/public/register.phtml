@@ -1,0 +1,148 @@
+<?php
+$this->headTitle($this->translate('%s Sign Up', ucfirst($this->farm->getPreferences()->get('share', 'shares', 'share'))));
+$this->headLink()->appendStylesheet('/_farms/css/themes/default/shares.css');
+
+$this->loader()->append('jquery_metadata')->append('jquery_validate');
+?>
+<div class="col-xs-12">
+    <h1><?= $this->translate('%s Sign Up', ucfirst($this->farm->getPreferences()->get('share', 'shares', 'share'))) ?></h1>
+
+    <?php $this->placeholder('foot')->captureStart() ?>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("p.button-nav button.next").button();
+            $("p.button-nav button.previous").button();
+            $("p.button-nav button.finish").button();
+        });
+    </script>
+    <?php $this->placeholder('foot')->captureEnd() ?>
+
+    <div id="progress">
+
+        <ol>
+            <li
+                class="<?php
+                switch($this->step){
+                    case 1:
+                        echo 'current';
+                        break;
+                    default :
+                        echo 'done';
+                        break;
+                }
+                ?>"
+                title="<?= $this->translate('Select the %s you wish to purchase',
+                                            $this->farm->getPreferences()->get('shares', 'shares', 'shares')) ?>">
+                <?= $this->translate('Choose %s', ucfirst($this->farm->getPreferences()->get('shares', 'shares', 'shares'))) ?>
+            </li>
+            <li
+                class="<?php
+                switch($this->step){
+                    case 2:
+                        echo 'current';
+                        break;
+                    case 1 :
+                        echo 'incomplete';
+                        break;
+                    default :
+                        echo 'done';
+                        break;
+                }
+                ?>"
+                title="<?= $this->translate('Confirm your %s order',
+                                            $this->farm->getPreferences()->get('share', 'shares', 'share')) ?>">
+                <?= $this->translate('Confirm Order') ?>
+            </li>
+            <li
+                class="<?php
+                switch($this->step){
+                    case 3:
+                        echo 'current';
+                        break;
+                    case 1 :
+                    case 2 :
+                        echo 'incomplete';
+                        break;
+                    default :
+                        echo 'done';
+                        break;
+                }
+                ?>"
+                title="<?= $this->translate('Pay for your ordered %s',
+                                            $this->farm->getPreferences()->get('shares', 'shares', 'shares')) ?>">
+                <?= $this->translate('Make Payment') ?>
+            </li>
+        </ol>
+    </div>
+    <div class="clearfix pad-progress"></div>
+</div>
+
+<div class="col-xs-12">
+    <?php if($this->step != 3){ ?>
+
+        <form
+            action="<?= $this->escape($this->Url()) ?>?step=<?= $this->step ?>"
+            style="width: 100%;"
+            method="post"
+            accept-charset="utf-8"
+            class="cmxform large"
+            id="register">
+
+            <input type="hidden" name="key" value="<?= $this->key ?>"/>
+
+            <section id="formError" class="error ui-widget ui-state-error ui-corner-all"
+                     style="<?= (!empty($this->errors)) ? '' : 'display:none;' ?>">
+                <div>
+                    <i class="fa fa-exclamation-triangle"></i>
+                    <strong><?= $this->translate('Oh No!'); ?></strong>
+                    <?= $this->translate('Something is not right with what you entered.  Check below for hints on how to fix things up.'); ?>
+                </div>
+            </section>
+
+            <?php
+            switch($this->step){
+                case 1:
+                default:
+                    echo $this->render('public/register-step1.phtml');
+                    ?>
+                    <?php if(!empty($this->shares)){ ?>
+                    <p class="button-nav" style="margin: 0;padding: 0;">
+                        <button style="margin: 0 0 25px 0;padding: 0;"
+                                type="submit"
+                                class="submit next">
+                            <?= $this->translate('Next'); ?>
+                        </button>
+                    </p>
+                <?php } ?>
+
+                    <?php
+                    break;
+                case 2:
+                    echo $this->render('public/register-step2.phtml');
+                    ?>
+                    <p class="button-nav" style="margin: 0;padding: 0;">
+                        <button style="margin: 0;padding: 0;"
+                                class="submit previous">
+                            <?= $this->translate('Previous'); ?>
+                        </button>
+
+                        <?php if(!$this->order->isEmpty()){ ?>
+                            <button style="margin: 0 0 25px 0;padding: 0;"
+                                    type="submit"
+                                    class="next">
+                                <?= $this->translate('Place Order'); ?>
+                            </button>
+                        <?php } ?>
+                    </p>
+
+                    <?php
+                    break;
+            }
+            ?>
+        </form>
+    <?php } else{
+        if($this->step == 3){ ?>
+            <?= $this->render('public/register-step3.phtml'); ?>
+        <?php }
+    } ?>
+</div>

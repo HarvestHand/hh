@@ -1,0 +1,56 @@
+<h1><?= $this->translate('New Payment From HarvestHand') ?></h1>
+
+<h3><?= $this->translate('Customer') ?></h3>
+
+<dl>
+    <dt><?= $this->translate('Name'); ?></dt>
+    <dd><?= $this->escape($this->customer->firstName); ?> <?= $this->escape($this->customer->lastName); ?></dd>
+
+    <dt><?= $this->translate('Customer #'); ?></dt>
+    <dd><?= $this->escape($this->customer->id); ?></dd>
+
+    <?php if (!empty($this->customer->email)) { ?>
+        <dt><?= $this->translate('Email'); ?></dt>
+        <dd><?= $this->escape($this->customer->email); ?></dd>
+    <?php } ?>
+
+    <?php if (!empty($this->customer->telephone)) { ?>
+        <dt><?= $this->translate('Telephone'); ?></dt>
+        <dd><?= $this->escape($this->customer->telephone); ?></dd>
+    <?php } ?>
+
+    <dt><?= $this->translate('Address'); ?></dt>
+    <dd>
+        <?= $this->escape($this->customer->address); ?>,
+        <?php if (!empty($this->customer->address2)) { ?><br />
+            <?= $this->escape($this->customer->address2); ?><br />
+        <?php } ?>
+        <?= $this->escape($this->customer->city); ?>, <?= $this->escape($this->customer->state); ?>  <?= $this->escape($this->customer->zipCode); ?>
+    </dd>
+    
+    <?php 
+    // Added by GW JUNE 10 / 14
+	if (!empty($this->note)) { ?>
+    	<dt><?= $this->translate('Note'); ?></dt>
+    	<dd><?= $this->escape($this->note); ?></dd>
+    <?php }?>
+</dl>
+
+<h3><?= $this->translate('Amount') ?></h3>
+
+<p>
+    <strong><?= $this->currency($this->amount) ?></strong>
+    <?php if (!empty($this->invoices)) { ?>
+        <?php if (count($this->invoices) > 1) { ?>
+            <?php
+                $invoiceIds = array();
+                foreach ($this->invoices as $invoice) {
+                    $invoiceIds[] = $invoice['id'];
+                }
+            ?>
+            (<?= $this->translate('For invoices %s', implode(', ', $invoiceIds)) ?>)
+        <?php } else { ?>
+            (<?= $this->translate('For invoice %s', $this->invoices[0]['id']) ?>)
+        <?php } ?>
+    <?php } ?>
+</p>

@@ -1,0 +1,163 @@
+<?php
+    $vcard = new File_IMC_Build_Vcard();
+
+    Bootstrap::autoloadHandler('File_IMC');
+    Bootstrap::autoloadHandler('PEAR');
+
+    $vcard->setUniqueID('HH-' . $this->customer->id);
+
+    $name = $this->customer->firstName;
+
+    if (!empty($this->customer->lastName)) {
+        $name .= ' ' . $this->customer->lastName;
+    }
+
+    $vcard->setFormattedName($name);
+
+    $vcard->setName(
+        (($this->customer->lastName) ? $this->customer->lastName : ''),
+        (($this->customer->firstName) ? $this->customer->firstName : '')
+    );
+
+    $hasAddress = false;
+
+    if (!empty($this->customer->address)) {
+        $address = $this->customer->address;
+
+        $address .= ($this->customer->address2)
+            ? ', ' . $this->customer->address2 : null;
+
+        $vcard->setValue(
+            'ADR',
+            0,
+            File_IMC::VCARD_ADR_STREET,
+            $address
+        );
+
+        $hasAddress = true;
+    } else {
+        $vcard->setValue(
+            'ADR',
+            0,
+            File_IMC::VCARD_ADR_STREET,
+            ''
+        );
+    }
+
+    if (!empty($this->customer->city)) {
+        $vcard->setValue(
+            'ADR',
+            0,
+            File_IMC::VCARD_ADR_LOCALITY,
+            $this->customer->city
+        );
+
+        $hasAddress = true;
+    } else {
+        $vcard->setValue(
+            'ADR',
+            0,
+            File_IMC::VCARD_ADR_LOCALITY,
+            ''
+        );
+    }
+
+    if (!empty($this->customer->state)) {
+        $vcard->setValue(
+            'ADR',
+            0,
+            File_IMC::VCARD_ADR_REGION,
+            $this->customer->state
+        );
+
+        $hasAddress = true;
+    } else {
+        $vcard->setValue(
+            'ADR',
+            0,
+            File_IMC::VCARD_ADR_REGION,
+            ''
+        );
+    }
+
+    if (!empty($this->customer->zipCode)) {
+        $vcard->setValue(
+            'ADR',
+            0,
+            File_IMC::VCARD_ADR_POSTCODE,
+            $this->customer->zipCode
+        );
+
+        $hasAddress = true;
+    } else {
+        $vcard->setValue(
+            'ADR',
+            0,
+            File_IMC::VCARD_ADR_POSTCODE,
+            ''
+        );
+    }
+
+    if (!empty($this->customer->country)) {
+        $vcard->setValue(
+            'ADR',
+            0,
+            File_IMC::VCARD_ADR_COUNTRY,
+            $this->customer->country
+        );
+
+        $hasAddress = true;
+    } else {
+        $vcard->setValue(
+            'ADR',
+            0,
+            File_IMC::VCARD_ADR_COUNTRY,
+            ''
+        );
+    }
+
+    if ($hasAddress) {
+        $vcard->setValue(
+            'ADR',
+            0,
+            File_IMC::VCARD_ADR_POB,
+            ''
+        );
+        $vcard->setValue(
+            'ADR',
+            0,
+            File_IMC::VCARD_ADR_EXTEND,
+            ''
+        );
+        
+        $vcard->addParam('TYPE', 'HOME');
+    }
+
+    if (!empty($this->customer->email)) {
+        $vcard->addEmail($this->customer->email);
+        $vcard->addParam('TYPE', 'HOME');
+        $vcard->addParam('TYPE', 'PREF');
+    }
+
+    if (!empty($this->customer->telephone)) {
+        $vcard->addTelephone($this->customer->telephone);
+        $vcard->addParam('TYPE', 'HOME');
+    }
+
+    if (!empty($this->customer->fax)) {
+        $vcard->addTelephone($this->customer->fax);
+        $vcard->addParam('TYPE', 'FAX');
+    }
+
+    if (!empty($this->customer->secondaryEmail)) {
+        $vcard->addEmail($this->customer->secondaryEmail);
+        $vcard->addParam('TYPE', 'HOME');
+    }
+
+    $vcard->setURL($this->farm->getBaseUri() . 'admin/customers/customer?id=' . $this->customer->id);
+
+    $vcard->setRevision($this->customer->updatedDatetime->get(Zend_Date::ISO_8601));
+
+    echo $vcard->fetch();
+
+?>

@@ -1,0 +1,35 @@
+<?php
+    $this->loader()->append('jquery_masonry');
+?>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+    $(function(){
+        $('#posts').masonry({
+            itemSelector: '.post',
+            isAnimated: !Modernizr.csstransitions,
+            isFitWidth: true
+        });
+    });
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<section itemscope itemtype="http://schema.org/Blog" id="posts">
+    <?php foreach ($this->posts as $post) { ?>
+        <?php 
+            $this->post = $post;
+            $this->trimSummary = true;
+            
+            echo $this->render('article.phtml') 
+        ?>
+
+    <?php } ?>
+</section>
+
+<?php if (count($this->paginator)) { ?>
+    
+    <section>
+        <?= $this->paginationControl($this->paginator, 'Sliding', 'posts-paging.phtml'); ?>
+    </section>
+    
+<?php } ?>

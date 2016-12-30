@@ -1,0 +1,507 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-09-08 07:31-0400\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Michael Caplan <michael@harvesthand.com>\n"
+"Language-Team: \n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: English\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-KeywordsList: translate\n"
+"X-Poedit-SearchPath-0: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default\n"
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/controllers/AdminController.php:35
+msgid "Administration"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/controllers/AdminController.php:95
+msgid "General options updated!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/controllers/AdminController.php:183
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/controllers/AdminController.php:200
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/controllers/AdminController.php:262
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/controllers/AdminController.php:273
+msgid "Unable to contact PayPal... Contact HarvestHand for... a hand."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/controllers/AdminController.php:229
+#, php-format
+msgid "Payment options updated!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/controllers/AdminController.php:324
+msgid "Got your Facebook permissions set up.  Now choose your Facebook Page and save your settings."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/controllers/AdminController.php:380
+msgid "Unable to receive uploaded file."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/controllers/AdminController.php:388
+msgid "No file received"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/controllers/ErrorController.php:47
+msgid "You seem to be lost..."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/controllers/ErrorController.php:56
+msgid "Smoked!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/public/index.phtml:1
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/public/index.phtml:3
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/index.phtml:2
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/index.phtml:51
+msgid "Dashboard"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:6
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:72
+msgid "Payment Options"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:13
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:33
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:36
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:26
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:76
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:79
+msgid "Date doesn't look right"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:82
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:142
+msgid "Oh No!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:83
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:143
+msgid "Something is not right with what you entered.  Check below for hints on how to fix things up."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:88
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options.phtml:29
+msgid "General"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:91
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:151
+msgid "Should your HarvestHand website allow you to receive money through PayPal?"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:92
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:152
+msgid "Enable PayPal?"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:93
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:163
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:198
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:219
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:240
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:261
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:282
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:153
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:200
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:235
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:256
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:277
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:298
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:319
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:340
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:360
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:380
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:400
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:444
+msgid "This field is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:102
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:104
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:162
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:164
+msgid "Don't enabled PayPal for your HarvestHand website"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:105
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:165
+msgid "Disable"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:112
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:121
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:172
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:181
+msgid "HarvestHand website should offer PayPal"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:122
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:182
+msgid "Enable"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:138
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:151
+msgid "New PayPal Account"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:145
+msgid "Add PayPal Account"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:156
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:193
+msgid "Tell us about your business so we can request a new PayPal account on your behalf."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:157
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:194
+msgid "You should also read up on the <a id=\"paypal-agreement\" title=\"PayPal User Agreement\" href=\"/admin/default/paypal/a/agreement\">PayPal User Agreement</a>"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:161
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:182
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:198
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:219
+msgid "How is your business incorporated?"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:162
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:199
+msgid "Type of Business"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:168
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:205
+msgid "Corporation"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:169
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:206
+msgid "Government"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:170
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:207
+msgid "Individual"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:171
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:208
+msgid "Non Profit"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:172
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:209
+msgid "Partnership"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:173
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:210
+msgid "Proprietorship"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:196
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:204
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:233
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:241
+msgid "What is the average price that you expect for an online transaction?"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:197
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:234
+msgid "Average Sale Price"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:217
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:225
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:254
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:262
+msgid "What is the average number of sales that you expect for a month?"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:218
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:255
+msgid "Average Sales Per Month"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:238
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:246
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:275
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:283
+msgid "What percent of sales do you expect to be online?"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:239
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:276
+msgid "% Online Sales Per Month"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:259
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:267
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:296
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:304
+msgid "What is the date that your business was established?"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:260
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:297
+msgid "Date Established"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:280
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:288
+msgid "When were you born?"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:281
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:318
+msgid "Your Birthday"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_payments.phtml:306
+msgid "Add Account"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/paypal_agreement.phtml:1
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/paypal_agreement.phtml:5
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/paypal_agreement.phtml:11
+msgid "PayPal User Agreement"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/index.phtml:37
+msgid "Defect Repaired"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/index.phtml:39
+msgid "Feature Added"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/index.phtml:60
+msgid "HavestHand Updates"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/index.phtml:83
+msgid "Website Visitor Report"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options.phtml:1
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options.phtml:5
+msgid "Options"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options.phtml:15
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:124
+msgid "Hey!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options.phtml:23
+msgid "General HarvestHand Options"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options.phtml:26
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options.phtml:37
+msgid "HarvestHand General Options"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options.phtml:35
+msgid "PayPal, Facebook, Twitter.  Set it up here."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options.phtml:38
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options.phtml:48
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options.phtml:69
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options.phtml:88
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options.phtml:107
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options.phtml:126
+msgid "Modify..."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options.phtml:42
+msgid "Payments"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options.phtml:45
+msgid "Configure how people make payments to you via HarvestHand."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options.phtml:47
+msgid "HarvestHand Payment Options"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options.phtml:54
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options.phtml:57
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options.phtml:68
+msgid "HarvestHand Customers Options"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options.phtml:60
+msgid "Customers"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options.phtml:66
+msgid "Configure your HarvestHand customers options."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options.phtml:73
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options.phtml:76
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options.phtml:87
+msgid "HarvestHand Shares Options"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options.phtml:79
+msgid "Shares"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options.phtml:85
+msgid "Configure your HarvestHand shares options."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options.phtml:92
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options.phtml:95
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options.phtml:106
+msgid "HarvestHand Website Options"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options.phtml:98
+msgid "Website"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options.phtml:104
+msgid "Configure your HarvestHand website options."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options.phtml:111
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options.phtml:114
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options.phtml:125
+msgid "HarvestHand Newsletter Options"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options.phtml:117
+msgid "Newsletter"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options.phtml:123
+msgid "Configure your HarvestHand newsletter options."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:6
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:114
+msgid "General Options"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:148
+msgid "PayPal"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:317
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:325
+msgid "What's your B-Day?"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:338
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:346
+msgid "Your PayPal ID for Micro Payments"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:339
+msgid "Micro Payments PayPal ID"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:358
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:366
+msgid "Your PayPal Certificate ID for Micro Payments"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:359
+msgid "Micro Payments Certificate ID"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:378
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:386
+msgid "Your PayPal ID for Large Payments"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:379
+msgid "General Payments PayPal ID"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:398
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:406
+msgid "Your PayPal Certificate ID for Large Payments"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:399
+msgid "General Payments Certificate ID"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:420
+msgid "Facebook"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:426
+msgid "Setup HarvestHand integration with Facebook.  HarvestHand can then post updates to your Facebook page as manage your CSA directly in HarvestHand."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:432
+msgid "Set It Up!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:438
+msgid "Uh oh.  You don't seem to have any Facebook Pages set up yet.  <a href=\"http://www.facebook.com/pages/create.php\">Go here</a> to create your Facebook Page"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:442
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:454
+msgid "Choose your Facebook Page to send posts to."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:443
+msgid "Facebook Page"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/options_general.phtml:474
+msgid "Save!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/paypal_added.phtml:1
+msgid "PayPal Account Added"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/paypal_added.phtml:3
+msgid "PayPal Account Added!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/paypal_added.phtml:6
+msgid "Your PayPal account has been successfully created!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/admin/paypal_added.phtml:8
+#, php-format
+msgid "<a href=\"%s\">Continue your HarvestHand setup</a>."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/error/500.phtml:1
+msgid "Something Wrong!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/error/500.phtml:3
+msgid "Well, this is embarrassing.  Something went boom.  We've recorded what's happened and have just dispatched the clean up crew."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/error/404.phtml:1
+msgid "Page not Found"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/default/views/scripts/error/404.phtml:3
+msgid "While you where out, we probably reorganized a few things.  The page you are looking for is no longer where it was.  Or maybe it was never here in the first place.  If you typed it in by hand, check your spelling."
+msgstr ""
+

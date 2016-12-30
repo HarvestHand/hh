@@ -1,0 +1,600 @@
+<?php
+    $this->headTitle($this->translate('Products'));
+
+    $this->loader()->append('jquery_dataTables')
+        ->append('jquery_dropdown');
+
+    Bootstrap::getZendCurrency();
+?>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+    $(document).ready(function(){
+
+        $.fn.dataTableExt.aoFeatures.push({
+            "fnInit": function(oSettings) {
+                return $('<ul class="dataTables_add dropdown-container"><li class="dropdown btn-group">' +
+                    '<a href="#" title="<?= $this->translate('Actions') ?>" class="btn">' +
+                    '<?= addslashes($this->translate('Actions')) ?></a>' +
+                    '<button type="button" class="btn dropdown-toggle" data-toggle="dropdown">' +
+                    '<span class="caret"></span></button>' +
+                    '<ul class="dropdown-menu">' +
+                    '<li><a href="/admin/shares/addon" title="<?= $this->translate('Add product') ?>">' +
+                    '<?= $this->translate('Add product') ?></a></li>' +
+                    <?php if (!empty($this->source)) { ?>
+                    '<li><a href="/admin/shares/addons/source/<?= addslashes($this->escape($this->source)) ?>/a/enable" title="<?= $this->translate('Enable Filtered Products') ?>">' +
+                    '<?= $this->translate('Enable All Filtered') ?></a></li>' +
+                    '<li><a href="/admin/shares/addons/source/<?= addslashes($this->escape($this->source)) ?>/a/disable" title="<?= $this->translate('Disable Filtered Products') ?>">' +
+                    '<?= $this->translate('Disable All Filtered') ?></a></li>' +
+                    <?php } ?>
+                    '<li><a href="/admin/shares/addons/format/csv/source/<?= addslashes($this->escape($this->source)) ?>" title="<?= $this->translate('Export to a spreadsheet program') ?>">' +
+                    '<?= $this->translate('Export to CSV') ?></a></li></ul></li></ul>')[0];
+            },
+            "cFeature": "a",
+            "sFeature": "Add"
+        });
+
+        $.fn.dataTableExt.aoFeatures.push({
+            "fnInit": function(oSettings) {
+                <?php if (!empty($this->sources) || $this->distributors->count() || ($this->vendors && $this->vendors->count())) { ?>
+                return $(
+                    '<form class="dataTables_source" action="/admin/shares/addons" method="get" style="float: left; padding-right: 10px">' +
+                        '<label for="source"><?= addslashes($this->translate('Source / Dist.')); ?>: </label>' +
+                        '<select id="source" name="" style="max-width: 300px">' +
+                        '<option></option>' +
+                        <?php if (!empty($this->sources)) { ?>
+                        '<optgroup label="<?= addslashes($this->translate('Source')) ?>">' +
+                        '<option value="S___NULL__" <?= addslashes(($this->source == 'S___NULL__' ? 'selected="selected"' : '')) ?>><?= addslashes($this->translate('Undefined')) ?></option>' +
+                        '<?php
+
+                            foreach ($this->sources as $value) {
+                                echo addslashes(
+                                    str_replace(
+                                        "\n",
+                                        '',
+                                        '<option value="S_' . $this->escape($value) . '" ' . ($this->source == 'S_' . $value ? 'selected="selected"' : null) . '>' . $this->escape($value) . '</option>'
+                                    )
+                                );
+                            }
+                        ?>' +
+                        '</optgroup>' +
+                        <?php } ?>
+                        <?php if ($this->distributors->count()) { ?>
+                        '<optgroup label="<?= addslashes($this->translate('Distributor')) ?>">' +
+                        '<option value="D___NULL__" <?= addslashes(($this->source == 'D___NULL__' ? 'selected="selected"' : '')) ?>><?= addslashes($this->translate('Undefined')) ?></option>' +
+                        '<?php
+
+                                foreach ($this->distributors as $distributor) {
+                                    $farm = $distributor->getFarm();
+                                    if ($farm->isEmpty()) {
+                                        continue;
+                                    }
+
+                                    echo addslashes(
+                                        str_replace(
+                                            "\n",
+                                            '',
+                                            '<option value="D_' . $farm['id'] . '" ' . ($this->source == 'D_' . $farm['id'] ? 'selected="selected"' : null) . '>' . $this->escape($farm['name']) . '</option>'
+                                        )
+                                    );
+                                }
+                            ?>' +
+                        '</optgroup>' +
+                        <?php } ?>
+                        <?php if ($this->vendors && $this->vendors->count()) { ?>
+                        '<optgroup label="<?= addslashes($this->translate('Vendor')) ?>">' +
+                        '<option value="V___NULL__" <?= addslashes(($this->source == 'V___NULL__' ? 'selected="selected"' : '')) ?>><?= addslashes($this->translate('Undefined')) ?></option>' +
+                        '<?php
+
+                                foreach ($this->vendors as $vendor) {
+                                    $farm = $vendor->getRelation();
+
+                                    if ($farm->isEmpty()) {
+                                        continue;
+                                    }
+
+                                    echo addslashes(
+                                        str_replace(
+                                            "\n",
+                                            '',
+                                            '<option value="V_' . $farm['id'] . '" ' . ($this->source == 'V_' . $farm['id'] ? 'selected="selected"' : null) . '>' . $this->escape($farm['name']) . '</option>'
+                                        )
+                                    );
+                                }
+                            ?>' +
+                        '</optgroup>' +
+                        <?php } ?>
+                        '</select></form> '
+                )[0];
+                <?php } ?>
+            },
+            "cFeature": "s",
+            "sFeature": "Source"
+        });
+
+        var table = $("#addons").dataTable({
+            "bJQueryUI": true,
+            "bAutoWidth": false,
+            "bDeferRender": true,
+            "bLengthChange": false,
+            "bProcessing": true,
+            "iDisplayLength": 50,
+            "iDeferLoading": <?= $this->foundRows ?>,
+            "aaSorting": [[0, "asc"]],
+            "aoColumns": [ 
+                {
+                    "sType": "html",
+                    "mDataProp": "name",
+                    "fnRender": function (oObj) {
+                        if (!oObj.aData.hasOwnProperty("id")) {
+                            return oObj.aData.name;
+                        } else {
+                            return '<a href="/admin/shares/addon?id=' + parseInt(oObj.aData.id) + '">' +
+                                oObj.aData.name.replace(/&/g,'&amp;')
+                                    .replace(/</g,'&lt;')
+                                    .replace(/>/g,'&gt;') + '</a>';
+                        }
+                    }
+                },
+                {
+                    "sType": "string",
+                    "mDataProp": "categoryName"
+                },
+                {
+                    "sType": "numeric",
+                    "mDataProp": "inventory",
+                    "bUseRendered": false,
+                    "fnRender": function (oObj) {
+                        
+                        if (!isNaN(parseFloat(oObj.aData.inventory)) && isFinite(oObj.aData.inventory)) {
+                            return parseInt(oObj.aData.inventory);
+                        } else {    
+                            return "<abbr title=\"<?= addslashes($this->translate('Unlimited')); ?>\">&infin;</abbr>";
+                        }
+                    }
+                },
+                {
+                    "sType": "string",
+                    "mDataProp": "active",
+                    "fnRender": function(oObj) {
+                        if (!oObj.aData.hasOwnProperty("id")) {
+                            return oObj.aData.active;
+                        }
+
+                        if (parseInt(oObj.aData.enabled) == false) {
+                            return "<abbr title=\"<?= addslashes($this->translate('Product Disabled')) ?>\">" +
+                                "<?= addslashes($this->translate('No')) ?></abbr>";
+                        } else if (!isNaN(parseFloat(oObj.aData.inventory)) && isFinite(oObj.aData.inventory) && oObj.aData.inventory < 1) {
+                            return "<abbr title=\"<?= addslashes($this->translate('Product Out of Inventory')) ?>\">" +
+                                "<?= addslashes($this->translate('No')) ?></abbr>";
+                        } else {
+                            if (oObj.aData.expirationDate && oObj.aData.expirationDate.length >= 10) {
+                                var dateParts = oObj.aData.expirationDate.substr(0, 10).split('-'),
+                                    expirationDate = new Date(parseInt(dateParts[0]), parseInt(dateParts[1]) - 1, parseInt(dateParts[2])),
+                                    now = new Date();
+
+                                if (expirationDate.getTime() < now.getTime()) {
+                                    return "<abbr title=\"<?= addslashes($this->translate('Product Expired')) ?>\">" +
+                                        "<?= addslashes($this->translate('No')) ?></abbr>";
+                                } else {
+                                    return "<?= addslashes($this->translate('Yes')) ?>";
+                                }
+                            } else {
+                                return "<?= addslashes($this->translate('Yes')) ?>";
+                            }
+                        }
+                    }
+                },
+                { 
+                    "bSortable": false,
+                    "bSearchable": false,
+                    "mDataProp": "_actions",
+                    "sClass": "right",
+                    "fnRender": function (oObj) {
+                        if (!oObj.aData.hasOwnProperty("id")) {
+                            return oObj.aData._actions;
+                        }
+                        var button = '<ul class="dropdown-container">' +
+                            '<li class="dropdown btn-group">' +
+                            '<a href="/admin/shares/addon?id=' + parseInt(oObj.aData.id) + '"' +
+                            ' title="<?= $this->translate('Edit product') ?>" class="btn">' +
+                            '<?= addslashes($this->translate('Edit')) ?></a>' + 
+                            '<button type="button" class="btn dropdown-toggle" data-toggle="dropdown">' +
+                            '<span class="caret"></span></button>' +
+                            '<ul class="dropdown-menu">';
+
+                        if (parseInt(oObj.aData.enabled) == false) {
+                            button += '<li><a class="enable" title="<?= addslashes($this->translate('Enable product')) ?>" ' +
+                                ' href="#" data-id="' + parseInt(oObj.aData.id) + '"><?= addslashes($this->translate('Enable')) ?></a></li>';
+
+                        } else {
+                            button += '<li><a class="disable" title="<?= addslashes($this->translate('Disable product')) ?>" ' +
+                                ' href="#" data-id="' + parseInt(oObj.aData.id) + '"><?= addslashes($this->translate('Disable')) ?></a></li>';
+                        }
+
+                        if (oObj.aData.expirationDate && oObj.aData.expirationDate.length >= 10) {
+                            var dateParts = oObj.aData.expirationDate.substr(0, 10).split('-'),
+                                expirationDate = new Date(parseInt(dateParts[0]), parseInt(dateParts[1]) - 1, parseInt(dateParts[2])),
+                                now = new Date();
+
+                            if (expirationDate.getTime() < now.getTime()) {
+                                button += '<li><a class="setExpiration" title="<?= addslashes($this->translate('Update product sale availability date')) ?>" ' +
+                                    ' href="#" data-id="' + parseInt(oObj.aData.id) + '"><?= addslashes($this->translate('Update Availability')) ?></a></li>';
+                            }
+                        }
+
+                        button += '<li class="divider"></li><li><a class="delete" title="<?= addslashes($this->translate('Delete product')) ?>" ' +
+                            ' href="/admin/shares/addon?a=delete&id=' + parseInt(oObj.aData.id) + '"><?= addslashes($this->translate('Delete')) ?></a></li>' +
+                            '</ul></li></ul>';
+
+                        return button;
+                    }
+                }
+            ],
+            "bSortClasses": false,
+            "sAjaxSource": "<?= addslashes($this->Url()) ?>",
+            "bServerSide": true,
+            "sDom": '<"H"sa<"clear">f<"clear">r<"right"ip>>t<"F"<"right"ip>>'
+        })
+        .delegate("tbody tr", "mouseover mouseout", function(e) {
+            if (e.type == "mouseover") {
+                $(e.currentTarget).addClass('hover');
+            } else {
+                $(e.currentTarget).removeClass('hover');
+            }
+        })
+        .delegate(".enable", "click", function(e) {
+            e.preventDefault();
+            var $tr = $(this).closest('tr');
+
+            $.ajax({
+                'url': '<?= addslashes($this->url()) ?>',
+                'data': {
+                    'id': $(this).data('id'),
+                    'a': 'enable'
+                },
+                error: function(jqXHR, status) {
+                    window.alert(status);
+                },
+                success: function(data) {
+                    if (data.result) {
+                        data.data._actions = null;
+                        data.data.active = null;
+
+                        var $addons = $("#addons");
+
+                        $addons.dataTable().fnUpdate(
+                            data.data,
+                            $addons.find('tr').index($tr) - 1,
+                            undefined,
+                            false
+                        );
+                    } else if (data.msg) {
+                        window.alert(data.msg);
+                    }
+                },
+                'type': 'POST'
+            });
+        })
+        .delegate(".disable", "click", function(e) {
+            e.preventDefault();
+            var $tr = $(this).closest('tr');
+
+            $.ajax({
+                'url': '<?= addslashes($this->url()) ?>',
+                'data': {
+                    'id': $(this).data('id'),
+                    'a': 'disable'
+                },
+                error: function(jqXHR, status) {
+                    window.alert(status);
+                },
+                success: function(data) {
+                    if (data.result) {
+                        data.data._actions = null;
+                        data.data.active = null;
+
+                        var $addons = $("#addons");
+
+                        $addons.dataTable().fnUpdate(
+                            data.data,
+                            $addons.find('tr').index($tr) - 1,
+                            undefined,
+                            false
+                        );
+                    } else if (data.msg) {
+                        window.alert(data.msg);
+                    }
+                },
+                'type': 'POST'
+            });
+        })
+        .delegate(".setExpiration", "click", function(e) {
+            e.preventDefault();
+            var $tr = $(this).closest('tr'),
+                id = $(this).data('id');
+
+            $('#setExpiration').dialog({
+                modal: true,
+                autoOpen: true,
+                width: 650,
+                height: 250,
+                resizable: true,
+                autoResize: true,
+                open: function() {
+                    $dialog = $(this);
+
+                    $("#expirationDate").datepicker({
+                        dateFormat: 'yy-mm-dd'
+                    });
+
+                    $(this).find('form').submit(function(e){
+                        e.preventDefault();
+
+                        var expirationDate = $('#expirationDate').val();
+
+                        $.ajax({
+                            'url': '<?= addslashes($this->url()) ?>',
+                            'data': {
+                                'id': id,
+                                'a': 'setExpiration',
+                                'expirationDate': expirationDate
+                            },
+                            error: function(jqXHR, status) {
+                                window.alert(status);
+                            },
+                            success: function(data) {
+                                if (data.result) {
+                                    data.data._actions = null;
+                                    data.data.active = null;
+
+                                    var $addons = $("#addons");
+
+                                    $addons.dataTable().fnUpdate(
+                                        data.data,
+                                        $addons.find('tr').index($tr) - 1,
+                                        undefined,
+                                        false
+                                    );
+
+                                    $dialog.dialog('close');
+                                } else if (data.msg) {
+                                    window.alert(data.msg);
+                                }
+                            },
+                            'type': 'POST'
+                        });
+                    });
+                }
+            });
+
+
+        })
+        .delegate(".delete", "click", function(){
+            return window.confirm("<?= $this->translate('Are you sure you want to delete this product?  No turning back after a product delete.'); ?>");
+        })
+        .fnSetFilteringDelay(1000);
+        
+        new FixedHeader(table);
+
+        $(".dataTables_source select").change(function(){
+            window.location = '/admin/shares/addons/source/' + $(this).val();
+        });
+
+        $('.dropdown-toggle').dropdown();
+    });
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<h2>
+    <span class="icon-menu icon-menu-shares" style="float: left; margin: -10px 7px 0 0;"></span>
+    <?= $this->translate('Products') ?>
+</h2>
+
+<section class="container_12">
+    <article class="grid_9">
+
+        <?php if (!empty($this->messages)) { ?>
+            <section class="info ui-widget ui-state-highlight ui-corner-all">
+                <div>
+                    <i class="fa fa-info-circle"></i>
+                    <strong><?= $this->translate('Hey!'); ?></strong>
+                    <?= $this->escape(implode('; ', $this->messages)); ?>
+                </div>
+            </section>
+        <?php } ?>
+
+        <?php if (count($this->addons) || !empty($this->source)) { ?>
+            <?php $today = new DateTime(); ?>
+
+            <table id="addons" class="display">
+                <thead>
+                    <tr>
+                        <th
+                            width="45%"
+                            title="<?= $this->translate('Product Name') ?>">
+                                <?= $this->translate('Name'); ?>
+                        </th>
+                        <th
+                            width="18%"
+                            title="<?= $this->translate('Product Category') ?>">
+                                <?= $this->translate('Category') ?>
+                        </th>
+                        <th
+                            width="7%"
+                            title="<?= $this->translate('Product Inventory') ?>">
+                                <?= $this->translate('Inv.') ?>
+                        </th>
+                        <th
+                            width="15%"
+                            title="<?= $this->translate('Product Available for Purchase') ?>">
+                                <?= $this->translate('Active') ?>
+                        </th>
+                        <th
+                            width="15%"
+                            title="<?= $this->translate('Product Actions') ?>">
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($this->addons as $addon) { ?>
+                        <tr>
+                            <td>
+                                <a href="/admin/shares/addon?id=<?= (int) $addon->id ?>">
+                                    <?= $this->escape($addon->name); ?>
+                                </a>
+                            </td>
+                            <td>
+                                <?= $this->escape($addon->categoryName); ?>
+                            </td>
+                            <td>
+                                <?php
+                                    if (is_numeric($addon->inventory)) {
+                                        echo $addon->inventory;
+                                    } else {
+                                        echo '<abbr title="' . $this->translate('Unlimited') . '">&infin;</abbr>';
+                                    }
+                                ?>
+                            </td>
+                            <td>
+                                <?php if (!$addon->enabled) { ?>
+                                    <abbr title="<?= $this->translate('Product Disabled') ?>">
+                                        <?= $this->translate('No'); ?>
+                                    </abbr>
+                                <?php } else if (is_numeric($addon->inventory) && $addon->inventory < 1) { ?>
+                                    <abbr title="<?= $this->translate('Product Out of Inventory') ?>">
+                                        <?= $this->translate('No'); ?>
+                                    </abbr>
+                                <?php } else { ?>
+                                    <?php
+                                        if (!empty($addon->expirationDate)) {
+                                            $expirationDate = new DateTime($addon->expirationDate);
+                                            if ($expirationDate < $today) {
+                                                ?><abbr title="<?= $this->translate('Product Expired') ?>">
+                                                    <?= $this->translate('No'); ?>
+                                                </abbr><?php
+                                            } else {
+                                                echo $this->translate('Yes');
+                                            }
+                                        } else {
+                                            echo $this->translate('Yes');
+                                        }
+                                    ?>
+                                <?php } ?>
+                            </td>
+                            <td class="right">
+                                <ul class="dropdown-container">
+                                    <li class="dropdown btn-group">
+                                        <a href="/admin/shares/addon?id=<?= (int) $addon->id ?>"
+                                           title="<?= $this->translate('Edit product') ?>"
+                                           class="btn">
+                                            <?= $this->translate('Edit') ?>
+                                        </a>
+                                        <button type="button"
+                                                class="btn dropdown-toggle"
+                                                data-toggle="dropdown">
+                                            <span class="caret"></span>
+                                        </button>
+
+                                        <ul class="dropdown-menu">
+                                            <?php if (!$addon->enabled) { ?>
+                                                <li><a class="enable"
+                                                       title="<?= $this->translate('Enable product') ?>"
+                                                       href="#" data-id="<?= (int) $addon->id ?>"><?= $this->translate('Enable') ?></a></li>
+                                            <?php } else { ?>
+                                                <li><a class="disable"
+                                                       title="<?= $this->translate('Disable product') ?>"
+                                                       href="#" data-id="<?= (int) $addon->id ?>"><?= $this->translate('Disable') ?></a></li>
+                                            <?php } ?>
+
+                                            <?php if (is_numeric($addon->inventory) && $addon->inventory < 1) { ?>
+
+                                            <?php } else { ?>
+
+                                            <?php } ?>
+
+                                            <?php
+                                                if (!empty($addon->expirationDate)) {
+                                                    $expirationDate = new DateTime($addon->expirationDate);
+                                                    if ($expirationDate < $today) {
+                                                        ?><li><a class="setExpiration"
+                                                                 title="<?= $this->translate('Update product sale availability date') ?>"
+                                                                 href="#" data-id="<?= (int) $addon->id ?>"><?= $this->translate('Update Availability') ?></a></li><?php
+                                                    }
+                                                }
+                                            ?>
+
+                                            <li class="divider"></li>
+                                            <li><a class="delete"
+                                                   title="<?= $this->translate('Delete product') ?>"
+                                                   href="/admin/shares/addon?a=delete&id=<?= (int) $addon->id ?>"><?= $this->translate('Delete') ?></a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+
+        <?php } else if (empty($this->source)) { ?>
+
+            <p><?=
+                $this->translate(
+                    'You haven\'t added a product yet.  <a href="%s">Let\'s add one now.</a>',
+                    '/admin/shares/addon'
+                ); ?></p>
+
+        <?php } ?>
+    </article>
+
+    <?= $this->render('admin-sub-nav.phtml'); ?>
+</section>
+
+
+<div id="setExpiration" title="<?= $this->translate('Update Product Availability Date') ?>" style="display: none">
+    <form action="<?= $this->escape($this->Url()) ?>"
+          method="post"
+          accept-charset="utf-8"
+          class="cmxform large"
+          autocomplete="off">
+
+        <fieldset>
+            <legend><?= $this->translate('Update Product') ?></legend>
+
+            <p>
+                <label for="expirationDate">
+                    <?= $this->translate('Available Until'); ?>:
+                </label>
+
+                <input
+                    id="expirationDate"
+                    name="expirationDate"
+                    type="text"
+                    value="<?= $this->getFormValue('expirationDate') ?>"
+                    placeholder="<?= $this->translate('E.g.: %s', date('Y-m-d', time() + 2592000)) ?>" />
+
+                    <span class="tooltip"
+                          title="<?= $this->translate('Date that this product should be no longer be available for purchase'); ?>">
+                        [?]
+                    </span>
+
+                <?php if (!empty($this->errors['expirationDate'])) { ?>
+                    <label for="expirationDate" class="error">
+                        <?= implode('; ', $this->errors['expirationDate']) ?>
+                    </label>
+                <?php } ?>
+            </p>
+        </fieldset>
+
+        <p>
+            <button type="submit" class="submit fieldset-align ui-button ui-widget ui-corner-all ui-button-text-only ui-state-default">
+                <span class="ui-button-text">
+                    <i class="fa fa-check"></i>
+                    <?= $this->translate('Update!'); ?>
+                </span>
+            </button>
+        </p>
+    </form>
+
+</div>

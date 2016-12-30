@@ -1,0 +1,560 @@
+<?php
+
+    if (empty($this->location)) {
+        $title = $this->translate('New Delivery or Pickup Location');
+
+    } else {
+        $title = $this->translate('Edit Delivery or Pickup Location');
+    }
+
+    $this->headTitle($title);
+
+    $this->loadDatejs(Bootstrap::$locale);
+
+    $appId = Bootstrap::getZendConfig()->resources->yahoo->applicationId;
+
+    $this->loader()->append('jquery_validate')
+        ->append('ckeditor_ckeditor.js')
+        ->append('ckeditor_adapters_jquery.js')
+        ->append('hhf_modules_shares_admin_location');
+
+    $this->headScript()
+	->appendFile('http://js.api.here.com/se/2.5.4/jsl.js');
+       // ->appendFile('http://api.maps.yahoo.com/ajaxymap?v=3.8&appid=' . $appId);
+?>
+
+<?php $this->placeholder('head')->captureStart() ?>
+<script type="text/javascript">
+    window.CKEDITOR_BASEPATH = '<?= (!empty($_SERVER['HTTPS'])) ? 'https://static.' : 'http://static.' ?><?= Bootstrap::$rootDomain ?>/_js/ckeditor/';
+</script>
+<?php $this->placeholder('head')->captureEnd() ?>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<style>
+    .leftSpace {
+        margin-left: 200px;
+    }
+</style>
+<script type="text/javascript">
+	
+	// hhint.com (added by GW)
+	//var appID = "MeamKyl1McRnC6BiTRpJ";
+	//var appCode = "rO1NJeVJJUr4Q86wteZMMw"; 
+	
+	// harvesthand.com 
+	var appID = "S1jRX4Odksnnqq9fQ1Qs";
+	var appCode = "xeEwrEC0xeYFClKL8rIv5g"; 
+	
+	nokia.Settings.set("app_id", appID);
+      nokia.Settings.set("app_code", appCode);
+	
+    hhf.modules.shares.admin.location.init({
+        lang: {
+            timeError: "<?= addslashes($this->translate('Time doesn\'t look right')); ?>"
+        },
+        rootDomain: "<?= addslashes(Bootstrap::$rootDomain) ?>",
+        farmCity: '<?= addslashes($this->farm->city) ?>',
+        url: "<?= addslashes($this->Url()) ?>"
+    });
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<h2>
+    <span class="icon-menu icon-menu-shares" style="float: left; margin: -10px 7px 0 0;"></span>
+    <?= $title ?>
+</h2>
+
+<section class="container_12">
+    <article class="grid_11">
+
+        <form id="location" action="/admin/shares/location?<?= http_build_query($_GET) ?>" method="post" accept-charset="utf-8" class="cmxform large">
+
+            <input id="country" type="hidden" name="country" value="<?= $this->getFormValue('country') ?>" />
+            <input id="latitudeDegrees" type="hidden" name="latitudeDegrees" value="<?= $this->getFormValue('latitudeDegrees') ?>" />
+            <input id="longitudeDegrees" type="hidden" name="longitudeDegrees" value="<?= $this->getFormValue('longitudeDegrees') ?>" />
+            <input id="latitudeDegreesTopRight" type="hidden" name="latitudeDegreesTopRight" value="<?= $this->getFormValue('latitudeDegreesTopRight') ?>" />
+            <input id="longitudeDegreesTopRight" type="hidden" name="longitudeDegreesTopRight" value="<?= $this->getFormValue('longitudeDegreesTopRight') ?>" />
+            <input id="latitudeDegreesBottomLeft" type="hidden" name="latitudeDegreesBottomLeft" value="<?= $this->getFormValue('latitudeDegreesBottomLeft') ?>" />
+            <input id="longitudeDegreesBottomLeft" type="hidden" name="longitudeDegreesBottomLeft" value="<?= $this->getFormValue('longitudeDegreesBottomLeft') ?>" />
+            <input id="latitudeDegreesBottomRight" type="hidden" name="latitudeDegreesBottomRight" value="<?= $this->getFormValue('latitudeDegreesBottomRight') ?>" />
+            <input id="longitudeDegreesBottomRight" type="hidden" name="longitudeDegreesBottomRight" value="<?= $this->getFormValue('longitudeDegreesBottomRight') ?>" />
+
+            <section id="formError" class="error ui-widget ui-state-error ui-corner-all" style="<?= (!empty($this->errors)) ? '' : 'display:none;' ?>">
+                <div>
+                    <i class="fa fa-exclamation-triangle"></i>
+                    <strong><?= $this->translate('Oh No!'); ?></strong>
+                    <?= $this->translate('Something is not right with what you entered.  Check below for hints on how to fix things up.'); ?>
+                </div>
+            </section>
+
+            <fieldset>
+                <legend><?= $this->translate('General Info') ?></legend>
+
+                <p>
+                    <label for="name" class="required">
+                        <?= $this->translate('Name'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+                    <input
+                        id="name"
+                        name="name"
+                        type="text"
+                        value="<?= $this->getFormValue('name'); ?>"
+                        class="required large"
+                        maxlength="255" />
+
+                    <span class="tooltip"
+                          title="<?= $this->translate('Enter the name of your pickup or delivery location'); ?>">
+                        [?]
+                    </span>
+
+                    <?php if (!empty($this->errors['name'])) { ?>
+                    <label for="name" class="error">
+                        <?= implode('; ', $this->errors['name']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="pricePerDelivery">
+                        <?= $this->translate('Location Price'); ?>:
+                    </label>
+                    <input
+                        id="pricePerDelivery"
+                        name="pricePerDelivery"
+                        type="text"
+                        value="<?= $this->getFormValue('pricePerDelivery'); ?>"
+                        class="number"
+                        maxlength="8" />
+
+                    <span class="tooltip"
+                          title="<?= $this->translate('Enter the price for delivery (if any) for one delivery at this location'); ?>">
+                        [?]
+                    </span>
+
+                    <?php if (!empty($this->errors['pricePerDelivery'])) { ?>
+                    <label for="pricePerDelivery" class="error">
+                        <?= implode('; ', $this->errors['pricePerDelivery']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="enabled_1" class="required">
+                        <?= $this->translate('Enabled'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+
+                    <input
+                        id="enabled_0"
+                        type="radio"
+                        name="enabled"
+                        value="0"
+                        class="required"
+                        title="<?= $this->translate('Don\'t enabled location for share purchases'); ?>"
+                        <?php echo (($this->getFormValue('enabled') == '0') ? 'checked="checked"' : '') ?> />
+                        <label for="enabled_0" class="radio" title="<?= $this->translate('Don\'t enabled location for share purchases'); ?>">
+                            <?= $this->translate('Disable'); ?>
+                        </label>
+                    <input
+                        id="enabled_1"
+                        type="radio"
+                        name="enabled"
+                        value="1"
+                        title="<?= $this->translate('Location should be enabled'); ?>"
+                        <?php
+                            $value = $this->getFormValue('enabled');
+                            if ($value === null) {
+                                echo 'checked="checked"';
+                            } else if ($value == 1) {
+                                echo 'checked="checked"';
+                            }
+                        ?> />
+                        <label for="enabled_1" class="radio" title="<?= $this->translate('Location should be enabled'); ?>">
+                            <?= $this->translate('Enable'); ?>
+                        </label>
+
+                    <span class="tooltip"
+                          title="<?= $this->translate('Should this location be disabled?'); ?>">
+                        [?]
+                    </span>
+
+                    <?php if (!empty($this->errors['enabled'])) { ?>
+                        <label for="enabled" class="error">
+                            <?= implode('; ', $this->errors['enabled']) ?>
+                        </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="details" class="" title="<?= $this->translate('Please enter any instructions about your pickup or delivery location'); ?>">
+                        <?= $this->translate('Instructions'); ?>:
+                    </label>
+                    <textarea
+                        id="details"
+                        name="details"
+                        title="<?= $this->translate('Please enter any instructions about your pickup or delivery location'); ?>"
+                        class="large"
+                        cols="10"
+                        rows="10"><?= $this->getFormValue('details'); ?></textarea>
+                    <?php if (!empty($this->errors['details'])) { ?>
+                    <label for="details" class="error">
+                        <?= implode('; ', $this->errors['details']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="memberLimit">
+                        <?= $this->translate('Member Limit'); ?>:
+                    </label>
+                    <input
+                        id="memberLimit"
+                        name="memberLimit"
+                        type="text"
+                        value="<?= $this->getFormValue('memberLimit'); ?>"
+                        class="number"
+                        maxlength="5" />
+
+                    <span class="tooltip"
+                          title="<?= $this->translate('Enter the limit (if any) for how many customers can sign up for this location'); ?>">
+                        [?]
+                    </span>
+
+                    <?php if (!empty($this->errors['memberLimit'])) { ?>
+                    <label for="memberLimit" class="error">
+                        <?= implode('; ', $this->errors['memberLimit']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+            </fieldset>
+
+            <fieldset>
+                <legend><?= $this->translate('Location') ?></legend>
+
+                <p>
+                    <label for="address">
+                        <?= $this->translate('Address'); ?>:
+                    </label>
+                    <input
+                        id="address"
+                        name="address"
+                        type="text"
+                        value="<?= $this->getFormValue('address'); ?>"
+                        class="large"
+                        maxlength="100" />
+
+                    <span class="tooltip"
+                          title="<?= $this->translate('Enter the address of your pickup or delivery location'); ?>">
+                        [?]
+                    </span>
+
+                    <?php if (!empty($this->errors['address'])) { ?>
+                    <label for="address" class="error">
+                        <?= implode('; ', $this->errors['address']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="address2">
+                        <?= $this->translate('Address'); ?>:
+                    </label>
+                    <input
+                        id="address2"
+                        name="title"
+                        type="text"
+                        value="<?= $this->getFormValue('address2'); ?>"
+                        class="large"
+                        maxlength="100" />
+
+                    <span class="tooltip"
+                          title="<?= $this->translate('Enter the address of your pickup or delivery location'); ?>">
+                        [?]
+                    </span>
+
+                    <?php if (!empty($this->errors['address2'])) { ?>
+                    <label for="address2" class="error">
+                        <?= implode('; ', $this->errors['address2']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="city" class="required">
+                        <?= $this->translate('Town'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+                    <input
+                        id="city"
+                        name="city"
+                        type="text"
+                        value="<?= $this->getFormValue('city'); ?>"
+                        class="required large"
+                        maxlength="100" />
+
+                    <span class="tooltip"
+                          title="<?= $this->translate('Enter the town or city of your pickup or delivery location'); ?>">
+                        [?]
+                    </span>
+
+                    <?php if (!empty($this->errors['city'])) { ?>
+                    <label for="city" class="error">
+                        <?= implode('; ', $this->errors['city']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="state" class="required">
+                        <?= $this->translate('State'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+                    <?php
+                        $country = $this->getFormValue('country');
+
+                        if (!empty($country)) {
+                            $country = substr($country, 0, 2);
+
+                            $states = HH_Tools_Countries::getSubdivisions($country);
+                        }
+                    ?>
+                    <?php if (!empty($states)) { ?>
+                        <?=
+                            $this->formSelect(
+                                'state',
+                                $this->getFormValue('state'),
+                                array(
+                                    'id' => 'state',
+                                    'class' => 'required'
+                                ),
+                                array('' => '') + $states
+                            );
+                        ?>
+                    <?php } else { ?>
+                        <input
+                            id="state"
+                            name="state"
+                            type="text"
+                            value="<?= $this->getFormValue('state'); ?>"
+                            class="required"
+                            maxlength="45" />
+                    <?php } ?>
+
+                    <span class="tooltip"
+                          title="<?= $this->translate('Enter the state of your pickup or delivery location'); ?>">
+                        [?]
+                    </span>
+
+                    <?php if (!empty($this->errors['state'])) { ?>
+                    <label for="state" class="error">
+                        <?= implode('; ', $this->errors['state']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="zipCode">
+                        <?= $this->translate('Zip Code'); ?>:
+                    </label>
+                    <input
+                        id="zipCode"
+                        name="zipCode"
+                        type="text"
+                        value="<?= $this->getFormValue('zipCode'); ?>"
+                        class=""
+                        maxlength="45" />
+
+                    <span class="tooltip"
+                          title="<?= $this->translate('Enter the zip code of your pickup or delivery location'); ?>">
+                        [?]
+                    </span>
+
+                    <?php if (!empty($this->errors['zipCode'])) { ?>
+                    <label for="zipCode" class="error">
+                        <?= implode('; ', $this->errors['zipCode']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="" class="" title="<?= $this->translate('Please enter the address for your delivery location above then click on the map to refresh it.'); ?>">
+                        <?= $this->translate('Map Location'); ?>:
+                    </label><br/>
+                     <span class="center">
+                        <?= $this->translate('Please enter the address for your delivery location above then click on the map to refresh it.') ?>
+                    </span>
+                    <div id="map" class="leftSpace"></div>
+                </p>
+
+            </fieldset>
+
+            <fieldset>
+                <legend><?= $this->escape($this->translate('Day & Time')) ?></legend>
+
+                <p>
+                    <label for="dayOfWeek" class="required">
+                        <?= $this->translate('Day of Week'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+                    <?php
+                        $days = Zend_Locale::getTranslationList(
+                            'days',
+                            Bootstrap::$locale
+                        );
+                        $daysOfWeek = array(
+                            '' => '',
+                            1 => $days['format']['wide']['mon'],
+                            2 => $days['format']['wide']['tue'],
+                            3 => $days['format']['wide']['wed'],
+                            4 => $days['format']['wide']['thu'],
+                            5 => $days['format']['wide']['fri'],
+                            6 => $days['format']['wide']['sat'],
+                            7 => $days['format']['wide']['sun']
+                        );
+                    ?>
+                    <?=
+                        $this->formSelect(
+                            'dayOfWeek',
+                            $this->getFormValue('dayOfWeek'),
+                            array(
+                                'id' => 'dayOfWeek',
+                                'class' => 'required'
+                            ),
+                            $daysOfWeek
+                        );
+                    ?>
+
+                    <span class="tooltip"
+                          title="<?= $this->translate('Enter the day of the week that this pickup or delivery location will be on'); ?>">
+                        [?]
+                    </span>
+
+                    <?php if (!empty($this->errors['dayOfWeek'])) { ?>
+                        <label for="dayOfWeek" class="error">
+                            <?= implode('; ', $this->errors['dayOfWeek']) ?>
+                        </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="timeStart" class="required">
+                        <?= $this->translate('Start Time'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+                    <input
+                        id="timeStart"
+                        name="timeStart"
+                        type="text"
+                        value="<?php
+                            $time = $this->getFormValue('timeStart');
+
+                            if (!empty($time)) {
+                                $date = new Zend_Date($time, 'HH:mm');
+                                echo $date->toString('h:mm a');
+                            }
+                        ?>"
+                        class="required"
+                        maxlength="8" />
+
+                    <span class="tooltip"
+                          title="<?= $this->translate('Enter the time that this pickup or delivery location will start'); ?>">
+                        [?]
+                    </span>
+
+                    <?php if (!empty($this->errors['timeStart'])) { ?>
+                    <label for="timeStart" class="error">
+                        <?= implode('; ', $this->errors['timeStart']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="timeEnd" class="required">
+                        <?= $this->translate('End Time'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+                    <input
+                        id="timeEnd"
+                        name="timeEnd"
+                        type="text"
+                        value="<?php
+                            $time = $this->getFormValue('timeEnd');
+
+                            if (!empty($time)) {
+                                $date = new Zend_Date($time, 'HH:mm');
+                                echo $date->toString('h:mm a');
+                            }
+                        ?>"
+                        class="required"
+                        maxlength="8" />
+
+                    <span class="tooltip"
+                          title="<?= $this->translate('Enter the time that this pickup or delivery location will end'); ?>">
+                        [?]
+                    </span>
+
+                    <?php if (!empty($this->errors['timeEnd'])) { ?>
+                    <label for="timeEnd" class="error">
+                        <?= implode('; ', $this->errors['timeEnd']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+            </fieldset>
+
+            <fieldset>
+
+                <legend><?= $this->translate('Add On Products') ?></legend>
+
+                <p>
+                    <label for="addOnCutOffTime">
+                        <?= $this->translate('Purchase Cut Off Time'); ?>:
+                    </label>
+                    <input
+                        id="addOnCutOffTime"
+                        name="addOnCutOffTime"
+                        type="text"
+                        value="<?php
+                            $time = $this->getFormValue('addOnCutOffTime');
+
+                            if (!empty($time) && !(is_numeric($time) && $time < 0)) {
+                                try {
+                                    $date = new Zend_Date($time, 'HH:mm');
+                                    echo $date->toString('h:mm a');
+                                } catch (Exception $exception) {
+                                    HH_Error::exceptionHandler($exception, E_USER_WARNING);
+                                }
+                            } else {
+                                echo $time;
+                            }
+                        ?>"
+                        class=""
+                        maxlength="8" />
+
+                    <span class="tooltip"
+                          title="<?= $this->translate('Enter the time of day that add on products can no longer be purchased.  You can enter 11:00 am, or a negative value like -24 to indicate that the cut off is one full day prior to delivery day.  Defaults to your globally defined cut off time in the share options section.'); ?>">
+                        [?]
+                    </span>
+
+                    <?php if (!empty($this->errors['addOnCutOffTime'])) { ?>
+                    <label for="addOnCutOffTime" class="error">
+                        <?= implode('; ', $this->errors['addOnCutOffTime']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+            </fieldset>
+
+            <p>
+                <button type="submit" class="submit fieldset-align ui-button ui-widget ui-corner-all ui-button-text-only ui-state-default">
+                    <span class="ui-button-text">
+                        <i class="fa fa-check"></i>
+                        <?= $this->translate('Save!'); ?>
+                    </span>
+                </button>
+            </p>
+        </form>
+    </article>
+</section>

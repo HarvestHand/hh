@@ -1,0 +1,352 @@
+<?php
+    $this->headTitle($this->translate('Features & Pricing'));
+    
+    $this->loader()->append('jquery_qtip');
+?>
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $(".tooltip").qtip({
+           style: {
+               classes: 'ui-tooltip-shadow ui-tooltip-rounded',
+               widget: true
+           }
+        });
+    });
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<h2><?= $this->translate('Features &amp; Pricing'); ?></h2>
+
+<table class="tablesorter">
+    <thead>
+        <tr>
+            <th width="60%" class="ui-corner-left">
+                <?= $this->translate('Features') ?>
+            </th>
+            <th class="member-group">
+                <?= $this->translate('1 to 10') ?>
+                <br />
+                <?= $this->translate('Members') ?>
+            </th>
+            <th class="member-group">
+                <?= $this->translate('11+') ?>
+                <br />
+                <?= $this->translate('Members') ?>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="feature-area">
+            <td colspan="5">
+                <?= $this->translate('Website') ?>
+            </td>
+        </tr>
+        <tr class="odd">
+            <td class="feature">
+                <?= $this->translate('HarvestHand domain name') ?>
+                <span class="tooltip" title="<?= $this->translate('Your own http://farm.harvesthand.com/ domain name') ?>">[?]</span>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+        </tr>
+        <tr>
+            <td class="feature">
+                <?= $this->translate('Custom domain name') ?>
+                <span class="tooltip" title="<?= $this->translate('Run HarvestHand off of your own custom domain name like http://myCSAfarm.com/.  You supply the domain name.') ?>">[?]</span>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+        </tr>
+        <tr class="odd">
+            <td class="feature">
+                <?= $this->translate('Website builder') ?> 
+                <span class="tooltip" title="<?= $this->translate('\'Add water and enjoy\' website construction kit. No special skills required (other than how to use a web browser)') ?>">[?]</span>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+        </tr>
+        <tr>
+            <td class="feature">
+                <?= $this->translate('Blog') ?>
+                <span class="tooltip" title="<?= $this->translate('Life on the farm updates for members and prospects') ?>">[?]</span>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+        </tr>
+        <tr class="odd">
+            <td class="feature">
+                <?= $this->translate('Contact page') ?>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+        </tr>
+        <tr>
+            <td class="feature">
+                <?= $this->translate('Links Widget') ?>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+        </tr>
+        <tr class="odd">
+            <td class="feature">
+                <?= $this->translate('Website usage stats') ?>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+        </tr>
+        <tr>
+            <td class="feature">
+                <?= $this->translate('Social media tie ins') ?>
+                <span class="tooltip" title="<?= $this->translate('Publish to your Facebook and Twitter account directly from HarvestHand.') ?>">[?]</span>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+        </tr>
+        <tr class="odd">
+            <td class="feature">
+                <?= $this->translate('Events calendar') ?>
+            </td>
+            <td class="member-group">
+                <span class="ui-icon ui-icon-lightbulb feature-check tooltip" title="<?= $this->translate('Coming soon.') ?>"></span>
+            </td>
+            <td class="member-group">
+                <span class="ui-icon ui-icon-lightbulb feature-check tooltip" title="<?= $this->translate('Coming soon.') ?>"></span>
+            </td>
+        </tr>
+        <tr class="feature-area">
+            <td colspan="5">
+                <?= $this->translate('Membership Management') ?>
+            </td>
+        </tr>
+        <tr class="odd">
+            <td class="feature">
+                <?= $this->translate('Membership share registration') ?>
+                <span class="tooltip" title="<?= $this->translate('You define the shares, share options, and payment terms.  Optionally collect payment online (PayPal)') ?>">[?]</span>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+        </tr>
+        <tr>
+            <td class="feature">
+                <?= $this->translate('Members only password protected area') ?>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+        </tr>
+        <tr class="odd">
+            <td class="feature">
+                <?= $this->translate('Make online payments') ?>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+        </tr>
+        <tr>
+            <td class="feature">
+                <?= $this->translate('Update contact information') ?>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+        </tr>
+        <tr class="odd">
+            <td class="feature">
+                <?= $this->translate('Upcoming shares') ?>
+                <span class="tooltip" title="<?= $this->translate('Members and non members can view the contents of upcoming shares.') ?>">[?]</span>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+        </tr>
+        <tr>
+            <td class="feature">
+                <?= $this->translate('Order new shares or share add ons') ?>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+        </tr>
+        <tr class="odd">
+            <td class="feature">
+                <?= $this->translate('View invoices') ?>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+        </tr>
+        <tr>
+            <td class="feature">
+                <?= $this->translate('Set "out of town" status for future share deliveries') ?>
+            </td>
+            <td class="member-group">
+                <span class="ui-icon ui-icon-lightbulb feature-check tooltip" title="<?= $this->translate('Coming soon.') ?>"></span>
+            </td>
+            <td class="member-group">
+                <span class="ui-icon ui-icon-lightbulb feature-check tooltip" title="<?= $this->translate('Coming soon.') ?>"></span>
+            </td>
+        </tr>
+        <tr class="odd">
+            <td class="feature">
+                <?= $this->translate('Share Newsletter') ?>
+                <span class="tooltip" title="<?= $this->translate('Build your own CSA newsletter with your upcoming share information.') ?>">[?]</span>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+        </tr>
+        <tr class="feature-area">
+            <td colspan="5">
+                <?= $this->translate('Share Management') ?>
+            </td>
+        </tr>
+        <tr class="odd">
+            <td class="feature">
+                <?= $this->translate('Manage your weekly, semi-monthly, or monthly shares') ?>
+                <span class="tooltip" title="<?= $this->translate('Publish basket contents to your website or RSS news feed.') ?>">[?]</span>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+        </tr>
+        <tr>
+            <td class="feature">
+                <?= $this->translate('Drop off locations') ?>
+                <span class="tooltip" title="<?= $this->translate('You define your drop off locations, special pickup instructions, and map.') ?>">[?]</span>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+        </tr>
+        <tr class="odd">
+            <td class="feature">
+                <?= $this->translate('Share location delivery lists') ?>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+        </tr>
+        <tr class="feature-area">
+            <td colspan="5">
+                <?= $this->translate('Share Add Ons') ?>
+            </td>
+        </tr>
+        <tr class="odd">
+            <td class="feature">
+                <?= $this->translate('Manage add on inventory and prices') ?>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+        </tr>
+        <tr>
+            <td class="feature">
+                <?= $this->translate('Member add ons online purchasing') ?>
+                <span class="tooltip" title="<?= $this->translate('Members can purchase add ons online in conjunction with future share pickups and optionally pay online as well.') ?>">[?]</span>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+        </tr>
+        <tr class="odd">
+            <td class="feature">
+                <?= $this->translate('Purchase reporting') ?>
+                <span class="tooltip" title="<?= $this->translate('Add ons are added to share location delivery lists.') ?>">[?]</span>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+            <td class="member-group">
+                <i class="fa fa-check feature-check tooltip" title="<?= $this->translate('It\'s in there.') ?>"></i>
+            </td>
+        </tr>
+        <tr class="feature-area">
+            <td colspan="5">
+                <?= $this->translate('Pricing') ?>
+            </td>
+        </tr>
+        <tr class="odd">
+            <td>
+            </td>
+            <td class="member-group">
+                <?= $this->translate('<strong>Free!</strong>'); ?>
+            </td>
+            <td class="member-group">
+                <?= $this->translate('<strong>$10 / Member Per Year</strong>. First 10 members are free.'); ?>
+            </td>
+        </tr>
+    </tbody>
+</table>

@@ -1,0 +1,191 @@
+<?php
+    $dateFormatter = new IntlDateFormatter(
+        Bootstrap::$locale,
+        IntlDateFormatter::LONG,
+        IntlDateFormatter::NONE
+    );
+?>
+<h1><?= $this->translate('New Add On Products Purchased'); ?></h1>
+
+<h3><?= $this->translate('Thank you for your order!'); ?></h3>
+
+<?php if ($this->invoice['pending']) { ?>
+<p>
+    <strong>
+        <?= $this->translate(
+        'We\'re manually processing your order and will send you an update with the final confirmed invoice ASAP.'
+    ) ?>
+    </strong>
+</p>
+<?php } elseif (!empty($this->params['wasPending'])) { ?>
+<p>
+    <strong>
+        <?= $this->translate(
+        'Your order has been processed!  Please review the final invoice and payment details below.'
+    ) ?>
+    </strong>
+</p>
+<?php } ?>
+
+<p><?= $this->translate(
+        'To recap, you have added the following to your %s for %s',
+        $this->farm->getPreferences()->get('share', 'shares', 'share'),
+        $this->escape(
+            $dateFormatter->format(
+                new DateTime($this->week . $this->location['dayOfWeek'])
+            )
+        )
+    ); ?>:</p>
+
+<table width="100%">
+    <thead>
+        <tr>
+            <th align="left">
+                <strong><?= $this->translate('Product'); ?></strong>
+            </th>
+            <th align="left">
+                <strong><?= $this->translate('Quantity'); ?></strong>
+            </th>
+            <th align="left">
+                <strong><?= $this->translate('Price'); ?></strong>
+            </th>
+            <th align="left">
+                <strong><?= $this->translate('Total'); ?></strong>
+            </th>
+        </tr>
+    </thead>
+    <?php
+        foreach ($this->invoice->getLines() as $line) {
+            $addon = $line->getType();
+            $customerAddon = $line->getCustomerType();
+    ?>
+    <tr>
+        <td><?= $this->escape($line['description']) ?></td>
+        <td>
+            <?= $this->escape($line['quantity']) ?>
+            <?php if ($addon['priceBy'] == HHF_Domain_Addon::PRICE_BY_WEIGHT) { ?>
+                <?= $this->translate(strtolower($addon['unitType'])) ?>
+            <?php } ?>
+        </td>
+        <td><?php
+                if (is_numeric($line['unitPrice'])) {
+                    echo $this->escape($this->currency($line['unitPrice']));
+                } else {
+                    echo $this->escape($this->currency(0));
+                }
+            ?><?php if ($addon['priceBy'] == HHF_Domain_Addon::PRICE_BY_WEIGHT) { ?>
+                / <?= $this->translate(strtolower($addon['unitType'])) ?>
+            <?php } ?></td>
+        <td><?php
+                if (is_numeric($line['total'])) {
+                    echo $this->escape($this->currency($line['total']));
+                } else {
+                    echo $this->escape($this->currency(0));
+                }
+            ?></td>
+    </tr>
+    <?php } ?>
+    <tfoot>
+        <tr colspan="4">
+            <td>
+                <hr width="100%" />
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <?= $this->translate('Sub Total') ?>
+            </td>
+            <td>
+                <?php if (is_numeric($this->invoice['subTotal'])) { ?>
+                <?= $this->escape($this->currency($this->invoice['subTotal'])) ?>
+                <?php } else { ?>
+                <?= $this->escape($this->currency(0)) ?>
+                <?php } ?>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <?= $this->translate('Tax') ?>
+            </td>
+            <td>
+                <?php if (is_numeric($this->invoice['tax'])) { ?>
+                <?= $this->escape($this->currency($this->invoice['tax'])) ?>
+                <?php } else { ?>
+                <?= $this->escape($this->currency(0)) ?>
+                <?php } ?>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <strong><?= $this->translate('Total') ?></strong>
+            </td>
+            <td>
+                <strong>
+                    <?php if (is_numeric($this->invoice['total'])) { ?>
+                    <?= $this->escape($this->currency($this->invoice['total'])) ?>
+                    <?php } else { ?>
+                    <?= $this->escape($this->currency(0)) ?>
+                    <?php } ?>
+                    <?php if ($this->invoice['pending']) { ?>
+                        (<?= $this->translate('Estimate') ?>)
+                    <?php } ?>
+                </strong>
+            </td>
+        </tr>
+    </tfoot>
+</table>
+
+<?php if (!$this->invoice['pending'] && empty($this->params['wasPending'])) { ?>
+    <?php if ($customerAddon['payment'] != HHF_Domain_Transaction::TYPE_PAYPAL) { ?>
+
+        <?php
+            $paymentTo = $this->farm->getPreferences()->get('paymentTo', 'shares');
+            if (empty($paymentTo)) {
+                $paymentTo = $this->farm->name;
+            }
+        ?>
+
+        <p><?= $this->translate(
+                'To pay for your add ons, please provide a cheque or cash for %s when picking up your %s.  Cheques should be made payable to "%s". Please reference your customer number %s.',
+                $this->currency($this->invoice['total']),
+                $this->farm->getPreferences()->get('share', 'shares', 'share'),
+                $this->escape($paymentTo),
+                $this->escape($this->customer['id'])
+            ); ?></p>
+
+    <?php } else { ?>
+
+        <p><?= $this->translate('Your payment should have been completed through Paypal.  A separate invoice will be emailed to you for that.'); ?></p>
+
+    <?php } ?>
+<?php } elseif (!empty($this->params['wasPending'])) { ?>
+    <?php
+        $paymentTo = $this->farm->getPreferences()->get('paymentTo', 'shares');
+        if (empty($paymentTo)) {
+            $paymentTo = $this->farm->name;
+        }
+    ?>
+
+    <p><?= $this->translate(
+            'To pay for your add ons in person, please provide a cheque or cash for %s when picking up your %s.  Cheques should be made payable to "%s".',
+            $this->currency($this->invoice['total']),
+            $this->farm->getPreferences()->get('share', 'shares', 'share'),
+            $this->escape($paymentTo)
+        ); ?></p>
+
+    <?php if($this->farm->getPreferences()->get('enabled', 'paypal', '0') == 0){ ?>
+        <p><?= $this->translate(
+                'To pay for your add ons online, please follow <a href="%s">this link</a>.',
+                $this->farm->getBaseUri() . 'customers/payment?invoices[]=' . $this->invoice['id']
+            ); ?>
+        </p>
+    <?php } ?>
+<?php } ?>
+
+<?php if (!empty($this->invoice['message'])) { ?>
+<p>
+    <?= nl2br($this->escape($this->invoice['message'])) ?>
+</p>
+<?php } ?>
+
+<p><?= $this->translate('Thank you for your business!'); ?></p>

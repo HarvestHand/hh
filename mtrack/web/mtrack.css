@@ -1,0 +1,755 @@
+body {
+  margin-top: 2em;
+  margin-bottom: 0px;
+}
+
+#content {
+  padding: 1em 1em 6em 1em;
+}
+
+#content p {
+  width: 50em;
+  margin-top: 1em;
+}
+
+#content td p:first-child {
+  margin-top: 0;
+}
+
+td[align=right], th[align=right] {
+  text-align: right;
+}
+
+td[align=center], th[align=center] {
+  text-align: center;
+}
+
+
+sup {
+  vertical-align: super;
+  font-size: smaller;
+}
+
+sub {
+  vertical-align: sub;
+  font-size: smaller;
+}
+
+input, textarea, select {
+  margin: 2px;
+}
+input, select {
+  vertical-align: middle;
+}
+
+
+input[type=text], textarea { border: 1px solid #d7d7d7 }
+input[type=text] { padding: .25em .5em }
+input[type=text]:focus, textarea:focus {
+ border: 1px solid #886;
+}
+option { border-bottom: 1px dotted #d7d7d7 }
+fieldset { border: 1px solid #d7d7d7; padding: .5em; margin: 1em 0 }
+
+legend { color: #999; padding: 0 .25em; font-size: 90%; font-weight: bold }
+label.disabled { color: #d7d7d7 }
+.buttons { margin: .5em .5em .5em 0 }
+.buttons form, .buttons form div { display: inline }
+.buttons input { margin: 1em .5em .1em 0 }
+.inlinebuttons input {
+ font-size: 70%;
+ border-width: 1px;
+ border-style: dotted;
+ margin: 0 .1em;
+ padding: 0.1em;
+ background: none;
+}
+
+div.error, textarea.error, input.error {
+  border: solid 1px red;
+}
+
+table.codeann {
+  border-collapse: collapse;
+  border: solid 1px #bbb;
+}
+
+tt, pre, td.code {
+  font-family: 'Consolas', 'Bitstream Vera Sans Mono',
+    'Monaco', 'Courier New', 'Courier', monospace;
+}
+
+pre, td.code {
+  border: solid 1px #bbb;
+  padding: 0.2em;
+  margin: 0.4em;
+  background-color: #eee;
+  overflow-x: auto;
+  word-wrap: break-word;
+}
+
+td.code {
+  overflow-x: auto;
+  word-wrap: break-word;
+  border-top: none;
+  border-bottom: none;
+  border-left: solid 1px #bbb;
+  border-right: solid 1px #bbb;
+  font-size: 9pt;
+}
+
+td.source-code {
+  overflow-x: auto;
+  white-space: pre;
+  font-family: 'Consolas', 'Bitstream Vera Sans Mono',
+    'Monaco', 'Courier New', 'Courier', monospace;
+  word-wrap: break-word;
+  line-height: 1.6em;
+  border: solid 1px #bbb;
+  background-color: #eee;
+}
+
+table.codeann {
+  width: 100%;
+}
+
+table.codeann tr th {
+  border-bottom: solid 1px #bbb;
+}
+table.codeann tr th.code {
+  text-align: left;
+}
+table.codeann tr td {
+  font-family: 'Consolas', 'Bitstream Vera Sans Mono',
+    'Monaco', 'Courier New', 'Courier', monospace;
+  font-size: 10pt;
+}
+
+table.codeann tr th, table.codeann tr td {
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
+table.codeann tr th.line, table.codeann tr td.line,
+  table.codeann tr th.changeset, table.codeann tr td.changeset {
+  text-align: right;
+  line-height: 1.6em;
+}
+
+table.codeann tr td.line a:link {
+  text-decoration: none;
+  border: none;
+  padding: none;
+  margin: none;
+}
+
+table.codeann tr th.user, table.codeann tr td.user {
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
+/* by default, when showing an annotated file, hide annotations, but show
+ * the line numbers */
+table.codeann tr th.changeset, table.codeann tr td.changeset,
+table.codeann tr th.user, table.codeann tr td.user {
+  display: none;
+}
+
+pre {
+  font-size: 9pt;
+}
+
+h2.reportgroup {
+}
+
+/* due to the fixed headers/footers, we need to offset the position
+ * of named anchors in the page if we want links to work correctly */
+a[name] {
+  position: relative;
+  top: -2em;
+  font-size: 1.5em;
+}
+
+.brand {
+  display: inline;
+  font-family: Calibri, Arial, Verdana, 'Bitstream Vera Sans',
+    Helvetica, sans-serif;
+  font-weight: 200;
+  font-size: 1.4em;
+  float: left;
+  line-height: 2em;
+  padding-right: 1em;
+}
+
+#header {
+  clear: both;
+  margin-top: 2.25em;
+}
+
+#mainnav div.container {
+  width: auto;
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+#mainnav + div.alert {
+  margin-top: 4em;
+  margin-left: 1em;
+  margin-right: 1em;
+  z-index: 100;
+}
+
+#mainsearch {
+  margin: 0;
+  line-height: 3em;
+}
+
+#mainsearch input.search-query {
+  width: 10em;
+  border-radius: 4px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+}
+
+#mainsearch ol.mp_list {
+  width: 20em !important;
+}
+
+::-webkit-input-placeholder {
+  color: #999 !important;
+}
+:-moz-placeholder {
+  color: #999 !important;
+}
+
+input.watermark {
+  color: #999;
+}
+
+div.flotgraph div {
+}
+
+/* {{{ Diff */
+
+table.code.diff {
+  border-collapse: collapse;
+  border: 1px solid #d3d3d0;
+  width: 100%;
+  margin-top: 0.5em;
+  margin-bottom: 3em;
+}
+
+table.code.diff tr.removed {
+  background-color: rgb(255, 221, 221);
+}
+table.code.diff tr.added {
+  background-color: rgb(221, 255, 221);
+}
+
+table.code.diff tr td {
+  white-space: pre;
+  font-family: 'Consolas', 'Bitstream Vera Sans Mono',
+    'Monaco', 'Courier New', 'Courier', monospace;
+  color: black;
+  line-height: 1.5em;
+  overflow-x: auto;
+  word-wrap: break-word;
+}
+
+table.code.diff tr td.line {
+  padding-left: 1.5em;
+  border-left: 1px solid #d3d3d0;
+}
+table.code.diff tr.first {
+  border-top: 1px solid #d3d3d0;
+}
+
+table.code.diff tr td.lineno {
+  text-align: right;
+  font-size: 0.9em;
+  padding-right: 1em;
+  padding-left: 1em;
+  width: 1%;
+  border-right: 1px solid #ddd;
+}
+
+table.code.diff tr td.lineno,
+table.code.diff tr td.linelink {
+  background-color: #eee;
+  color: #777;
+}
+table.code.diff tr td.linelink {
+  text-align: center;
+  font-size: 0.9em;
+}
+table.code.diff tr td.linelink a {
+  color: #444;
+}
+
+table.code.diff tr.meta td.line {
+  border: none;
+}
+
+pre.code.diff {
+  border: 1px solid #d3d3d0;
+  color: #939399;
+}
+
+.code.diff code {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  color: black;
+  line-height: 1.5em;
+  display: inline-block;
+  overflow-x: auto;
+  word-wrap: break-word;
+}
+
+ol.code {
+  text-align: left;
+  border: 1px solid #d3d3d0;
+  color: #939399;
+}
+
+ol.code li {
+  white-space: nowrap;
+  list-style-type: none;
+  margin: 0;
+  margin-left: 2em;
+  padding: 0 0 0 0em;
+  text-align: left;
+  border-left: 1px solid #d3d3d0;
+}
+
+ol.code li.even { background-color: #fcfcfc }
+ol.code li.odd { background-color: #f7f7f7 }
+ol.code li code {
+  white-space: pre;
+  padding-left: 1em;
+  line-height: 1.5em;
+  color: black;
+}
+ol.code {
+  overflow-x: auto;
+  word-wrap: break-word;
+}
+ol.code li code.removed {
+  background-color: rgb(255, 221, 221);
+  display: block;
+  padding-right: 0;
+}
+
+ol.code li code.added {
+  background-color: rgb(221, 255, 221);
+  display: block;
+  padding-right: 0;
+}
+
+div.difffiles {
+  margin-top: 2em;
+  margin-bottom: 1em;
+}
+
+/* }}} */
+
+table.fields {
+  width: 45em;
+}
+
+#user-tabs {
+  position: absolute;
+  top: 21em;
+  bottom: 0.75em;
+  left: 1em;
+  right: 1em;
+}
+#user-tabs div.tab {
+  overflow: auto;
+  position: absolute;
+  left: 0px;
+  top: 3em;
+  right: 0px;
+  bottom: 0px;
+
+}
+
+div.userinfo img.gravatar {
+  float: right;
+}
+#userinfo-container img.gravatar {
+  float: right;
+}
+
+div.userinfofield {
+  margin-top: 1em;
+}
+div.userinfofield label {
+  font-weight: bold;
+  width: 6em;
+  display: inline-block;
+}
+
+div.userinfofield em.tip {
+  position: absolute;
+  left: 30em;
+}
+
+div#auth-tab label {
+  display: inline-block;
+  width: 10em;
+}
+
+div.ui-state-highlight, div.ui-state-error {
+  padding: 0.4em;
+}
+.ui-widget {
+  font-size: 1em;
+}
+.ui-widget p {
+  margin-bottom: 1.2em;
+}
+
+span.ui-icon-info, span.ui-icon-alert {
+  margin-right: 0.6em;
+  float: left;
+}
+
+#changelog-container {
+  margin-left: 2em;
+}
+
+div.attachment-list {
+  clear: both;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  padding: 0;
+}
+
+#footer {
+  background-color: rgb(229,229,229);
+  background-repeat: repeat-x;
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #e5e5e5), color-stop(100%, #ffffff));
+  background-image: -webkit-linear-gradient(top, #e5e5e5, #ffffff);
+
+  border-top: 1px solid #eee;
+  height: 3em;
+}
+
+div.navfoot {
+  color: #999;
+  font-size: 0.8em;
+  padding-left: 1em;
+  padding-top: 0.5em;
+  height: 2em;
+}
+
+div#ajaxspin {
+  float: right;
+  height: 3em;
+  width: 2em;
+  display: none;
+  background-image: url(images/spinner.gif);
+  background-repeat: no-repeat;
+  background-position: 2px;
+}
+
+#openid_identifier {
+  font-size: 2em;
+}
+
+#openid-sign-in {
+  font-size: 2em;
+}
+
+#openidlink {
+  border: none;
+}
+
+span.fulldate {
+  color: #999;
+  padding-left: 1.5em;
+  padding-right: 1.5em;
+}
+
+div.ticketevent abbr.timeinterval {
+  color: #777;
+}
+
+tr.inactiveuser {
+  text-decoration: line-through;
+}
+
+div.permissioneditor th {
+  font-weight: bold;
+}
+
+div.permissioneditor tr.inheritedacl {
+  color: #999;
+}
+
+div.button-float {
+  width: 100%;
+  background-color: white;
+  padding: 0.5em;
+}
+
+div.button-float-floating {
+  border: solid 1px #ccc;
+  left: -1em;
+  padding-left: 2.3em;
+}
+
+.popupForm h1.caption {
+  font-size: 1.1em;
+  margin: 0;
+}
+
+div.wiki-preview p {
+  margin-top: 1.5em;
+}
+
+span.click-to-edit {
+  padding: 0.5em;
+}
+
+span.click-to-edit.empty {
+  font-style: italic;
+  color: #aaa;
+}
+
+.overlay {
+  display: none;
+/*  background: transparent url(/images/overlay.png) repeat top left; */
+  background-color: black;
+  opacity: 0.8;
+  position: fixed;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  z-index: 100;
+}
+
+.popupForm {
+  position: fixed;
+  top: 2em;
+  bottom: 2em;
+  left: 20px;
+  right: 20px;
+  z-index: 2000;
+  background-color: #fff;
+  padding: 1em;
+  -moz-border-radius: 10px;
+  -webkit-border-radius:10px;
+  -khtml-border-radius:10px;
+  -moz-box-shadow: 0 1px 5px #333;
+  -webkit-box-shadow: 0 1px 5px #333;
+}
+
+/* alternative wiki editor layout */
+.popupForm button.wikipreviewtoggle {
+  position: fixed;
+  right: 2em;
+  z-index: 100;
+  top: 2.5em;
+  height: 1.75em;
+  width: 1.75em;
+}
+
+.popupForm div.wiki {
+  height: 70%;
+  margin-bottom: 2em;
+}
+
+.popupForm div.wiki div.markItUp,
+.popupForm div.wiki div.markItUpContainer,
+.popupForm div.wiki textarea.markItUpEditor {
+  height: 100%;
+}
+
+.popupForm div.wiki-preview {
+  overflow: auto;
+  position: absolute;
+  bottom: 1em;
+  left: 1em;
+  right: 1em;
+
+  border: solid 1px #eee;
+  top: 70%;
+  /* accomodates buttons and optional caption heading */
+  margin-top: 8.5em;
+}
+
+/* now a maximized preview version; flip the percentages */
+.popupForm.maximized div.wiki {
+  height: 30%;
+  margin-bottom: 2em;
+}
+
+.popupForm.maximized div.wiki-preview {
+  top: 30%;
+}
+
+/* and for the two-up variation */
+.popupForm.twoup div.wiki {
+  width: 50em;
+  position: absolute;
+  top: 1em;
+  bottom: 5em;
+  height: auto;
+}
+
+/* push down when we have a caption */
+.popupForm.twoup h1.caption + div.wiki {
+  top: 3em;
+}
+
+.popupForm.twoup div.wiki-preview {
+  left: 52em;
+  top: 0px;
+  bottom: 0px;
+  margin-top: 0px;
+  z-index: 1;
+  padding-left: 1em;
+  padding-top: 1em;
+  background-color: white;
+  border: none;
+  border-left: solid 1px #eee;
+}
+.popupForm.twoup div.modal-footer {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  width: 50em;
+  z-index: 0;
+}
+
+input[type=submit]#confirm-upload {
+  font-size: 1.1em;
+  height: 1.7em;
+  position: relative;
+  top: -0.2em;
+}
+
+button#cancel-upload {
+  font-size: 1.1em;
+  height: 1.7em;
+}
+
+#upload_target {
+  display: none;
+}
+
+#attachment-form {
+  padding: 2em;
+}
+
+#attachment-form label {
+  font-weight: bold;
+}
+
+#attachment-form input[type=file] {
+  margin: 1em 0px;
+}
+
+.hide-desc {
+  display: none;
+}
+
+/* bug in datepicker? */
+#ui-datepicker-div {
+  display: none;
+}
+
+div.watchlist {
+  /*
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  */
+  width: 25em;
+  border: solid 1px #ccc;
+  padding: 1em;
+}
+
+div.watchlist ul {
+  list-style: none;
+}
+div.watchlist ul li {
+  margin-left: 0px;
+}
+
+#adminnav {
+  width: 15em;
+  float: left;
+  margin-right: 2em;
+  height: 100%;
+}
+
+div.repoeditor input[type=text] {
+  width: 25em;
+}
+
+div.repoeditor p {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+@media print {
+  /* print styling from html5boilerplate */
+  * { background: transparent !important; color: black !important; text-shadow: none !important; filter:none !important;
+  -ms-filter: none !important; } /* Black prints faster: sanbeiji.com/archives/953 */
+  a[href], a[href]:visited { color: #444 !important; text-decoration: underline; }
+  a[href]:after { content: " (" attr(href) ")"; }
+  a[href].changesetlink:after,
+  a[href].userlink:after,
+  a[href].ticketlink:after
+    { content: "" }
+  span.keyword a[href]:after { content: "" }
+  span.milestone a[href]:after { content: "" }
+  abbr[title]:after { content: " (" attr(title) ")"; }
+  .ir a:after, a[href^="javascript:"]:after, a[href^="#"]:after { content: ""; }  /* Don't show links for images, or javascript/internal links */
+  pre, blockquote { border: 1px solid #999; page-break-inside: avoid; }
+  thead { display: table-header-group; } /* css-discuss.incutio.com/wiki/Printing_Tables */
+  tr, img { page-break-inside: avoid; }
+  @page { margin: 0.5cm; }
+  p, h2, h3 { orphans: 3; widows: 3; }
+  h2, h3{ page-break-after: avoid; }
+
+  #header, #banner, #banner-back, #mainsearch, #footer, div.navfoot {
+    display: none;
+  }
+  #qform {
+    margin-bottom: 0em;
+  }
+  #qtable tr td, #qtable tr td input {
+    font-size: 0.5em;
+  }
+  #qtable tr td select {
+    font-size: 1em;
+  }
+  input {
+    border: none;
+  }
+  input[type=submit], button, #customqryaddfilter {
+    display: none;
+  }
+  h1 {
+    font-size: 1.2em;
+  }
+  #wikinav, #wikilastchange {
+    display: none;
+  }
+
+  #content {
+    position: static;
+    overflow: visible;
+  }
+  body {
+    margin: 0;
+  }
+}
+
+/* vim:ts=2:sw=2:et:
+ */

@@ -1,0 +1,224 @@
+<?php
+    $this->headTitle($this->translate(
+        '%s Purchase History',
+        ucfirst($this->farm->getPreferences()->get('share', 'shares', 'share'))
+    ));
+
+    $this->loader()->append('jquery_dataTables');
+		
+    $this->loadDatejs(Bootstrap::$locale);
+    
+    $now = Zend_Date::now();
+?>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+    $(document).ready(function(){
+        var now = new Date().clearTime();
+		
+        var table = $("#shares").dataTable({
+            "bJQueryUI": true,
+            "bAutoWidth": false,
+            "bDeferRender": true,
+            "bLengthChange": false,
+            "bProcessing": true,
+            "iDisplayLength": 50,
+            "iDeferLoading": <?= $this->foundRows ?>,
+            "aaSorting": [[0, "desc"]],
+            "aoColumns": [ 
+                {
+                    "sType": "text",
+                    "mDataProp": "year",
+                    "fnRender": function (oObj) {
+                        if (!oObj.aData.hasOwnProperty("id")) {
+                            return oObj.aData.year;
+                        } else {
+                            
+                            var date = Date.parseExact(oObj.aData.startDate, "yyyy-MM-dd");
+                            
+                            if (date.compareTo(now) == 1) {
+                                // future
+                                return "<?= addslashes($this->translate('Upcoming<br />Starting %s')); ?>"
+                                    .replace("%s", oObj.aData.startDate);
+                            } else {
+                                var endDate = Date.parseExact(oObj.aData.endDate, "yyyy-MM-dd");
+                                
+                                if (endDate.compareTo(now) >= 0) {
+                                    return "<?= addslashes($this->translate('In Season<br />Ending %s')); ?>"
+                                        .replace("%s", oObj.aData.endDate);
+
+                                } else {
+                                    return "<?= addslashes($this->translate('Complete<br />Ended %s')); ?>"
+                                        .replace("%s", oObj.aData.endDate);
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "sType": "text",
+                    "mDataProp": "shareName",
+                    "fnRender": function (oObj) {
+                        if (!oObj.aData.hasOwnProperty("id")) {
+                            return oObj.aData.shareName;
+                        } else {
+                            return '<a href="/shares/purchased-share?id=' + parseInt(oObj.aData.id) + '">' +
+                                oObj.aData.shareName
+                                    .replace(/&/g,'&amp;')
+                                    .replace(/</g,'&lt;')
+                                    .replace(/>/g,'&gt;') + '</a>';
+                        }
+                    }
+                },
+                {
+                    "sType": "text",
+                    "mDataProp": "quantity",
+                    "fnRender": function (oObj) {
+                        return parseInt(oObj.aData.quantity);
+                    }
+                },
+                { 
+                    "bSortable": false,
+                    "bSearchable": false,
+                    "mDataProp": "_actions",
+                    "sClass": "right",
+                    "fnRender": function (oObj) {
+                        if (!oObj.aData.hasOwnProperty("id")) {
+                            return oObj.aData._actions;
+                        }
+                        return '<form action="/shares/purchased-share" method="get">' +
+                            '<input type="hidden" name="id" value="' + parseInt(oObj.aData.id) + '" />' +
+                            '<button title="<?= $this->translate('Details') ?>"' +
+                            'type="submit"' +
+                            'class="btn btn-default">' +
+                            '<i class="fa fa-info-circle"></i>' +
+                            '</button></form>';
+                    }
+                }
+            ],
+            "bSortClasses": false,
+            "sAjaxSource": "<?= addslashes($this->Url()) ?>/d/1",
+            "bServerSide": true,
+            "sDom": '<"H"<"clear">r<"right"ip>>t<"F"<"right"ip>>'
+        })
+        .delegate("tbody tr", "mouseover mouseout", function(e) {
+            if (e.type == "mouseover") {
+                $(e.currentTarget).addClass('hover');
+            } else {
+                $(e.currentTarget).removeClass('hover');
+            }
+        });
+        
+    });
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<h2><?= $this->translate(
+    '%s Purchase History',
+    ucfirst($this->farm->getPreferences()->get('share', 'shares', 'share'))
+) ?></h2>
+
+<?php if (count($this->subscriptions)) { ?>
+
+    <table id="shares" class="display" width="100%">
+        <thead>
+            <tr>
+                <th
+                    width="35%"
+                    title="<?= $this->translate(
+                        '%s Status',
+                        ucfirst($this->farm->getPreferences()->get('share', 'shares', 'share'))
+                    ) ?>">
+                        <?= $this->translate('Status'); ?>
+                </th>
+                <th
+                    width="45%"
+                    title="<?= ucfirst($this->farm->getPreferences()->get('share', 'shares', 'share')) ?>">
+                        <?= ucfirst($this->farm->getPreferences()->get('share', 'shares', 'share')) ?>
+                </th>
+                <th
+                    width="5%"
+                    title="<?= $this->translate('Quantity') ?>">
+                        <?= $this->translate('Qty') ?>
+                </th>
+                <th
+                    width="15%"
+                    title="<?= $this->translate(
+                        '%s Actions',
+                        ucfirst($this->farm->getPreferences()->get('share', 'shares', 'share'))
+                    ) ?>">
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($this->subscriptions as $subscription) { ?>
+                <tr>
+                    <td>
+                        <?php
+                            $date = new Zend_Date($subscription->startDate);
+                            
+                            if ($date->compareDate($now) == 1) {
+                                // future
+                                echo $this->translate(
+                                    'Upcoming<br />Starting %s',
+                                    $date->toString('yyyy-MM-dd')
+                                );
+                            } else {
+                                $endDate = new Zend_Date($subscription->endDate);
+                                
+                                if ($endDate->compare($now) >= 0) {
+                                    echo $this->translate(
+                                        'In Season<br />Ending %s',
+                                        $endDate->toString('yyyy-MM-dd')
+                                    );
+                                } else {
+                                    echo $this->translate(
+                                        'Complete<br />Ended %s',
+                                        $endDate->toString('yyyy-MM-dd')
+                                    );
+                                }
+                            }
+                        ?>
+                    </td>
+                    <td>
+                        <a href="/shares/purchased-share?id=<?= (int) $subscription->id ?>">
+                            <?= $this->escape($subscription->shareName); ?>
+                        </a>
+                    </td>
+                    <td>
+                        <?= (int) $subscription->quantity ?>
+                    </td>
+                    <td class="right">
+                        <form action="/shares/purchased-share" method="get">
+                            <input type="hidden" name="id" value="<?= (int) $subscription->id ?>" />
+                            <button
+                                title="<?= $this->translate('Details') ?>"
+                                type="submit"
+                                class="btn btn-default">
+                                <i class="fa fa-info-circle"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            <?php } ?>
+        </tbody>
+    </table>
+
+    <?php 
+        if ($this->embedded) { 
+            echo $this->placeholder('foot');
+        }
+    ?>
+
+<?php } else { ?>
+
+    <p><?=
+        $this->translate(
+            'You haven\'t purchased any %s yet.  <a href="%s">Would you like to view %s available for purchase?.</a>',
+            $this->farm->getPreferences()->get('shares', 'shares', 'shares'),
+            '/shares/register',
+            $this->farm->getPreferences()->get('shares', 'shares', 'shares')
+        ); ?></p>
+
+<?php } ?>
+

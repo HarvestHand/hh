@@ -1,0 +1,35 @@
+
+/* Mixins */
+
+
+.roundpic-sm {
+    .roundpic(100px);
+}
+
+.roundpic-md {
+    .roundpic();
+}
+
+.roundpic-lg {
+    .roundpic(200px);
+}
+
+.roundpic(@rad: 150px) {
+    width: (2*@rad);
+    height: (2*@rad);
+    border-radius: (@rad);
+    -webkit-border-radius: (@rad);
+    -moz-border-radius: (@rad);
+}
+
+/*
+ Fonts 
+ * */
+
+.serif {
+    font-family: 'Playfair Display', Georgia, serif;
+}
+
+.sans-serif {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif
+}

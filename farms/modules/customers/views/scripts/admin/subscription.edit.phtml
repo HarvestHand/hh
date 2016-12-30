@@ -1,0 +1,344 @@
+<?php
+    $title = $this->translate('Edit Customer Purchased Share');
+
+    $this->headTitle($title);
+
+    $this->loader()->append('jquery_validate');
+
+    $currentShare = $this->subscription->getShare();
+    $size = $this->subscription->getShare();
+
+    $locations = array('' => '');
+
+    if ($currentShare instanceof HHF_Domain_Share && !empty($this->subscription['shareDurationId'])) {
+
+        $locationsToRestrict = array();
+
+        $duration = $currentShare->getDurationById($this->subscription['shareDurationId']);
+
+        if (!empty($duration)) {
+            $locationsToRestrict = $duration->restrictLocationsTo();
+        }
+
+        foreach ($this->locations as $location) {
+            if (empty($locationsToRestrict) ||
+                in_array($location->id, $locationsToRestrict)) {
+
+                $locations[$location->id] = $location->name . ', ' .
+                    $location->city;
+            }
+        }
+    }
+
+    $weeks = array();
+
+    if (!empty($duration)) {
+
+        $date = new Zend_Date();
+
+        $date->set($currentShare['year'], Zend_Date::YEAR_8601);
+        $date->set($duration['startWeek'], Zend_Date::WEEK);
+
+        for ($i = 1; $i <= $duration['iterations']; ++$i) {
+
+            $week = sprintf('%02d', $date->get(Zend_Date::WEEK));
+
+            $rangeDate = clone $date;
+
+            $rangeDate->setWeekday(1);
+
+            $range = $this->translate('Week') . ' ' . $i . ' (' . $rangeDate->toString('yyyy-MM-dd') . ' - ';
+
+            $rangeDate->setWeekday(7);
+
+            $range .= $rangeDate->toString('yyyy-MM-dd') . ')';
+
+            $weeks[$date->get(Zend_Date::YEAR_8601) . 'W' . $week] = $range;
+
+            switch ($currentShare['deliverySchedule']) {
+                case HHF_Domain_Share::DELIVERY_SCHEDULE_WEEKLY :
+                    $date->addWeek(1);
+                    break;
+                case HHF_Domain_Share::DELIVERY_SCHEDULE_SEMI_MONTHLY :
+                    $date->addWeek(2);
+                    break;
+                case HHF_Domain_Share::DELIVERY_SCHEDULE_MONTHLY :
+                    $date->addMonth(1);
+                    break;
+            }
+        }
+    }
+?>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+
+    $(document).ready(function(){
+        $("#subscription").validate({
+            rules: {},
+            messages : {},
+            errorContainer: $("#formError")
+        });
+
+        $(".tooltip").qtip({
+            style: {
+                classes: 'ui-tooltip-shadow ui-tooltip-rounded',
+                widget: true
+            },
+            position: {
+                my: 'bottom right',
+                at: 'top center',
+                method: 'flip'
+            }
+        });
+    });
+
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<h2 style="display: inline-block; vertical-align: middle; margin-right: 15px; margin-bottom: 11px;">
+    <span class="icon-menu icon-menu-members" style="float: left; margin: -10px 7px 0 0;"></span>
+    <?= $title ?>
+</h2>
+
+<?php if (count($this->invoices)) { ?>
+<section class="info ui-widget ui-state-highlight ui-corner-all">
+    <div>
+        <i class="fa fa-info-circle"></i>
+        <strong><?= $this->translate('Hey!'); ?></strong>
+        <?= $this->translate('Changes here will not adjust existing invoices.  You\'ll need to handle that yourself.') ?>
+    </div>
+</section>
+<?php } ?>
+
+<section class="container_12">
+    <article class="grid_11">
+
+        <form id="subscription" action="/admin/customers/subscription?<?= http_build_query($_GET) ?>" method="post" accept-charset="utf-8" class="cmxform large">
+
+            <section id="formError" class="error ui-widget ui-state-error ui-corner-all" style="<?= (!empty($this->errors)) ? '' : 'display:none;' ?>">
+                <div>
+                    <i class="fa fa-exclamation-triangle"></i>
+                    <strong><?= $this->translate('Oh No!'); ?></strong>
+                    <?= $this->translate('Something is not right with what you entered.  Check below for hints on how to fix things up.'); ?>
+                </div>
+            </section>
+
+            <fieldset>
+                <legend><?= $this->translate('Subscription Info') ?></legend>
+                <p>
+                    <label for="customerId" class="required" title="<?= $this->translate('Please select a customer'); ?>">
+                        <?= $this->translate('Customer'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+
+                    <?php if (!empty($this->customer->firstName)) { ?>
+                        <?= $this->escape($this->customer->firstName) ?>,
+                    <?php } ?>
+                    <?= $this->escape($this->customer->lastName) ?>
+                </p>
+                <p>
+                    <label for="shareId" class="required" title="<?= $this->translate('Please select a share'); ?>">
+                        <?= $this->translate('Share'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+
+                    <?= $this->escape($this->share->name) ?>
+
+                    <?php if (!empty($duration)) { ?>
+                        <span class="tooltip"
+                              title="<?= $this->translate(
+                                  'Starts calendar week %s with %s deliveries a year',
+                                  $duration->startWeek,
+                                  $duration->iterations
+                              ); ?>">
+                            [?]
+                        </span>
+                    <?php } ?>
+                </p>
+
+                <p id="location">
+                    <label for="locationId" class="required" title="<?= $this->translate('Specify which pickup or delivery location this subscription is for'); ?>">
+                        <?= $this->translate('Location'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+
+                    <?php if (!empty($locations) && count($locations) > 1) { ?>
+                        <?=
+                            $this->formSelect(
+                                'locationId',
+                                $this->getFormValue('locationId'),
+                                array(
+                                    'id' => 'locationId',
+                                    'class' => 'required',
+                                    'title' => $this->translate('Specify which pickup or delivery location this subscription is for')
+                                ),
+                                $locations
+                            );
+                        ?>
+
+                    <?php } else if (count($locations) == 1) { ?>
+                    <input type="hidden" id="locationId" name="locationId" value="<?= $this->escape(key($locations)); ?>" />
+                    <?php } ?>
+
+                    <?php if (!empty($this->errors['locationId'])) { ?>
+                    <label for="locationId" class="error">
+                        <?= implode('; ', $this->errors['locationId']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <?php if (!empty($sizes) && count($sizes) > 1) { ?>
+                <p id="shareSize">
+                    <label for="shareSizeId" class="required" title="<?= $this->translate('Specify which share size this subscription is for'); ?>">
+                        <?= $this->translate('Size'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+
+                    <?php
+                        $found = false;
+                        foreach ($currentShare->sizes as $size) {
+                            if ($size['id'] == $this->subscription['shareSizeId']) {
+                                echo $this->escape($size['name']);
+                                $found = true;
+                                break;
+                            }
+                        }
+
+                        if (!$found) {
+                            echo $this->object->shareSizeId;
+                        }
+                    ?>
+                </p>
+                <?php } ?>
+
+                <p>
+                    <label for="quantity" class="required" title="<?= $this->translate('How many subscriptions?'); ?>">
+                        <?= $this->translate('Quantity'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+
+                    <?= $this->getFormValue('quantity'); ?>
+                </p>
+
+
+                <?php if (!empty($weeks)) { ?>
+                    <p>
+
+                        <label for="startWeek" class="required" title="<?= $this->translate('Specify which week this share subscription will start'); ?>">
+                            <?= $this->translate('Start Week'); ?>:
+                            <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                        </label>
+
+                        <?php
+
+                            $startWeek = $this->getFormValue('startWeek');
+
+                            $startWeeks = $weeks;
+
+                            if (!array_key_exists($startWeek, $startWeeks)) {
+                                try {
+                                    $missingDate = new DateTime($startWeek . '1');
+
+                                    $range = $this->translate('Week') . ' ? (' . $missingDate->format('Y-m-d') . ' - ';
+
+                                    $missingDate = new DateTime($startWeek . '7');
+
+                                    $range .= $missingDate->format('Y-m-d') . ')';
+
+                                    $startWeeks = array($startWeek => $range) + $startWeeks;
+
+                                } catch (Exception $e) {
+                                    unset($e);
+                                }
+                            }
+
+                            echo $this->formSelect(
+                                'startWeek',
+                                $startWeek,
+                                array(
+                                    'id' => 'startWeek',
+                                    'class' => 'required',
+                                    'title' => $this->translate('Specify which week this share subscription will start')
+                                ),
+                                $startWeeks
+                            );
+                        ?>
+
+                        <?php if (!empty($this->errors['startWeek'])) { ?>
+                            <label for="startWeek" class="error">
+                                <?= implode('; ', $this->errors['startWeek']) ?>
+                            </label>
+                        <?php } ?>
+                    </p>
+
+                    <p>
+
+                        <label for="endWeek" class="required" title="<?= $this->translate('Specify which week this share subscription will end'); ?>">
+                            <?= $this->translate('End Week'); ?>:
+                            <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                        </label>
+
+                        <?php
+
+                            $endWeek = $this->getFormValue('endWeek');
+
+                            $endWeeks = $weeks;
+
+                            if (!array_key_exists($endWeek, $endWeeks)) {
+                                try {
+                                    $missingDate = new DateTime($endWeek . '1');
+
+                                    $range = $this->translate('Week') . ' ? (' . $missingDate->format('Y-m-d') . ' - ';
+
+                                    $missingDate = new DateTime($endWeek . '7');
+
+                                    $range .= $missingDate->format('Y-m-d') . ')';
+
+                                    $endWeeks[$endWeek] = $range;
+
+                                } catch (Exception $e) {
+                                    unset($e);
+                                }
+                            }
+
+                            echo $this->formSelect(
+                                'endWeek',
+                                $endWeek,
+                                array(
+                                    'id' => 'endWeek',
+                                    'class' => 'required',
+                                    'title' => $this->translate('Specify which week this share subscription will end')
+                                ),
+                                $endWeeks
+                            );
+                        ?>
+
+                        <?php if (!empty($this->errors['endWeek'])) { ?>
+                            <label for="endWeek" class="error">
+                                <?= implode('; ', $this->errors['endWeek']) ?>
+                            </label>
+                        <?php } ?>
+                    </p>
+
+                    <p>
+                        <label for="notes" title="<?= $this->translate('Are there any notes?'); ?>">
+                            <?= $this->translate('Notes'); ?>:
+                        </label>
+                        <input type="text" id="notes" name="notes" value="<?= $this->getFormValue('notes'); ?>" />
+                    </p>
+                <?php } ?>
+
+            </fieldset>
+
+            <p>
+                <button type="submit" class="submit fieldset-align ui-button ui-widget ui-corner-all ui-button-text-only ui-state-default">
+                    <span class="ui-button-text">
+                        <i class="fa fa-check"></i>
+                        <?= $this->translate('Save!'); ?>
+                    </span>
+                </button>
+            </p>
+        </form>
+    </article>
+</section>

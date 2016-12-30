@@ -1,0 +1,29 @@
+<nav id="body-subnav" class="grid_3">
+    <h3><?= $this->translate('Where To?'); ?></h3>
+    <ul>
+        <li>
+            <a href="/admin/newsletter/issues"
+               title="<?= $this->translate('View and edit existing newsletter issues') ?>">
+                <?= $this->translate('Newsletter'); ?>
+            </a>
+            <ul>
+                <li>
+                    <a href="/admin/newsletter/issues"
+                        title="<?= $this->translate('View and edit existing newsletter issues') ?>">
+                        
+                        <i class="fa fa-folder"></i>
+                        <?= $this->translate('View'); ?>
+                    </a>
+                </li>
+                <li>
+                    <a href="/admin/newsletter/issue"
+                       title="<?= $this->translate('Add new newsletter issue') ?>">
+                        
+                        <i class="fa fa-plus"></i>
+                        <?= $this->translate('New'); ?>
+                    </a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</nav>

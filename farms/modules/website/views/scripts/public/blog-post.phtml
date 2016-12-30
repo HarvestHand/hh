@@ -1,0 +1,218 @@
+<?php     
+    $this->headTitle($this->post->title); 
+    $comments = $this->post->getComments();
+    
+    $this->loader()->append('jquery_validate')
+        ->append('jquery_metadata')
+        ->append('ckeditor_ckeditor.js')
+        ->append('ckeditor_adapters_jquery.js');
+?>
+
+<?php $this->placeholder('head')->captureStart() ?>
+<script type="text/javascript">
+    window.CKEDITOR_BASEPATH = '<?= (!empty($_SERVER['HTTPS'])) ? 'https://static.' : 'http://static.' ?><?= Bootstrap::$rootDomain ?>/_js/ckeditor/';
+</script>
+<?php $this->placeholder('head')->captureEnd() ?>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+
+    $(document).ready(function(){
+
+        var config = {
+            customConfig : '',
+            toolbar:
+            [
+                ['Bold','Italic','Underline','Strike'],
+                ['NumberedList','BulletedList','-','Outdent','Indent','Blockquote'],
+                ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
+                ['Link','Unlink'],
+                ['Undo','Redo'],
+            ],
+            colorButton_enableMore: false,
+            disableNativeSpellChecker: false,
+            contentsCss: <?= json_encode(HHF_Theme::singleton($this->farm)
+                ->appendStyleSheet('/_css/ckeditor.css')
+                ->getStyleSheets()) ?>
+        };
+
+        $('#content').ckeditor(
+            function(){
+                var editor = $('#content').ckeditorGet();
+                editor.on( "blur", function() {
+                    this.updateElement();
+                });
+            },
+            config
+        );
+
+        $("#post").submit(function(){
+            $('#content').ckeditorGet().updateElement();
+        }).validate({
+            errorContainer: $("#formError"),
+            errorPlacement: function(error, element) {
+                if (element.attr("name") == "content") {
+                    error.addClass("no-margin");
+                }
+                error.insertAfter(element);
+            },
+            submitHandler: function(form) {
+                $('#content').ckeditorGet().updateElement();
+                form.submit();
+            }
+        });
+    });
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<article>
+    <header>
+        <h1><?= $this->escape($this->post->title) ?></h1>
+        
+        <p>
+            <?php if (!$this->isEmpty($this->post->getFarmer())) { ?>
+            <?= $this->translate(
+                'Posted on <time datetime="%s" pubdate>%s</time> by <a href="%s">%s</a>',
+                $this->post->publishedDatetime->get(Zend_Date::ISO_8601),
+                $this->post->publishedDatetime->toString('yyyy-MM-dd'),
+                '/blog/author/' . $this->post->farmerId . '/role/' . strtolower($this->post->farmerRole),
+                $this->escape($this->post->getFarmer()->getFullName())
+            ); ?>
+            <?php } else { ?>
+            <?= $this->translate(
+                'Posted on <time datetime="%s" pubdate>%s</time>',
+                $this->post->publishedDatetime->get(Zend_Date::ISO_8601),
+                $this->post->publishedDatetime->toString('yyyy-MM-dd')
+            ); ?>
+            <?php } ?>
+        </p>
+    </header>
+
+    <?= $this->post->content ?>
+    <br class="clear" />
+    <footer>
+        <p>
+            <?php if (!$this->isEmpty($this->post->getFarmer())) { ?>
+            <?= $this->translate('Author') ?>: 
+            <a href="/blog/author/<?= $this->post->farmerId ?>/role/<?= strtolower($this->post->farmerRole) ?>"><?= $this->escape($this->post->getFarmer()->getFullName()) ?></a> | 
+            <?php } ?>
+
+            <?= $this->translate('Category') ?>: 
+            <a href="/blog/category/<?= $this->escape($this->post->categoryToken) ?>"><?= $this->escape($this->post->category) ?></a> | 
+
+            <?php if (count($this->post->tags)) { ?>
+                <?= $this->translate('Tags') ?>:
+                <?php for ($c = count($this->post->tags), $x = 0; $x < $c; ++$x) { ?>
+                    <a href="/blog/tag/<?= $this->escape($this->post->tags[$x]->token) ?>"><?= $this->escape($this->post->tags[$x]->tag) ?></a><?php if (($x + 1) != $c) { ?>,<?php } ?>
+                <?php } ?> |
+            <?php } ?>
+
+            <a href="/blog/id/<?= $this->escape($this->post->id) ?>"><?= $this->translate('Permalink') ?></a>
+        </p>
+    </footer>
+    
+    <article>
+        <a name="comments"></a>
+        <h2>
+            <?php if (count($comments) > 2) { ?>
+                <?= $this->translate(
+                    '%s Responses to %s',
+                    count($comments),
+                    $this->escape($this->post->title)
+                ) ?>
+            <?php } else if (count($comments) == 1) { ?>
+                <?= $this->translate(
+                    '1 Response to %s',
+                    $this->escape($this->post->title)
+                ) ?>
+            <?php } ?>
+        </h2>
+        
+        <?php if (count($comments)) { ?>
+        
+            <ol id="blog-commentlist">
+        
+            <?php foreach ($comments as $comment) { ?>
+                <li>
+                    <div class="vcard">
+                    <?php
+                        $farmer = $comment->getFarmer();
+                        if (!empty($farmer)) {
+                            $fullName = $farmer->getFullName();
+                        } else {
+                            $fullName = '';
+                        }
+                    ?>
+                    <?= $this->translate(
+                        '<cite class="fn">%s</cite> replied on <time datetime="%s" pubdate>%s</time>:',
+                        $fullName,
+                        $comment->addedDatetime->get(Zend_Date::ISO_8601),
+                        $comment->addedDatetime->toString('yyyy-MM-dd')
+                    ) ?>
+                    </div>
+                    
+                    <blockquote>
+                        <?= $comment->content; ?>
+                    </blockquote>
+                </li>
+            <?php } ?>
+                
+            </ol>
+        <?php } ?>
+        
+        <h2><?= $this->translate('Leave a Reply') ?></h2>
+        
+        <?php if ($this->isAuthenticated()) { ?>
+        
+            <form id="post" 
+                  action="/blog/post/<?= $this->escape($this->post->token) ?>#comments" 
+                  method="post" 
+                  accept-charset="utf-8" 
+                  class="cmxform large">
+
+                <section id="formError" class="error ui-widget ui-state-error ui-corner-all" style="<?= (!empty($this->errors)) ? '' : 'display:none;' ?>">
+                    <div>
+                        <i class="fa fa-exclamation-triangle"></i>
+                        <strong><?= $this->translate('Oh No!'); ?></strong>
+                        <?= $this->translate('Something is not right with what you entered.  Check below for hints on how to fix things up.'); ?>
+                    </div>
+                </section>
+
+                <p>
+                    <label for="content" class="required" title="<?= $this->translate('Please enter your reply'); ?>">
+                        <?= $this->translate('Content'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+                    <textarea
+                        id="content"
+                        name="content"
+                        title="<?= $this->translate('Please enter your reply'); ?>"
+                        class="required large"
+                        cols="10"
+                        rows="10"><?= $this->getFormValue('content'); ?></textarea>
+                    <?php if (!empty($this->errors['content'])) { ?>
+                    <label for="content" class="error">
+                        <?= implode('; ', $this->errors['content']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <button type="submit" class="submit fieldset-align ui-button ui-widget ui-corner-all ui-button-text-only ui-state-default">
+                        <span class="ui-button-text">
+                            <i class="fa fa-pencil"></i>
+                            <?= $this->translate('Post Reply!'); ?>
+                        </span>
+                    </button>
+                </p>
+            </form>
+        
+        <?php } else { ?>
+        
+            <p>
+                <?= $this->translate('Please <a href="/login">login in</a> to post a reply') ?>
+            </p>
+        
+        <?php } ?>
+    </article>
+</article>

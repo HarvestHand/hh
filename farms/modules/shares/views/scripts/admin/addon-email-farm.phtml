@@ -1,0 +1,14 @@
+<h1><?= $this->translate('Product Inventory Low') ?></h1>
+
+<p>
+    <?= $this->translate(
+        'Looks like inventory is getting low for the product \'<a href="%s">%s</a>\'.  You only have %s left in inventory.',
+        $this->escape($this->farm->getBaseUri() . 'admin/shares/addon?id=' . $this->addon['id']),
+        $this->escape($this->addon['name']),
+        $this->escape($this->addon['inventory'])
+    ) ?>
+</p>
+
+<p>
+    <?= $this->translate('Now you know.  And knowing is half the battle.') ?>
+</p>

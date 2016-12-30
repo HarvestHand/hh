@@ -1,0 +1,769 @@
+<?php if (!$this->order->isEmpty()) { ?>
+
+    <?php $this->placeholder('foot')->captureStart() ?>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $(".previous").click(function(event){
+                event.preventDefault();
+                $("#register")
+                    .attr("action", "<?= addslashes($this->Url()) ?>?step=<?= $this->step - 1  ?>&previous=1")
+                    [0].submit();
+            });
+            
+            var height = parseInt($(window).height() * .8);
+            
+            $("#membershipAgreement").dialog({
+                modal: true,
+                autoOpen: false,
+                width: 440,
+                height: ((height > 600) ? 'auto' : height)
+            });
+            
+            $("#displayMembershipAgreement").button({
+                icons : {
+                    primary:'ui-icon-help'
+                },
+                text : false
+            }).click(function(e){
+                e.preventDefault();
+                $("#membershipAgreement").dialog("open");
+                return false;
+            });
+            
+            $("#account_create").change(toggleAccount);
+            
+            toggleAccount();
+            
+            $("#register").validate({
+                rules: {
+                    "payment[agreement]": {
+                        required: true
+                    },
+                    "payment[method]": {
+                        required: true
+                    },
+                    "account[create]": {
+                        required: true
+                    },
+                    "user[firstName]": {
+                        required: function() {
+                            if ($("#account_create").val() == "new") {
+                                return true;
+                            }
+                            
+                            return false;
+                        }
+                    },
+                    "user[lastName]": {
+                        required: function() {
+                            if ($("#account_create").val() == "new") {
+                                return true;
+                            }
+                            
+                            return false;
+                        }
+                    },
+                    "user[address]": {
+                        required: function() {
+                            if ($("#account_create").val() == "new") {
+                                return true;
+                            }
+                            
+                            return false;
+                        }
+                    },
+                    "user[city]": {
+                        required: function() {
+                            if ($("#account_create").val() == "new") {
+                                return true;
+                            }
+                            
+                            return false;
+                        }
+                    },
+                    "user[state]": {
+                        required: function() {
+                            if ($("#account_create").val() == "new") {
+                                return true;
+                            }
+                            
+                            return false;
+                        }
+                    },
+                    "user[email]": {
+                        email: true,
+                        required: function() {
+                            if ($("#account_create").val() == "new") {
+                                if ($("#user_telephone").val()) {
+                                    return false;
+                                } else {
+                                    return true;
+                                }
+                            }
+                            
+                            return false;
+                        }
+                    },
+                    "user[telephone]": {
+                        required: function() {
+                            if ($("#account_create").val() == "new") {
+                                if ($("#user_email").val()) {
+                                    return false;
+                                } else {
+                                    return true;
+                                }
+                            }
+                            
+                            return false;
+                        }
+                    },
+                    "farmer[userName]": {
+                        required: function() {
+                            if ($("#account_create").val() == "new") {
+                                return true;
+                            }
+                            
+                            return false;
+                        },
+                        remote : "<?= $this->Url(); ?>?a=userName"
+                    },
+                    "farmer[password]": {
+                        required: function() {
+                            if ($("#account_create").val() == "new") {
+                                return true;
+                            }
+                            
+                            return false;
+                        },
+                        minlength : 4
+                    },
+                    "passwordConfirm": {
+                        required: function() {
+                            if ($("#account_create").val() == "new") {
+                                return true;
+                            }
+                            
+                            return false;
+                        },
+                        equalTo : "#farmer_password"
+                    },
+                    "login[userName]": {
+                        required: function() {
+                            if ($("#account_create").val() == "existing") {
+                                return true;
+                            }
+                            
+                            return false;
+                        }
+                    },
+                    "login[password]": {
+                        required: function() {
+                            if ($("#account_create").val() == "existing") {
+                                return true;
+                            }
+                            
+                            return false;
+                        }
+                    }
+                },
+                messages: {
+                    "user[email]" : {
+                        required: "<?=  $this->translate('Please give us an email or phone number'); ?>"
+                    },
+                    "user[telephone]" : {
+                        required: "<?=  $this->translate('Please give us an email or phone number'); ?>"
+                    },
+                    "farmer[password]" : {
+                        minlength: "<?=  $this->translate('A password needs to be at least 4 words or letters long'); ?>"
+                    },
+                    "farmer[email]" : {
+                        email: "<?= $this->translate('That doesn\'t look like an email address'); ?>"
+                    },
+                    "farmer[userName]" : {
+                        remote : function() {
+                            return $.format(
+                                "<?= $this->translate('The user name {0} is already in use'); ?>",
+                                $("#farmer_userName").val()
+                            );
+                        }
+                    },
+                    "passwordConfirm" : {
+                        equalTo : "<?= $this->translate('Your passwords are not the same'); ?>"
+                    }
+                },
+                errorContainer: $("#formError")
+            });
+            
+            $("#payment_plan").change(function(){
+                $("#register")
+                    .attr("action", "<?= addslashes($this->Url()) ?>?step=<?= $this->step  ?>&refresh=1")
+                    [0].submit();
+            });
+            
+            $("#user_city").autocomplete({
+                source: function(request, response) {
+                    $.get("<?= $this->Url() ?>?a=unlocodes",
+                        {
+                            country : '<?= addslashes($this->farm->country) ?>',
+                            subdivision : $("#user_state").val(),
+                            unlocode: request.term
+                        },
+                        function(unlocodes) {
+                            response(unlocodes);
+                        },
+                        'json'
+                    );
+                }
+            });
+        });
+        
+        function toggleAccount() {
+            var account = $("#account_create").val();
+            
+            switch (account) {
+                case 'new' :
+                    $("#accountLogin").hide();
+                    $("#accountNew").show();
+                    break;
+                case 'existing' :
+                    $("#accountNew").hide();
+                    $("#accountLogin").show();
+                    break;
+                default :
+                    $("#accountNew").hide();
+                    $("#accountLogin").hide();
+                    break;
+            }
+        }
+    </script>
+    <?php $this->placeholder('foot')->captureEnd() ?>
+    
+    <?php
+        $this->orderEdit = true;
+        $this->mapLinks = true;
+        echo $this->render('public/register-order-summary.phtml'); 
+    ?>
+
+    <button
+        type="submit"
+        style="position: absolute;left: -999px; top: -999px; height: 0; width: 0;">
+    </button>
+
+    <?php if ($this->order->getTotal() != 0) { ?>
+    <fieldset>
+        <legend><?= $this->translate('Payment Details') ?></legend>
+
+        <?php if (!empty($this->membershipAgreement)) { ?>
+        <p>
+            <label for="payment_agreement" class="required" title="<?= $this->translate('Do you agree with the terms of our membership agreement?'); ?>">
+                <?= $this->translate('Membership Agreement'); ?>:
+                <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+            </label>
+
+            <?php $agreement = (boolean) $this->getFormValue('agreement', 'payment'); ?>
+            
+            <input
+                type="checkbox"
+                name="payment[agreement]"
+                id="payment_agreement"
+                value="1"
+                class="required"
+                title="<?= $this->translate('Do you agree with the terms of our membership agreement?'); ?>"
+                <?= ($agreement) ? 'checked="checked"' : null; ?> />
+
+            <button id="displayMembershipAgreement"><?= $this->translate('View Membership Agreement') ?></button>
+        </p>
+        <?php } ?>
+
+        <?php if ($this->plans[HHF_Order_Share::PAYMENT_PLAN_WEEKLY] || $this->plans[HHF_Order_Share::PAYMENT_PLAN_MONTHLY] || $this->plans[HHF_Order_Share::PAYMENT_PLAN_FIXED]) { ?>
+        <p>
+            <label for="payment_plan" class="required" title="<?= $this->translate('Please choose a payment option'); ?>">
+                <?= $this->translate('Payment Options'); ?>:
+                <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+            </label>
+
+            <?php
+                $plans = array(
+                    HHF_Order_Share::PAYMENT_PLAN_NONE => $this->translate('Pay in Full')
+                );
+            
+                if ($this->plans[HHF_Order_Share::PAYMENT_PLAN_WEEKLY]) {
+                    $plans[HHF_Order_Share::PAYMENT_PLAN_WEEKLY] = 
+                        $this->translate('Weekly Installments');
+                }
+                
+                if ($this->plans[HHF_Order_Share::PAYMENT_PLAN_MONTHLY]) {
+                    $plans[HHF_Order_Share::PAYMENT_PLAN_MONTHLY] = 
+                        $this->translate('Monthly Installments');
+                }
+                
+                if ($this->plans[HHF_Order_Share::PAYMENT_PLAN_FIXED]) {
+                    if (count(HHF_Order_Share_PaymentPlan_Fixed::getDates()) >= 1) {
+                        $plans[HHF_Order_Share::PAYMENT_PLAN_FIXED] = 
+                            $this->translate(
+                                '%s Installments',
+                                count(HHF_Order_Share_PaymentPlan_Fixed::getDates())
+                            );
+                    }
+                }
+                
+                echo $this->formSelect(
+                    'payment[plan]',
+                    $this->getFormValue('plan', 'payment'),
+                    array(
+                        'id' => 'payment_plan',
+                        'class' => 'required',
+                        'title' => $this->translate('Please choose a payment plan')
+                    ),
+                    $plans
+                );
+            ?>
+        </p>
+        <?php } ?>
+        
+        <p>
+            <label for="payment_method" class="required" title="<?= $this->translate('Please choose a payment method'); ?>">
+                <?= $this->translate('Payment Method'); ?>:
+                <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+            </label>
+
+            <?php
+
+                $paymentOptions = array(
+                    '' => $this->translate('Choose a payment method'),
+                    HHF_Domain_Transaction::TYPE_CASH => $this->translate('Cash, Cheque or Bank Payment')
+                );
+
+                if ($this->farm->getPreferences()->get('enabled', 'paypal', false)) {
+                    $paymentOptions[HHF_Domain_Transaction::TYPE_PAYPAL] = $this->translate('Online Payment');
+                }
+
+                echo $this->formSelect(
+                    'payment[method]',
+                    $this->getFormValue('method', 'payment'),
+                    array(
+                        'id' => 'payment_method',
+                        'class' => 'required',
+                        'title' => $this->translate('Please choose a payment method')
+                    ),
+                    $paymentOptions
+                );
+            ?>
+        </p>
+
+    </fieldset>
+    <?php } else { ?>
+        <input type="hidden" 
+               name="payment[plan]" 
+               id="payment_plan" 
+               value="<?= HHF_Order_Share::PAYMENT_PLAN_NONE ?>" />
+        
+        <input type="hidden" 
+               name="payment[method]" 
+               id="payment_method" 
+               value="<?= HHF_Domain_Transaction::TYPE_CASH ?>" />
+    
+        <?php if (!empty($this->membershipAgreement)) { ?>
+        <fieldset>
+            <legend><?= $this->translate('Member Details') ?></legend>
+            <p>
+                <label for="payment_agreement" class="required" title="<?= $this->translate('Do you agree with the terms of our membership agreement?'); ?>">
+                    <?= $this->translate('Membership Agreement'); ?>:
+                    <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                </label>
+
+                <?php $agreement = (boolean) $this->getFormValue('agreement', 'payment'); ?>
+
+                <input
+                    type="checkbox"
+                    name="payment[agreement]"
+                    id="payment_agreement"
+                    value="1"
+                    class="required"
+                    title="<?= $this->translate('Do you agree with the terms of our membership agreement?'); ?>"
+                    <?= ($agreement) ? 'checked="checked"' : null; ?> />
+
+                <button id="displayMembershipAgreement"><?= $this->translate('View Membership Agreement') ?></button>
+            </p>
+        </fieldset>
+        <?php } ?>
+    <?php } ?>
+
+    <fieldset>
+
+        <legend><?= $this->translate('Create Account'); ?></legend>
+
+        <p>
+            <label for="account_create" class="required" title="<?= $this->translate('Do you want to create a new account, or use an existing?'); ?>">
+                <?= $this->translate('Account'); ?>:
+                <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+            </label>
+
+            <?= 
+                $this->formSelect(
+                    'account[create]',
+                    $this->getFormValue('create', 'account'),
+                    array(
+                        'id' => 'account_create',
+                        'class' => 'required',
+                        'title' => $this->translate('Do you want to create a new account, or use an existing?')
+                    ),
+                    array(
+                        '' => $this->translate('Please choose'),
+                        'new' => $this->translate('Create a new account'),
+                        'existing' => $this->translate('Use an existing account')
+                    )
+                );
+            ?>
+        </p>
+        
+        <div id="accountNew">
+            <p>
+                <label for="user_firstName" class="required" title="<?= $this->translate('Please enter your first name'); ?>">
+                    <?= $this->translate('First Name'); ?>:
+                    <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                </label>
+                <input
+                    id="user_firstName"
+                    name="user[firstName]"
+                    type="text"
+                    title="<?= $this->translate('Please enter your first name'); ?>"
+                    value="<?= $this->getFormValue('firstName', 'user'); ?>"
+                    class="required large"
+                    maxlength="100" />
+
+                <?php if (!empty($this->errors['user']['firstName'])) { ?>
+                <label for="user_firstName" class="error">
+                    <?= implode('; ', $this->errors['user']['firstName']) ?>
+                </label>
+                <?php } ?>
+            </p>
+
+            <p>
+                <label for="user_lastName" class="required" title="<?= $this->translate('Please enter your last name'); ?>">
+                    <?= $this->translate('Last Name'); ?>:
+                    <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                </label>
+                <input
+                    id="user_lastName"
+                    name="user[lastName]"
+                    type="text"
+                    title="<?= $this->translate('Please enter your last name'); ?>"
+                    value="<?= $this->getFormValue('lastName', 'user'); ?>"
+                    class="required large"
+                    maxlength="100" />
+
+                <?php if (!empty($this->errors['user']['lastName'])) { ?>
+                <label for="user_lastName" class="error">
+                    <?= implode('; ', $this->errors['user']['lastName']) ?>
+                </label>
+                <?php } ?>
+            </p>
+
+            <p>
+                <label for="user_address" class="required" title="<?= $this->translate('Please enter your address'); ?>">
+                    <?= $this->translate('Address'); ?>:
+                    <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                </label>
+                <input
+                    id="user_address"
+                    name="user[address]"
+                    type="text"
+                    title="<?= $this->translate('Please enter your address'); ?>"
+                    value="<?= $this->getFormValue('address', 'user'); ?>"
+                    class="large required"
+                    maxlength="255" />
+
+                <?php if (!empty($this->errors['user']['address'])) { ?>
+                <label for="user_address" class="error">
+                    <?= implode('; ', $this->errors['user']['address']) ?>
+                </label>
+                <?php } ?>
+            </p>
+
+            <p>
+                <label for="user_address2" title="<?= $this->translate('Please enter your address'); ?>">
+                    <?= $this->translate('Address'); ?>:
+                </label>
+                <input
+                    id="user_address2"
+                    name="user[address2]"
+                    type="text"
+                    title="<?= $this->translate('Please enter your address'); ?>"
+                    value="<?= $this->getFormValue('address2', 'user'); ?>"
+                    class="large"
+                    maxlength="255" />
+
+                <?php if (!empty($this->errors['user']['address2'])) { ?>
+                <label for="user_address2" class="error">
+                    <?= implode('; ', $this->errors['user']['address2']) ?>
+                </label>
+                <?php } ?>
+            </p>
+
+            <p>
+                <label for="user_city" class="required" title="<?= $this->translate('Please enter your town or city'); ?>">
+                    <?= $this->translate('Town'); ?>:
+                    <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                </label>
+                <input
+                    id="user_city"
+                    name="user[city]"
+                    type="text"
+                    title="<?= $this->translate('Please enter your town or city'); ?>"
+                    value="<?= $this->getFormValue('city', 'user'); ?>"
+                    class="large required"
+                    maxlength="100" />
+
+                <?php if (!empty($this->errors['user']['city'])) { ?>
+                <label for="user_city" class="error">
+                    <?= implode('; ', $this->errors['user']['city']) ?>
+                </label>
+                <?php } ?>
+            </p>
+
+            <p>
+                <label for="user_state" class="required" title="<?= $this->translate('Please enter your state'); ?>">
+                    <?= $this->translate('State'); ?>:
+                    <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                </label>
+                <?php
+                    $country = $this->getFormValue('country', 'user');
+
+                    if (!empty($country)) {
+                        $country = substr($country, 0, 2);
+
+                        $states = HH_Tools_Countries::getSubdivisions($country);
+                    }
+                ?>
+                <?php if (!empty($states)) { ?>
+                    <?=
+                        $this->formSelect(
+                            'user[state]',
+                            $this->getFormValue('state', 'user'),
+                            array(
+                                'id' => 'user_state',
+                                'class' => 'required',
+                                'title' => $this->translate('Please enter your state')
+                            ),
+                            array('' => '') + $states
+                        );
+                    ?>
+                <?php } else { ?>
+                    <input
+                        id="user_state"
+                        name="user[state]"
+                        type="text"
+                        title="<?= $this->translate('Please enter your state'); ?>"
+                        value="<?= $this->getFormValue('state', 'user'); ?>"
+                        class="required"
+                        maxlength="45" />
+                <?php } ?>
+
+                <?php if (!empty($this->errors['user']['state'])) { ?>
+                <label for="user_state" class="error">
+                    <?= implode('; ', $this->errors['user']['state']) ?>
+                </label>
+                <?php } ?>
+            </p>
+
+            <p>
+                <label for="user_zipCode" class="" title="<?= $this->translate('Please enter your zip code'); ?>">
+                    <?= $this->translate('Zip Code'); ?>:
+                </label>
+                <input
+                    id="user_zipCode"
+                    name="user[zipCode]"
+                    type="text"
+                    title="<?= $this->translate('Please enter your zip code'); ?>"
+                    value="<?= $this->getFormValue('zipCode', 'user'); ?>"
+                    class=""
+                    maxlength="45" />
+
+                <?php if (!empty($this->errors['user']['zipCode'])) { ?>
+                <label for="user_zipCode" class="error">
+                    <?= implode('; ', $this->errors['user']['zipCode']) ?>
+                </label>
+                <?php } ?>
+            </p>
+
+            <p>
+                <label for="user_email" title="<?= $this->translate('Please enter your email'); ?>">
+                    <?= $this->translate('Email'); ?>:
+                </label>
+                <input
+                    id="user_email"
+                    name="user[email]"
+                    type="text"
+                    title="<?= $this->translate('Please enter your email'); ?>"
+                    value="<?= $this->getFormValue('email', 'user'); ?>"
+                    class="email"
+                    maxlength="255" />
+
+                <?php if (!empty($this->errors['user']['email'])) { ?>
+                <label for="user_email" class="error">
+                    <?= implode('; ', $this->errors['user']['email']) ?>
+                </label>
+                <?php } ?>
+            </p>
+
+            <p>
+                <label for="user_telephone" title="<?= $this->translate('Please enter your telephone'); ?>">
+                    <?= $this->translate('Telephone'); ?>:
+                </label>
+                <input
+                    id="user_telephone"
+                    name="user[telephone]"
+                    type="text"
+                    title="<?= $this->translate('Please enter your telephone'); ?>"
+                    value="<?= $this->getFormValue('telephone', 'user'); ?>"
+                    class="telephone"
+                    maxlength="20" />
+
+                <?php if (!empty($this->errors['user']['telephone'])) { ?>
+                <label for="user_telephone" class="error">
+                    <?= implode('; ', $this->errors['user']['telephone']) ?>
+                </label>
+                <?php } ?>
+            </p>
+            
+            <p>
+                <label for="farmer_userName" class="required" title="<?= $this->translate('Please enter a user name to log in with'); ?>">
+                    <?= $this->translate('User Name'); ?>:
+                    <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                </label>
+                <input
+                    id="farmer_userName"
+                    name="farmer[userName]"
+                    type="text"
+                    title="<?= $this->translate('Please enter a user name to log in with'); ?>"
+                    value="<?= $this->getFormValue('userName', 'farmer'); ?>"
+                    class="required"
+                    maxlength="50" />
+
+                <?php if (!empty($this->errors['farmer']['userName'])) { ?>
+                <label for="farmer_userName" class="error">
+                    <?= implode('; ', $this->errors['farmer']['userName']) ?>
+                </label>
+                <?php } ?>
+            </p>
+
+            <p>
+                <label for="farmer_password" class="required" title="<?= $this->translate('Please enter a password to log in with'); ?>">
+                    <?= $this->translate('Password'); ?>:
+                    <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                </label>
+                <input
+                    id="farmer_password"
+                    name="farmer[password]"
+                    type="password"
+                    title="<?= $this->translate('Please enter a password to log in with'); ?>"
+                    value="<?= $this->getFormValue('password', 'farmer'); ?>"
+                    class="required"
+                    maxlength="32"
+                    autocomplete="off" />
+
+                <?php if (!empty($this->errors['farmer']['password'])) { ?>
+                <label for="farmer_password" class="error">
+                    <?= implode('; ', $this->errors['farmer']['password']) ?>
+                </label>
+                <?php } ?>
+            </p>
+
+            <p>
+                <label for="passwordConfirm" class="required" title="<?= $this->translate('Please confirm your password'); ?>">
+                    <?= $this->translate('Confirm Password'); ?>:
+                    <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                </label>
+                <input
+                    id="passwordConfirm"
+                    name="passwordConfirm"
+                    type="password"
+                    title="<?= $this->translate('Please confirm your password'); ?>"
+                    value="<?= $this->getFormValue('passwordConfirm'); ?>"
+                    class="required"
+                    maxlength="32"
+                    autocomplete="off" />
+            </p>
+            
+        </div>
+        
+        <div id="accountLogin">
+            <p>
+                <label for="login_userName" class="required">
+                    <?= $this->translate('User Name'); ?>
+                    <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                </label>
+                <input 
+                    id="login_userName"
+                    type="text"
+                    name="login[userName]"
+                    maxlength="50"
+                    title="<?= $this->translate('Please enter your user name'); ?>"
+                    value="<?= $this->getFormValue('userName', 'login'); ?>"
+                    class="<?= (!empty($this->errors['login']['userName'])) ? 'required error' : 'required'; ?>" />
+
+                <?php if (!empty($this->errors['login']['userName'])) { ?>
+                <label class="error" for="login_userName" style="display: block;">
+                    <?php echo $this->escape(implode('; ', $this->errors['login']['userName'])); ?>
+                </label>
+                <?php } ?>
+            </p>
+            
+            <p>
+                <label for="login_password" class="required">
+                    <?= $this->translate('Password'); ?>
+                    <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                </label>
+                <input 
+                    id="login_password"
+                    type="password"
+                    name="login[password]"
+                    maxlength="30"
+                    title="<?= $this->translate('Please enter your password'); ?>"
+                    class="<?= (!empty($this->errors['login']['password'])) ? 'required error' : 'required'; ?>" />
+
+                <?php if (!empty($this->errors['login']['password'])) { ?>
+                <label class="error" for="login_password" style="display: block;">
+                    <?= $this->escape(implode('; ', $this->errors['login']['password'])); ?>
+                </label>
+                <?php } ?>
+            </p>
+            
+        </div>
+
+    </fieldset>
+
+    <?php if (!empty($this->membershipAgreement)) { ?>
+        <div id="membershipAgreement" title="<?= $this->translate('Membership Agreement') ?>" style="display:none;">
+            <?= $this->membershipAgreement ?>
+        </div>
+    <?php } ?>
+<?php } else { ?>
+    
+    <?php $this->placeholder('foot')->captureStart() ?>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $(".previous").click(function(event){
+                event.preventDefault();
+                $("#register")
+                    .attr("action", "<?= addslashes($this->Url()) ?>?step=<?= $this->step - 1  ?>&previous=1")
+                    [0].submit();
+            });
+        });
+    </script>
+    <?php $this->placeholder('foot')->captureEnd() ?>
+    
+    <section class="error ui-widget ui-state-error ui-corner-all">
+        <div>
+            <i class="fa fa-exclamation-triangle"></i>
+            <strong><?= $this->translate('Huh?'); ?></strong>
+            <?= $this->translate(
+                'It doesn\'t look like you selected any %s.  Please go back and add a %s.',
+                $this->farm->getPreferences()->get('shares', 'shares', 'shares'),
+                $this->farm->getPreferences()->get('share', 'shares', 'share')
+            ); ?>
+        </div>
+    </section>
+    
+<?php } ?>

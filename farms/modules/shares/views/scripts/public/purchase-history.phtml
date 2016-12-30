@@ -1,0 +1,49 @@
+<?php
+    $this->headTitle($this->translate('Purchase History'));
+    
+    $this->loader()->append('jquery_dataTables');
+		
+    $this->loadDatejs(Bootstrap::$locale);
+?>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $( "#tabs" ).tabs({
+            ajaxOptions: {
+                error: function(xhr, status, index, anchor) {
+                    $(anchor.hash).html(
+                        '<section class="error ui-widget ui-state-error ui-corner-all">' +
+                        '<div><i class="fa fa-exclamation-triangle"></i>' +
+                        '<strong><?= addslashes($this->translate('Oh No!')); ?></strong> ' +
+                        '<?= addslashes($this->translate('Couldn\'t load this tab. Please try reloading the page.')); ?>' +
+                        '</div></section>'
+                    );
+                }
+            }
+        });
+    });
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<h2><?= $this->translate('Purchase History') ?></h2>
+
+<div id="tabs">
+    <ul>
+        <li>
+            <a href="/shares/purchase-history-shares/e/1">
+                <?= ucfirst($this->farm->getPreferences()->get('shares', 'shares', 'shares')) ?>
+            </a>
+        </li>
+        <li>
+            <a href="/shares/purchase-history-addons/e/1">
+                <?= $this->translate('Add Ons') ?>
+            </a>
+        </li>
+         <li>
+            <a href="/shares/purchase-history-invoices/e/1">
+                <?= $this->translate('Invoices') ?>
+            </a>
+        </li>
+    </ul>
+</div>

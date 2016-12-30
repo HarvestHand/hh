@@ -1,0 +1,128 @@
+The bulk of this work is authored by Wez Furlong and is:
+Copyright (C) 2008-2010 Message Systems, Inc.
+All rights reserved.
+
+This software is derived from the "Trac" software product, which is:
+Copyright (C) 2003-2008 Edgewall Software
+All rights reserved.
+The origin of that software is http://trac.edgewall.org
+
+Portions of this software are taken from the Alexandria PHP
+library which is authored by Wez Furlong and is:
+Copyright (C) 2007, OmniTI Computer Consulting, Inc.
+The origin of that software is http://bitbucket.org/wez/alexandria
+
+The Lucene search implementation is built using software from
+the Zend Framework, which is:
+Copyright (C) 2005-2009, Zend Technologies USA, Inc.
+The origin of that software is http://framework.zend.com
+
+This software uses the jQuery javascript/CSS/UI library, which is
+Copyright (C) 2009 John Resig
+The origin of that software is http://jquery.com
+
+This software uses the markItUp! Universal MarkUp Engine, which is
+Copyright (C) 2007-2009 Jay Salvat
+The origin of that software is http://markitup.jaysalvat.com/
+
+This software uses the timeago jQuery plugin, which is
+Copyright (c) 2008-2010, Ryan McGeary (ryanonjavascript -[at]- mcgeary [*dot*] org)
+The origin of that software is http://timeago.yarp.com/
+
+This software uses the PHP OpenID library by JanRain, Inc., which is
+Copyright (C) 2005-2008 JanRain, Inc.
+The origin of that software is http://openidenabled.com/php-openid/
+
+This software uses the Hyperlight syntax highlighting library for PHP, which is
+Copyright 2008 Konrad Rudolph.
+The origin of that software is http://code.google.com/p/hyperlight/
+
+This software uses the PHP Markdown & Extra markdown implementation for PHP, which is
+Copyright (c) 2004-2012 Michel Fortin
+Copyright (c) 2004-2006 John Gruber
+
+This software uses some elements from the Twitter Bootstrap, which
+is released under the terms of the Apache License Version 2.0.
+https://github.com/twitter/bootstrap/blob/11064c4d344a9c922f05fba9783f36767a5febf1/LICENSE
+
+Some of the icons used in this software were taken from
+http://www.smashingmagazine.com/2009/05/20/flavour-extended-the-ultimate-icon-set-for-web-designers/
+which explicitly states that it may be used for any purpose with no
+restrictions.
+I'm including a link to the artists web site as a courtesy; thank you!
+http://www.addictedtocoffee.de/
+
+It is recommended that persons intending to redistribute the third-party
+software do so by obtaining it from the origin rather than from the software
+distribution containing this license text.
+
+All of the above software, with the exception of jQuery (and plugins),
+markItUp and PHP OpenID, are subject to the modified BSD license,
+the text of which is included immediately below:
+
+-------
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in
+   the documentation and/or other materials provided with the
+   distribution.
+3. The name of the copyright holders or contributors may not be used
+   to endorse or promote products derived from this software without specific
+   prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS `AS IS''
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-------
+
+jQuery (and related plugins) and markItUp are subject to the MIT license,
+included immediately below:
+
+-------
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+-------
+
+The PHP OpenID library is subject to the Apache License version 2.0.
+The full text of that license can be found at:
+
+  http://www.apache.org/licenses/LICENSE-2.0 Apache
+
+another copy of the license text can be found in the file
+
+  inc/Auth/COPYING
+
+which is contained in this source distribution.
+

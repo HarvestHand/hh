@@ -1,0 +1,29 @@
+div#roadmapfilter {
+  position: fixed;
+  right: 2em;
+  top: 9em;
+  background: #fff;
+  border: solid 1px #ccc;
+  padding: 1em;
+}
+
+
+table.progress {
+  width: 20em;
+  height: 1em;
+  border: solid 1px green;
+  border-collapse: collapse;
+}
+
+table.progress tr td.closed {
+  background-color: #8b8;
+  padding: 0;
+}
+
+div.milestone {
+  margin-bottom: 3em;
+}
+
+.milestoneedit input#name {
+	font-size: 1.4em;
+}

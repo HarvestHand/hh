@@ -1,0 +1,72 @@
+<div style="float: right">
+    <a class="btn btn-default"
+       href="/blog?format=rss" id="blog-rss" role="button" aria-disabled="false" title="<?= $this->translate('Blog RSS Feed') ?>">
+        <i class="fa fa-rss"></i>
+    </a>
+</div>
+
+<h1><?= $this->escape($this->title) ?></h1>
+
+<?php if (!empty($this->subTitle)) { ?>
+    <h2><?= $this->escape($this->subTitle) ?></h2>
+<?php } ?>
+
+<?php if (!empty($this->posts)) { ?>
+    <?php foreach ($this->posts as $post) { ?>
+    <article>
+        <header>
+            <h2>
+                <a href="/blog/post/<?= $this->escape($post->token) ?>">
+                    <?= $this->escape($post->title) ?>
+                </a>
+            </h2>
+            
+            <p>
+                <?php if (!$this->isEmpty($post->getFarmer())) { ?>
+                <?= $this->translate(
+                    'Posted on <time datetime="%s" pubdate>%s</time> by <a href="%s">%s</a>',
+                    $post->publishedDatetime->get(Zend_Date::ISO_8601),
+                    $post->publishedDatetime->toString('yyyy-MM-dd'),
+                    '/blog/author/' . $post->farmerId . '/role/' . strtolower($post->farmerRole),
+                    $this->escape($post->getFarmer()->getFullName())
+                ); ?>
+                <?php } else { ?>
+                <?= $this->translate(
+                    'Posted on <time datetime="%s" pubdate>%s</time>',
+                    $post->publishedDatetime->get(Zend_Date::ISO_8601),
+                    $post->publishedDatetime->toString('yyyy-MM-dd')
+                ); ?>
+                <?php } ?>
+            </p>
+        </header>
+        
+        <?= $post->content ?>
+        
+        <br class="clear" />
+        
+        <footer>
+            <p>
+                <?php if (!$this->isEmpty($post->getFarmer())) { ?>
+                <?= $this->translate('Author') ?>: 
+                <a href="/blog/author/<?= $post->farmerId ?>/role/<?= strtolower($post->farmerRole) ?>"><?= $this->escape($post->getFarmer()->getFullName()) ?></a> | 
+                <?php } ?>
+                
+                <?= $this->translate('Category') ?>: 
+                <a href="/blog/category/<?= $this->escape($post->categoryToken) ?>"><?= $this->escape($post->category) ?></a> | 
+                
+                <a href="/blog/post/<?= $this->escape($post->token) ?>#comments"><?= $this->translate('Comments') ?></a> [<?= count($post->getComments()) ?>] | 
+                    
+                <a href="/blog/id/<?= $this->escape($post->id) ?>"><?= $this->translate('Permalink') ?></a>
+            </p>
+        </footer>
+    </article>
+    <br class="clear" />
+    <?php } ?>
+<?php } ?>
+<?php if (count($this->paginator)) { ?>
+    
+    <nav>
+        <?= $this->paginationControl($this->paginator, 'Sliding', 'blog-paging.phtml'); ?>
+    </nav>
+    
+<?php } ?>

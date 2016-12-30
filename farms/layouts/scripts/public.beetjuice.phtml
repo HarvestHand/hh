@@ -1,0 +1,185 @@
+<?php
+$facebookPageLink = $this->farm->getPreferences()->get('pageLink', 'facebook');
+$twitterScreenName = $this->farm->getPreferences()->get('screenName', 'twitter');
+$blogEnabled = $this->farm->getPreferences()->get('blogEnabled', 'website', true);
+
+$this->headLink()->headLink(array(
+                                'rel'   => 'alternate',
+                                'href'  => '/shares?format=rss',
+                                'type'  => 'application/rss+xml',
+                                'title' => $this->translate('%s Shares RSS Feed', $this->farm->name)
+                            ));
+$this->headLink()->headLink(array(
+                                'rel'   => 'alternate',
+                                'href'  => '/shares?format=atom',
+                                'type'  => 'application/atom+xml',
+                                'title' => $this->translate('%s Shares Atom Feed', $this->farm->name)
+                            ));
+
+if($blogEnabled){
+
+    $this->headLink()->headLink(array(
+                                    'rel'   => 'alternate',
+                                    'href'  => '/blog?format=rss',
+                                    'type'  => 'application/rss+xml',
+                                    'title' => $this->translate('%s Blog', $this->farm->name)
+                                ));
+    $this->headLink()->headLink(array(
+                                    'rel'   => 'alternate',
+                                    'href'  => '/blog?format=atom',
+                                    'type'  => 'application/atom+xml',
+                                    'title' => $this->translate('%s Blog', $this->farm->name)
+                                ));
+}
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <?php echo $this->headTitle() ?>
+    <?php echo $this->headLink() ?>
+</head>
+
+<body>
+<div id="main"><!-- Main starts here -->
+    <div id="header"><!-- Header starts here -->
+        <div class="searchBar">
+            <div class="search">
+                <div class="txt"><input id="keyword" type="text"/></div>
+                <div class="searchBt"><input id="search" type="button" value="search"/></div>
+            </div>
+            <div class="signIn"><a href="/login"><?= $this->translate('Sign In'); ?></a></div>
+        </div>
+
+        <div class="logo">
+            <?php
+            $headerImage = $this->farm->getPreferences()->get('headerImage', 'website', false);
+            if(!empty($headerImage)){ ?>
+                <img src="/default/file/id/<?= $this->escape($headerImage) ?>/s/<?= HHF_Domain_File::IMAGE_LARGE ?>"
+                     onclick="document.location = '/';">
+            <?php } else{ ?>
+                <h1><?= $this->escape($this->farm->name); ?></h1>
+            <?php } ?>
+        </div>
+
+        <div class="menu">
+            <?= $this->navigation(Bootstrap::get('Zend_Navigation'))->menu()->renderMenu(null, array(
+                'ulId'     => 'menu',
+                'maxDepth' => 0
+            )) ?>
+        </div>
+        <?php if($_SERVER['REQUEST_URI'] == '/shares' | $_SERVER['REQUEST_URI'] == '/blog'){ ?>
+            <div class="subs">
+                <a href="<?= $_SERVER['REQUEST_URI'] ?>?format=rss">SUBSCRIBE to RSS
+                    <img src="_farms/css/themes/beetjuice/images/rss.png" alt=""/></a>
+            </div>
+        <?php } ?>
+
+    </div>
+    <!-- Header ends here -->
+
+    <div class="clear"></div>
+
+    <div id="contentTop"></div>
+    <!-- Content starts here -->
+    <div id="content">
+
+        <div id="main-content">
+
+            <?php $sideBar = $this->layout()->sideBar; ?>
+
+            <?php if(!empty($sideBar)){ ?>
+                <section id="<?= $this->contentId ?>" class="grid">
+                    <section class="col-2-3">
+                        <?php echo $this->layout()->content ?>
+                    </section>
+                    <nav class="col-1-3">
+                        <?= $sideBar ?>
+                    </nav>
+                </section>
+            <?php } else{ ?>
+                <section id="<?= $this->contentId ?>" class="grid">
+                    <?php echo $this->layout()->content ?>
+                </section>
+            <?php } ?>
+        </div>
+
+        <div class="clear"></div>
+        <div class="hr"></div>
+        <div class="space"></div>
+        <div id="footer"><!-- Footer starts here -->
+
+            <div class="contactHeading"><?= $this->translate('Contact Us'); ?></div>
+            <div class="footerHolder">
+                <div class="footerLeft">
+                    <p class="left"><?= $this->translate('Address:'); ?></p>
+
+                    <p class="right">
+                        <?= $this->escape($this->farm->address) ?>
+                        <?php if(!empty($this->farm->address2)){ ?>
+                            <br/><?= $this->escape($this->farm->address2) ?>
+                        <?php } ?>
+                        <br/>
+                        <?= $this->escape($this->farm->city) ?>, <?= $this->escape($this->farm->state) ?>
+                        <br/>
+                        <?= $this->escape($this->farm->zipCode) ?>
+                    </p>
+                </div>
+
+                <div class="footerRight">
+                    <p class="left">
+                        <?php if(!empty($this->farm->telephone)){ ?>
+                            <?= $this->translate('Phone:'); ?> <br/>
+                        <?php } ?>
+                        <?php if(!empty($this->farm->email)){ ?>
+                            <?= $this->translate('Email:'); ?> <br/>
+                        <?php } ?>
+                        <?php if(!empty($facebookPageLink)){ ?>
+                            <?= $this->translate('Facebook:'); ?><br/>
+                        <?php } ?>
+                        <?php if(!empty($twitterScreenName)){ ?>
+                            <?= $this->translate('Twitter:'); ?>">
+                        <?php } ?>
+                    </p>
+
+                    <p class="right">
+                        <?php if(!empty($this->farm->telephone)){ ?>
+                            <?= $this->escape($this->farm->telephone) ?>
+                        <?php } ?>
+                        <?php if(!empty($this->farm->email)){ ?>
+                            <?= $this->escape($this->farm->email) ?>
+                        <?php } ?>
+                        <?php if(!empty($facebookPageLink)){ ?>
+                            <?= $this->escape($facebookPageLink) ?>">
+                        <?php } ?>
+                        <?php if(!empty($twitterScreenName)){ ?>
+                            <?= $this->escape($twitterScreenName) ?>
+                        <?php } ?>
+                    </p>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </div>
+        <!-- Footer ends here -->
+    </div>
+    <div id="contentBottom"></div>
+    <!-- Content ends here -->
+
+    <div class="bottomHolder">
+        <div class="copy">&copy; <?= $this->escape($this->farm->name . " " . date('Y')) ?></div>
+        <div class="design"><?= $this->translate('Powered by'); ?> <a href="http://harvesthand.com">HarvestHand</a></div>
+    </div>
+</div>
+<!-- Main ends here -->
+
+<script type="text/javascript" src="/_js/modernizr.js"></script>
+<script type="text/javascript" src="/_js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="/_js/jquery/jquery.fitvids.js"></script>
+<script type="text/javascript" src="/_farms/js/themes/beetjuice/supersleight-min.js"></script>
+<script>
+    $("#search").click(function () {
+        window.location.href = 'https://www.google.ca/?gws_rd=ssl#q=' + $("#keyword").val() + '+site:' + window.location.host;
+    });
+</script>
+</body>
+</html>

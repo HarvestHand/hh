@@ -1,0 +1,93 @@
+div#history {
+  margin-top: 2em;
+}
+
+div.histentry div.histevent {
+  margin-top: 0px;
+  margin-bottom: 0.5em;
+  border-bottom: solid 1px #bbb;
+  color: #999;
+}
+
+div.histentry div.histinfo img.gravatar {
+  float: left;
+  padding-right: 0.5em;
+}
+
+div.histentry div.histinfo div.changelog {
+  margin-left: 2.5em;
+  margin-bottom: 0.5em;
+  max-height: 7em;
+  overflow: hidden;
+}
+
+/* legacy */
+
+table.history {
+  border-collapse: collapse;
+}
+
+table.history tr {
+  vertical-align: text-top;
+}
+table.history tr th {
+  text-align: left;
+}
+
+table.history tr td.diff {
+  border-bottom: solid 1px #bbb;
+  padding: 1em 4em;
+}
+
+
+div.changesets {
+  background-color: #ddd;
+}
+
+div.changeset, div.changesetodd {
+  margin: 0;
+  padding: 0;
+}
+
+div.changesetodd {
+  background-color: #eee;
+}
+
+div.revinfo {
+  padding-top: 1em;
+  padding-bottom: 0px;
+}
+
+div.changesets img.gravatar, div.revinfo img.gravatar
+{
+  float: left;
+  margin: 0 0.5em 0.5em 0;
+}
+
+div.changelog {
+  padding: 0.5em;
+  padding-left: 1em;
+}
+
+div.changeinfo {
+  border-top: 1px solid #eee;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  margin-left: -1.5em;
+  margin-right: -1.5em;
+  margin-top: 1em;
+  padding: 0.5em;
+}
+
+div.changesetday {
+  font-size: 1.2em;
+  background-color: #ccc;
+  border-bottom: solid 1px #bbb;
+  margin: 0;
+  padding: 0;
+  padding-bottom: 0.3em;
+  padding-top: 0.3em;
+  padding-left: 1em;
+  color: #777;
+}
+
+

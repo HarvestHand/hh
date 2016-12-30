@@ -1,0 +1,31 @@
+<?php
+    $links =  HHF_Domain_Link::fetch(
+        $this->farm
+    );
+?>
+
+<?php if (count($links)) { ?>
+<form id="links-sidebar" class="cmxform full">
+    <fieldset>
+            <legend><?= $this->translate('Community'); ?></legend>
+
+            <ul>
+                <?php foreach ($links as $link) { ?>
+                <?php if (!empty($link->name)) { ?>
+                <li>
+                    <a href="<?= $link->url ?>"
+                       <?php if (!empty($link->description)) { ?>
+                       title="<?= $this->escape($link->description) ?>"
+                       <?php } ?>
+                       target="_blank">
+                        <?= 
+                            $this->escape($link->name); 
+                        ?>
+                    </a>
+                </li>
+                <?php } ?>
+                <?php } ?>
+            </ul>
+    </fieldset>
+</form>
+<?php } ?>

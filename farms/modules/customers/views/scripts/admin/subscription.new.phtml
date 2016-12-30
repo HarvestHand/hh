@@ -1,0 +1,794 @@
+<?php
+    $title = $this->translate('New Customer Purchased Share');
+
+
+    $this->headTitle($title);
+
+    $this->loader()->append('jquery_validate')
+        ->append('jquery_tmpl');
+
+    $this->loadDatejs(Bootstrap::$locale);
+
+    $shareId = $this->getFormValue('shareId');
+    $shareDurationId = $this->getFormValue('shareDurationId');
+    $sharesSelect = array('' => '');
+    $sharesData = array();
+    $currentShare = null;
+
+    foreach ($this->shares as $share) {
+        if (!empty($shareId) && $share->id == $shareId) {
+            $currentShare = $share;
+        }
+
+        $sharesSelect[$share->id] = $share->name . ' ' . $share->year;
+
+        $durations = array();
+
+        foreach ($share->durations as $key => $value) {
+            $durations[$key] = $value->toArray(true);
+        }
+
+        $sizes = array();
+
+        foreach ($share->sizes as $key => $value) {
+            $sizes[$key] = $value->toArray();
+        }
+
+        $sharesData[$share['id']] = array(
+            'deliverySchedule' => $share['deliverySchedule'],
+            'year' => $share['year'],
+            'durations' => $durations,
+            'sizes' => $sizes,
+            'planFixedDates' => $share['planFixedDates']
+        );
+    }
+
+    $customers = array('' => '');
+
+    foreach ($this->customers as $customer) {
+        $customers[$customer->id] = $customer->lastName . ', ' . $customer->firstName;
+    }
+
+    $locations = array('' => '');
+
+    if ($currentShare instanceof HHF_Domain_Share && !empty($shareDurationId)) {
+
+        $shareDuration = false;
+        $locationsToRestrict = array();
+
+        $duration = $currentShare->getDurationById($shareDurationId);
+
+        if (!empty($duration)) {
+            $locationsToRestrict = $duration->restrictLocationsTo();
+        }
+
+        foreach ($this->locations as $location) {
+            if (empty($locationsToRestrict) ||
+                in_array($location->id, $locationsToRestrict)) {
+
+                $locations[$location->id] = $location->name . ', ' .
+                    $location->city;
+            }
+        }
+    }
+
+    $durations = array();
+
+    if ($currentShare instanceof HHF_Domain_Share ) {
+        foreach ($currentShare->durations as $duration) {
+            $durations[$duration['id']] = $this->translate(
+                'Starts week %s with %s deliveries a year',
+                $duration->startWeek,
+                $duration->iterations
+            );
+        }
+    }
+
+    $sizes = array();
+
+    if ($currentShare instanceof HHF_Domain_Share ) {
+        foreach ($currentShare->sizes as $size) {
+            $sizes[$size->id] = $size->name;
+        }
+    }
+
+    $locationJson = array();
+
+    foreach ($this->locations as $location) {
+        $locationJson[] = $location->toArray();
+    }
+?>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+    var shares = <?= Zend_Json::encode($sharesData) ?>;
+    var locations = <?= Zend_Json::encode($locationJson) ?>;
+    var toggledFixedPayments = false;
+
+    $(document).ready(function(){
+        $("#subscription").validate({
+            rules: {},
+            messages : {},
+            errorContainer: $("#formError")
+        });
+
+        $("#shareId").change(updatedShare);
+    });
+
+    function updatedShare() {
+        updateDuration();
+        updateSize();
+        updatePaymentPlan();
+    }
+
+    function updatePaymentPlan() {
+        var $shareId = $("#shareId"),
+            shareId = $shareId.val();
+
+        for (var i in shares) {
+            if (i == shareId) {
+                if (shares[i].hasOwnProperty('planFixedDates') && shares[i].planFixedDates) {
+                    if ($('#paymentPlan option[value=FIXED]').length == 0) {
+                        toggledFixedPayments = true;
+                        $('#paymentPlan')
+                            .append(
+                                '<option value="FIXED"><?= addslashes($this->translate('Fixed Installments')); ?></option>'
+                            );
+                    }
+                } else if (toggledFixedPayments) {
+                    $('#paymentPlan option[value=FIXED]').remove();
+                }
+                break;
+            }
+        }
+    }
+
+    function updateDuration() {
+        $("#shareDurationId").remove();
+        $("#shareDuration").remove();
+
+        var $shareId = $("#shareId");
+        var shareId = $shareId.val();
+
+        for (var i in shares) {
+            if (i == shareId) {
+                $shareId.parent("p")
+                    .after($("#shareDurationTemplate").tmpl(shares[i]));
+
+                $("#shareDurationId").change(updateLocation);
+                $("#shareDurationId").change(updateStartWeek);
+                break;
+            }
+        }
+
+        updateStartWeek();
+        updateLocation();
+    }
+
+    Date.prototype.getWeekYear = function ()
+    {
+        // Create a new date object for the thursday of this week
+        var target  = new Date(this.valueOf());
+        target.setDate(target.getDate() - ((this.getDay() + 6) % 7) + 3);
+
+        return target.getFullYear();
+    }
+
+    function updateStartWeek() {
+        $("#startWeekContainer").remove();
+
+        var shareId = $("#shareId").val(),
+            shareDurationId = $("#shareDurationId").val();
+
+        if (!shareId.length || !shareDurationId.length) {
+            return;
+        }
+
+        var share = getShareById(shareId);
+
+        if (!share) {
+            return;
+        }
+
+        var duration = getDurationById(share, shareDurationId);
+
+        if (!duration) {
+            return;
+        }
+
+        var date = new Date(2000, 1, 6),
+            iCount = 1,
+            weeks = [],
+            range = '';
+
+        date.setYear(share.year);
+        date.setWeek(duration.startWeek);
+
+        while (iCount <= duration.iterations) {
+
+            var week = date.getISOWeek();
+            var copiedDate = new Date(date.getTime());
+
+            if (copiedDate.getDay() > 1) {
+                copiedDate.setDate(copiedDate.getDate() - (copiedDate.getDay() - 1));
+            } else if (copiedDate.getDay() < 1) {
+                copiedDate.setDate(copiedDate.getDate() + 1);
+            }
+
+            range = '<?= addslashes($this->translate('Week')) ?> ' + iCount + ' (' + copiedDate.toString("yyyy-MM-dd") + " - ";
+
+            copiedDate.setDate(copiedDate.getDate() + 6);
+
+            range += copiedDate.toString("yyyy-MM-dd") + ')';
+
+            weeks.push({
+                week : date.getWeekYear() + "W" + week,
+                label : range
+            });
+
+            switch (share.deliverySchedule) {
+
+                case 'WEEKLY' :
+                    date.addWeeks(1);
+                    break;
+                case 'SEMI_MONTHLY' :
+                    date.addWeeks(1);
+                    date.addWeeks(1);
+
+                    break;
+                case 'MONTHLY' :
+
+                    if (date.getMonth() == 11) {
+                        date.setMonth(0);
+                        date.setFullYear(date.getFullYear() + 1);
+                    } else {
+                        date.setMonth(date.getMonth() + 1);
+                    }
+                    break;
+            }
+
+            iCount++;
+        }
+
+        $("#quantity").parent("p")
+            .after($("#startWeekTemplate").tmpl({
+                weeks: weeks
+            }));
+    }
+
+    function updateLocation() {
+        $("#locationId").remove();
+        $("#location").remove();
+
+        var shareId = $("#shareId").val(),
+            availableLocations = [],
+            shareDurationId = $("#shareDurationId").val(),
+            locationsToRestrict = [];
+
+        if (shareId.length && shareDurationId.length) {
+
+            var duration = getDurationById(shares[shareId], shareDurationId);
+
+            if (jQuery.isPlainObject(duration)) {
+                locationsToRestrict = restrictLocationsTo(duration);
+            }
+
+            for (var i in locations) {
+                if (locationsToRestrict.length == 0 ||
+                    jQuery.inArray(locations[i].id, locationsToRestrict) != -1) {
+
+                    availableLocations.push({
+                        id: locations[i].id,
+                        name: locations[i].name + ', ' + locations[i].city
+                    });
+                }
+            }
+
+            if (availableLocations.length > 0) {
+                var $shareDuration = $("#shareDuration");
+
+                if ($shareDuration.length > 0) {
+                    $shareDuration
+                        .after($("#locationTemplate").tmpl({
+                            locations: availableLocations
+                        }));
+                } else {
+                    $("#shareId").parent("p")
+                        .after($("#locationTemplate").tmpl({
+                            locations: availableLocations
+                        }));
+                }
+            }
+        }
+    }
+
+    function updateSize() {
+        $("#shareSizeId").remove();
+        $("#shareSize").remove();
+
+        var $shareId = $("#shareId");
+        var shareId = $shareId.val();
+
+        for (var i in shares) {
+            if (i == shareId) {
+
+                var $shareDuration = $("#shareDuration"),
+                    $location = $("#location");
+
+                if ($location.length) {
+                    $location
+                        .after($("#shareSizeTemplate").tmpl(shares[i]));
+                } else if ($shareDuration.length > 0) {
+                    $shareDuration
+                        .after($("#shareSizeTemplate").tmpl(shares[i]));
+                } else {
+                    $("#shareId").parent("p")
+                        .after($("#shareSizeTemplate").tmpl(shares[i]));
+                }
+
+                break;
+            }
+        }
+    }
+
+    function getShareById(id)
+    {
+        for (var i in shares) {
+            if (i == id) {
+                return shares[i];
+            }
+        }
+    }
+
+    function getDurationById(share, id)
+    {
+        for (var i in share.durations) {
+            if (share.durations[i].id == id) {
+                return share.durations[i];
+            }
+        }
+    }
+
+    function restrictLocationsTo(duration)
+    {
+        var restrict = [];
+
+        for (var i in duration.locations) {
+            restrict.push(duration.locations[i].locationId);
+        }
+
+        return restrict;
+    }
+</script>
+<script id="shareDurationTemplate" type="text/x-jquery-tmpl">
+    {{if durations.length > 1}}
+    <p id="shareDuration">
+        <label for="shareDurationId" class="required" title="<?= $this->translate('Specify which share duration this subscription is for'); ?>">
+            <?= $this->translate('Duration'); ?>:
+            <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+        </label>
+
+        <select id="shareDurationId"
+                name="shareDurationId"
+                class="required"
+                title="<?= $this->translate('Specify which share duration this subscription is for') ?>">
+            <option></option>
+            {{tmpl(durations) "#shareDurationOptionTemplate"}}
+        </select>
+    </p>
+    {{else durations.length == 1}}
+    <input type="hidden" id="shareDurationId" name="shareDurationId" value="${durations[0].id}" />
+    {{/if}}
+</script>
+<script id="shareDurationOptionTemplate" type="text/x-jquery-tmpl">
+    <option value="${id}" label="<?= $this->translate(
+                'Starts week %s with %s deliveries a year',
+                '${startWeek}',
+                '${iterations}'
+            ); ?>"><?= $this->translate(
+                'Starts week %s with %s deliveries a year',
+                '${startWeek}',
+                '${iterations}'
+            ); ?></option>
+</script>
+<script id="shareSizeTemplate" type="text/x-jquery-tmpl">
+    {{if sizes.length > 1}}
+    <p id="shareSize">
+        <label for="shareSizeId" class="required" title="<?= $this->translate('Specify which share size this subscription is for'); ?>">
+            <?= $this->translate('Size'); ?>:
+            <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+        </label>
+
+        <select id="shareSizeId"
+                name="shareSizeId"
+                class="required"
+                title="<?= $this->translate('Specify which share size this subscription is for') ?>">
+            <option></option>
+            {{tmpl(sizes) "#shareSizeOptionTemplate"}}
+        </select>
+    </p>
+    {{else sizes.length == 1}}
+    <input type="hidden" id="shareSizeId" name="shareSizeId" value="${sizes[0].id}" />
+    {{/if}}
+</script>
+<script id="shareSizeOptionTemplate" type="text/x-jquery-tmpl">
+    <option value="${id}" label="${name}">${name}</option>
+</script>
+<script id="locationTemplate" type="text/x-jquery-tmpl">
+{{if locations.length > 1}}
+<p id="location">
+    <label for="locationId" class="required" title="<?= $this->translate('Specify which pickup or delivery location this subscription is for'); ?>">
+        <?= $this->translate('Location'); ?>:
+        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+    </label>
+
+    <select id="locationId"
+        name="locationId"
+        class="required"
+        title="<?= $this->translate('Specify which pickup or delivery location this subscription is for') ?>">
+        <option></option>
+        {{tmpl(locations) "#locationOptionTemplate"}}
+    </select>
+</p>
+{{else locations.length == 1}}
+<input type="hidden" id="locationId" name="locationId" value="${locations[0].id}" />
+{{/if}}
+</script>
+<script id="locationOptionTemplate" type="text/x-jquery-tmpl">
+    <option value="${id}" label="${name}">${name}</option>
+</script>
+
+<script id="startWeekTemplate" type="text/x-jquery-tmpl">
+    <p id="startWeekContainer">
+        <label for="startWeek" class="required" title="<?= $this->translate('Specify which week this share subscription will start'); ?>">
+            <?= $this->translate('Start Week'); ?>:
+            <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+        </label>
+
+        <select id="startWeek"
+                name="startWeek"
+                class="required"
+                title="<?= $this->translate('Specify which week this share subscription will start') ?>">
+            <option></option>
+            {{tmpl(weeks) "#startWeekOptionTemplate"}}
+        </select>
+    </p>
+</script>
+<script id="startWeekOptionTemplate" type="text/x-jquery-tmpl">
+    <option value="${week}" label="${label}">${label}</option>
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<h2 style="display: inline-block; vertical-align: middle; margin-right: 15px; margin-bottom: 11px;">
+    <span class="icon-menu icon-menu-members" style="float: left; margin: -10px 7px 0 0;"></span>
+    <?= $title ?>
+</h2>
+
+<section class="container_12">
+    <article class="grid_11">
+
+        <form id="subscription" action="/admin/customers/subscription?<?= http_build_query($_GET) ?>" method="post" accept-charset="utf-8" class="cmxform large">
+
+            <section id="formError" class="error ui-widget ui-state-error ui-corner-all" style="<?= (!empty($this->errors)) ? '' : 'display:none;' ?>">
+                <div>
+                    <i class="fa fa-exclamation-triangle"></i>
+                    <strong><?= $this->translate('Oh No!'); ?></strong>
+                    <?= $this->translate('Something is not right with what you entered.  Check below for hints on how to fix things up.'); ?>
+                </div>
+            </section>
+
+            <fieldset>
+                <legend><?= $this->translate('Subscription Info') ?></legend>
+                <p>
+                    <label for="customerId" class="required" title="<?= $this->translate('Please select a customer'); ?>">
+                        <?= $this->translate('Customer'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+
+                    <?=
+                        $this->formSelect(
+                            'customerId',
+                            $this->getFormValue('customerId'),
+                            array(
+                                'id' => 'customerId',
+                                'class' => 'required',
+                                'title' => $this->translate('Please select a customer')
+                            ),
+                            $customers
+                        );
+                    ?>
+
+                    <?php if (!empty($this->errors['customerId'])) { ?>
+                    <label for="customerId" class="error">
+                        <?= implode('; ', $this->errors['customerId']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+                <p>
+                    <label for="shareId" class="required" title="<?= $this->translate('Please select a share'); ?>">
+                        <?= $this->translate('Share'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+
+                    <?=
+                        $this->formSelect(
+                            'shareId',
+                            $shareId,
+                            array(
+                                'id' => 'shareId',
+                                'class' => 'required',
+                                'title' => $this->translate('Please select a share')
+                            ),
+                            $sharesSelect
+                        );
+                    ?>
+
+                    <?php if (!empty($this->errors['shareId'])) { ?>
+                    <label for="shareId" class="error">
+                        <?= implode('; ', $this->errors['shareId']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <?php if (!empty($durations) && count($durations) > 1) { ?>
+                <p id="shareDuration">
+                    <label for="shareDurationId" class="required" title="<?= $this->translate('Specify which share duration this subscription is for'); ?>">
+                        <?= $this->translate('Duration'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+
+                    <?=
+                        $this->formSelect(
+                            'shareDurationId',
+                            $shareDurationId,
+                            array(
+                                'id' => 'shareDurationId',
+                                'class' => 'required',
+                                'title' => $this->translate('Specify which share duration this subscription is for')
+                            ),
+                            $durations
+                        );
+                    ?>
+
+                    <?php if (!empty($this->errors['shareDurationId'])) { ?>
+                    <label for="shareDurationId" class="error">
+                        <?= implode('; ', $this->errors['shareDurationId']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+                <?php } else if (count($durations) == 1) { ?>
+                <input type="hidden" id="shareDurationId" name="shareDurationId" value="<?= $this->escape(key($durations)); ?>" />
+                <?php } ?>
+
+                <?php if (!empty($locations) && count($locations) > 1) { ?>
+                <p id="location">
+                    <label for="locationId" class="required" title="<?= $this->translate('Specify which pickup or delivery location this subscription is for'); ?>">
+                        <?= $this->translate('Location'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+
+                    <?=
+                        $this->formSelect(
+                            'locationId',
+                            $this->getFormValue('locationId'),
+                            array(
+                                'id' => 'locationId',
+                                'class' => 'required',
+                                'title' => $this->translate('Specify which pickup or delivery location this subscription is for')
+                            ),
+                            $locations
+                        );
+                    ?>
+
+                    <?php if (!empty($this->errors['locationId'])) { ?>
+                    <label for="locationId" class="error">
+                        <?= implode('; ', $this->errors['locationId']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+                <?php } else if (count($locations) == 1) { ?>
+                <input type="hidden" id="locationId" name="locationId" value="<?= $this->escape(key($locations)); ?>" />
+                <?php } ?>
+
+                <?php if (!empty($sizes) && count($sizes) > 1) { ?>
+                <p id="shareSize">
+                    <label for="shareSizeId" class="required" title="<?= $this->translate('Specify which share size this subscription is for'); ?>">
+                        <?= $this->translate('Size'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+
+                    <?=
+                        $this->formSelect(
+                            'shareSizeId',
+                            $this->getFormValue('shareSizeId'),
+                            array(
+                                'id' => 'shareSizeId',
+                                'class' => 'required',
+                                'title' => $this->translate('Specify which share size this subscription is for')
+                            ),
+                            $sizes
+                        );
+                    ?>
+
+                    <?php if (!empty($this->errors['shareSizeId'])) { ?>
+                    <label for="shareSizeId" class="error">
+                        <?= implode('; ', $this->errors['shareSizeId']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+                <?php } else if (count($sizes) == 1) { ?>
+                <input type="hidden" id="shareSizeId" name="shareSizeId" value="<?= $this->escape(key($sizes)); ?>" />
+                <?php } ?>
+
+                <p>
+                    <label for="quantity" class="required" title="<?= $this->translate('How many subscriptions?'); ?>">
+                        <?= $this->translate('Quantity'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+
+                    <input
+                        id="quantity"
+                        name="quantity"
+                        type="text"
+                        title="<?= $this->translate('How many subscriptions?'); ?>"
+                        value="<?= $this->getFormValue('quantity'); ?>"
+                        class="required digits"
+                        maxlength="2" />
+
+                    <?php if (!empty($this->errors['quantity'])) { ?>
+                    <label for="year" class="error">
+                        <?= implode('; ', $this->errors['quantity']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <?php if ($currentShare && $duration) { ?>
+                    <?php
+                        $weeks = array();
+                        $date = new Zend_Date();
+
+                        $date->setYear($currentShare['year']);
+                        $date->setWeek($duration['startWeek']);
+
+                        for ($i = 1; $i <= $duration['iterations']; ++$i) {
+
+                            $week = sprintf('%02d', $date->get(Zend_Date::WEEK));
+
+                            $date->setWeekday(1);
+
+                            $range = $this->translate('Week') . ' ' . $i . ' (' . $date->toString('yyyy-MM-dd') . ' - ';
+
+                            $date->setWeekday(7);
+
+                            $range .= $date->toString('yyyy-MM-dd') . ')';
+
+                            $weeks[$date->get(Zend_Date::YEAR_8601) . 'W' . $week] = $range;
+
+                            switch ($currentShare['deliverySchedule']) {
+                                case HHF_Domain_Share::DELIVERY_SCHEDULE_WEEKLY :
+                                    $date->addWeek(1);
+                                    break;
+                                case HHF_Domain_Share::DELIVERY_SCHEDULE_SEMI_MONTHLY :
+                                    $date->addWeek(2);
+                                    break;
+                                case HHF_Domain_Share::DELIVERY_SCHEDULE_MONTHLY :
+                                    $date->addMonth(1);
+                                    break;
+                            }
+                        }
+                    ?>
+                    <p id="startWeekContainer">
+                        <label for="startWeek" class="required" title="<?= $this->translate('Specify which week this share subscription will start'); ?>">
+                            <?= $this->translate('Start Week'); ?>:
+                            <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                        </label>
+
+                        <?=
+                            $this->formSelect(
+                                'startWeek',
+                                $this->getFormValue('startWeek'),
+                                array(
+                                    'id' => 'startWeek',
+                                    'class' => 'required',
+                                    'title' => $this->translate('Specify which week this share subscription will start')
+                                ),
+                                $weeks
+                            );
+                        ?>
+
+                        <?php if (!empty($this->errors['startWeek'])) { ?>
+                        <label for="startWeek" class="error">
+                            <?= implode('; ', $this->errors['startWeek']) ?>
+                        </label>
+                        <?php } ?>
+                    </p>
+                <?php } ?>
+
+            </fieldset>
+            <fieldset>
+                <legend>
+                    <?= $this->translate('Payment') ?>
+                </legend>
+
+                <input
+                    id="payment"
+                    name="payment"
+                    type="hidden"
+                    value="<?= HHF_Domain_Transaction::TYPE_CASH ?>" />
+
+                <p>
+                    <label for="paymentPlan" class="required" title="<?= $this->translate('Please choose a payment plan'); ?>">
+                        <?= $this->translate('Payment Plan'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+
+                    <?php
+
+                        $plans = array(
+                            HHF_Order_Share::PAYMENT_PLAN_NONE => $this->translate('Payment in Full')
+                        );
+
+                        if ($this->plans[HHF_Order_Share::PAYMENT_PLAN_WEEKLY]) {
+                            $plans[HHF_Order_Share::PAYMENT_PLAN_WEEKLY] =
+                                $this->translate('Weekly Installments');
+                        }
+
+                        if ($this->plans[HHF_Order_Share::PAYMENT_PLAN_MONTHLY]) {
+                            $plans[HHF_Order_Share::PAYMENT_PLAN_MONTHLY] =
+                                $this->translate('Monthly Installments');
+                        }
+
+                        if ($this->plans[HHF_Order_Share::PAYMENT_PLAN_FIXED]) {
+                            if (count(HHF_Order_Share_PaymentPlan_Fixed::getDates()) > 1) {
+                                $plans[HHF_Order_Share::PAYMENT_PLAN_FIXED] =
+                                    $this->translate(
+                                        '%s Installments',
+                                        count(HHF_Order_Share_PaymentPlan_Fixed::getDates())
+                                    );
+                            }
+                        }
+
+                        echo $this->formSelect(
+                            'paymentPlan',
+                            $this->getFormValue('paymentPlan'),
+                            array(
+                                'id' => 'paymentPlan',
+                                'class' => 'required',
+                                'title' => $this->translate('Please choose a payment plan')
+                            ),
+                            $plans
+                        );
+                    ?>
+
+                    <?php if (!empty($this->errors['locationId'])) { ?>
+                    <label for="locationId" class="error">
+                        <?= implode('; ', $this->errors['locationId']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+                <p>
+                    <label for="email" title="<?= $this->translate('Send an email to this customer about this new share?'); ?>">
+                        <?= $this->translate('Send Email'); ?>:
+                    </label>
+
+                    <input type="checkbox" name="email" id="email" value="1" />
+                </p>
+                <p>
+                    <label for="notes" title="<?= $this->translate('Are there any notes?'); ?>">
+                        <?= $this->translate('Notes'); ?>:
+                    </label>
+                    <input type="text" id="notes" name="notes"/>
+                </p>
+            </fieldset>
+
+            <p>
+                <button type="submit" class="submit fieldset-align ui-button ui-widget ui-corner-all ui-button-text-only ui-state-default">
+                    <span class="ui-button-text">
+                        <i class="fa fa-check"></i>
+                        <?= $this->translate('Save!'); ?>
+                    </span>
+                </button>
+            </p>
+        </form>
+    </article>
+</section>

@@ -1,0 +1,42 @@
+
+<!--                <p>-->
+<!--                    <label for="website-recipesEnabled_1" class="required" title="--><?//= $this->translate('Should your HarvestHand recipes be disabled?'); ?><!--">-->
+<!--                        --><?//= $this->translate('Enable Recipes?'); ?><!--:-->
+<!--                        <abbr title="--><?//= $this->translate('This field is required'); ?><!--">*</abbr>-->
+<!--                    </label>-->
+<!---->
+<!--                    <input-->
+<!--                        id="website-recipesEnabled_0"-->
+<!--                        type="radio"-->
+<!--                        name="website-recipesEnabled"-->
+<!--                        value="0"-->
+<!--                        class="required"-->
+<!--                        title="--><?//= $this->translate('Don\'t enabled your HarvestHand recipes'); ?><!--"-->
+<!--                        --><?php //echo (($this->getFormValue('website-recipesEnabled') == '0') ? 'checked="checked"' : '') ?><!-- />-->
+<!--                        <label for="website-recipesEnabled_0" class="radio" title="--><?//= $this->translate('Don\'t enabled your HarvestHand recipes'); ?><!--">-->
+<!--                            --><?//= $this->translate('Disable'); ?>
+<!--                        </label>-->
+<!--                    <input-->
+<!--                        id="website-recipesEnabled_1"-->
+<!--                        type="radio"-->
+<!--                        name="website-recipesEnabled"-->
+<!--                        value="1"-->
+<!--                        title="--><?//= $this->translate('HarvestHand recipes should be enabled'); ?><!--"-->
+<!--                        --><?php
+//                            $value = $this->getFormValue('website-recipesEnabled');
+//                            if ($value === null) {
+//                                echo 'checked="checked"';
+//                            } else if ($value == 1) {
+//                                echo 'checked="checked"';
+//                            }
+//                        ?><!-- />-->
+<!--                        <label for="website-recipesEnabled_1" class="radio" title="--><?//= $this->translate('HarvestHand recipes should be enabled'); ?><!--">-->
+<!--                            --><?//= $this->translate('Enable'); ?>
+<!--                        </label>-->
+<!---->
+<!--                    --><?php //if (!empty($this->errors['website-recipesEnabled'])) { ?>
+<!--                        <label for="enabled" class="error">-->
+<!--                            --><?//= implode('; ', $this->errors['website-recipesEnabled']) ?>
+<!--                        </label>-->
+<!--                    --><?php //} ?>
+<!--                </p>-->

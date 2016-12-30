@@ -1,0 +1,125 @@
+<?php
+    $dateFormatter = new IntlDateFormatter(
+        Bootstrap::$locale,
+        IntlDateFormatter::LONG,
+        IntlDateFormatter::NONE
+    );
+?>
+<h1><?= $this->translate('New Add On Products Purchased'); ?></h1>
+
+<h3><?= $this->translate('Thank you for your order!'); ?></h3>
+
+<?php if (!empty($this->invoice) && $this->invoice['pending']) { ?>
+<p>
+    <strong>
+        <?= $this->translate(
+        'We\'re manually processing your order and will send you an update with the final confirmed invoice ASAP.'
+    ) ?>
+    </strong>
+</p>
+<?php } ?>
+
+<p><?= $this->translate(
+        'To recap, you have added the following to your %s for %s',
+        $this->farm->getPreferences()->get('share', 'shares', 'share'),
+        $this->escape(
+            $dateFormatter->format(
+                (!empty($this->deliveryDate)
+                    ? (int) $this->deliveryDate
+                    : new DateTime($this->purchases->offsetGet(0)->week))
+            )
+        )
+    ); ?>:</p>
+
+<table width="100%">
+    <thead>
+        <tr>
+            <th align="left">
+                <strong><?= $this->translate('Add On'); ?></strong>
+            </th>
+            <th align="left">
+                <strong><?= $this->translate('Quantity'); ?></strong>
+            </th>
+            <th align="left">
+                <strong><?= $this->translate('Price'); ?></strong>
+            </th>
+            <th align="left">
+                <strong><?= $this->translate('Total'); ?></strong>
+            </th>
+        </tr>
+    </thead>
+    <?php
+        $total = 0;
+        foreach ($this->purchases as $purchase) {
+            $addon = $this->purchases->getRelatedAddon($purchase['addonId']);
+    ?>
+    <tr>
+        <td><?= $this->escape($addon['name']) ?></td>
+        <td>
+            <?= $this->escape($purchase['quantity']) ?>
+            <?php if ($addon['priceBy'] == HHF_Domain_Addon::PRICE_BY_WEIGHT) { ?>
+                <?= $this->translate(strtolower($addon['unitType'])) ?>
+            <?php } ?>
+        </td>
+        <td><?php
+                if (is_numeric($addon['price'])) {
+                    echo $this->escape($this->currency($addon['price']));
+                } else {
+                    echo $this->escape($this->currency(0));
+                }
+            ?><?php if ($addon['priceBy'] == HHF_Domain_Addon::PRICE_BY_WEIGHT) { ?>
+                / <?= $this->translate(strtolower($addon['unitType'])) ?>
+            <?php } ?></td>
+        <td><?php
+                if (is_numeric($addon['price'])) {
+                    $lineTotal = $addon['price'] * $purchase['quantity'];
+
+                    echo $this->escape($this->currency($lineTotal));
+                    $total += $lineTotal;
+                } else {
+                    echo $this->escape($this->currency(0));
+                }
+            ?></td>
+    </tr>
+    <?php } ?>
+    <tfoot>
+        <tr>
+            <td colspan="3">
+                <strong><?= $this->translate('Total') ?></strong>
+            </td>
+            <td>
+                <strong><?= $this->escape($this->currency($total)) ?></strong>
+                <?php if (!empty($this->invoice) && $this->invoice['pending']) { ?>
+                    (<?= $this->translate('Estimate') ?>)
+                <?php } ?>
+            </td>
+        </tr>
+    </tfoot>
+</table>
+
+<?php if (!(!empty($this->invoice) && $this->invoice['pending'])) { ?>
+    <?php if ($this->purchases->offsetGet(0)->payment != HHF_Domain_Transaction::TYPE_PAYPAL) { ?>
+
+        <?php
+            $paymentTo = $this->farm->getPreferences()->get('paymentTo', 'shares');
+            if (empty($paymentTo)) {
+                $paymentTo = $this->farm->name;
+            }
+        ?>
+
+        <p><?= $this->translate(
+                'To pay for your add ons, please provide a cheque or cash for %s when picking up your %s.  Cheques should be made payable to "%s".  Please reference your customer number %s.',
+                $this->currency($total),
+                $this->farm->getPreferences()->get('share', 'shares', 'share'),
+                $this->escape($paymentTo),
+                $this->escape($this->customer['id'])
+            ); ?></p>
+
+    <?php } else { ?>
+
+        <p><?= $this->translate('Your payment should have been completed through Paypal.  A separate invoice will be emailed to you for that.'); ?></p>
+
+    <?php } ?>
+<?php } ?>
+
+<p><?= $this->translate('Thank you for your business!'); ?></p>

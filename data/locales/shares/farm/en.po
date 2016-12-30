@@ -1,0 +1,2030 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-09-08 07:40-0400\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Michael Caplan <michael@harvesthand.com>\n"
+"Language-Team: \n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: English\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: translate\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SearchPath-0: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares\n"
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/controllers/AdminController.php:35
+msgid "Administration"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/controllers/AdminController.php:61
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/controllers/AdminController.php:62
+msgid "All Locations"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/controllers/AdminController.php:137
+#, php-format
+msgid "Share \"%s\" added!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/controllers/AdminController.php:159
+#, php-format
+msgid "Share \"%s\" was deleted"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/controllers/AdminController.php:218
+#, php-format
+msgid "Share \"%s\" updated!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/controllers/AdminController.php:342
+#, php-format
+msgid "Location \"%s\" added!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/controllers/AdminController.php:367
+#, php-format
+msgid "Location \"%s\" was deleted"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/controllers/AdminController.php:407
+#, php-format
+msgid "Location \"%s\" updated!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/controllers/AdminController.php:481
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/controllers/AdminController.php:575
+msgid "Unable to receive uploaded file."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/controllers/AdminController.php:495
+#, php-format
+msgid "Add on \"%s\" added!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/controllers/AdminController.php:520
+#, php-format
+msgid "Add on \"%s\" was deleted"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/controllers/AdminController.php:588
+#, php-format
+msgid "Add on \"%s\" updated!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/controllers/AdminController.php:673
+#, php-format
+msgid "Delivery added!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/controllers/AdminController.php:695
+#, php-format
+msgid "Delivery deleted"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/controllers/AdminController.php:745
+#, php-format
+msgid "Delivery updated!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/controllers/AdminController.php:884
+#, php-format
+msgid "Shares options updated!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/controllers/PublicController.php:316
+msgid "New Add Ons Purchased From HarvestHand"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/controllers/PublicController.php:356
+#, php-format
+msgid "New Add Ons Purchased From %s"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/controllers/PublicController.php:663
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:319
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:331
+msgid "Do you want to create a new account, or use an existing?"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/controllers/PublicController.php:718
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/controllers/PublicController.php:727
+msgid "User name or password incorrect"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/controllers/PublicController.php:750
+msgid "To proceed, you must agree with the terms of our membership agreement"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/controllers/PublicController.php:760
+msgid "To proceed, you must choose a valid payment plan"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/controllers/PublicController.php:769
+msgid "To proceed, you must specify a payment method"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/controllers/PublicController.php:776
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/controllers/PublicController.php:778
+msgid "'%field%' is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/controllers/PublicController.php:868
+msgid "New Share Purchased From HarvestHand"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/controllers/PublicController.php:906
+#, php-format
+msgid "New Share Purchased From %s"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin-sub-nav.phtml:2
+msgid "Where To?"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin-sub-nav.phtml:6
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin-sub-nav.phtml:12
+msgid "View and edit existing shares"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin-sub-nav.phtml:7
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/all-shares.phtml:2
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/all-shares.phtml:42
+msgid "Shares"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin-sub-nav.phtml:15
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin-sub-nav.phtml:39
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin-sub-nav.phtml:71
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin-sub-nav.phtml:95
+msgid "Edit"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin-sub-nav.phtml:20
+msgid "Add new share"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin-sub-nav.phtml:23
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin-sub-nav.phtml:47
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin-sub-nav.phtml:79
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin-sub-nav.phtml:103
+msgid "New"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin-sub-nav.phtml:30
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin-sub-nav.phtml:36
+msgid "View and edit existing share deliveries"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin-sub-nav.phtml:31
+msgid "Deliveries"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin-sub-nav.phtml:44
+msgid "Add new share delivery"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin-sub-nav.phtml:52
+msgid "View share delivery reports"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin-sub-nav.phtml:55
+msgid "Reports"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin-sub-nav.phtml:62
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin-sub-nav.phtml:68
+msgid "View and edit existing pickup or delivery locations"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin-sub-nav.phtml:63
+msgid "Locations"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin-sub-nav.phtml:76
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin-sub-nav.phtml:100
+msgid "Add new pickup or delivery location"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin-sub-nav.phtml:86
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin-sub-nav.phtml:92
+msgid "View and edit existing share add ons"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin-sub-nav.phtml:87
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/addons-email-farm.phtml:36
+msgid "Add Ons"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/my-shares-payment.phtml:28
+msgid "Order Placed."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/my-shares-payment.phtml:29
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/addons-email-customer.phtml:13
+msgid "Thank you for your order!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/my-shares-payment.phtml:34
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/addons-email-customer.phtml:16
+#, php-format
+msgid "To recap, you have added the following to your share for %s"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/my-shares-payment.phtml:41
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/addons-email-farm.phtml:42
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/addons-email-customer.phtml:24
+msgid "Add On"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/my-shares-payment.phtml:42
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:678
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/addons-email-farm.phtml:45
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/addons-email-customer.phtml:27
+msgid "Quantity"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/my-shares-payment.phtml:43
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/addons-email-farm.phtml:54
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/addons-email-customer.phtml:30
+msgid "Price"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/my-shares-payment.phtml:44
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/my-shares-payment.phtml:76
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/addons-email-farm.phtml:57
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/addons-email-farm.phtml:109
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/addons-email-customer.phtml:33
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/addons-email-customer.phtml:66
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/my-shares.phtml:383
+msgid "Total"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/my-shares-payment.phtml:89
+msgid "To complete payment for your add ons, you will be redirected to Paypal.  Click to continue:"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/my-shares-payment.phtml:95
+#, php-format
+msgid "%s Add On Purchase"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/my-shares-payment.phtml:112
+#, php-format
+msgid "To complete payment for your add ons, please provide a check or cash for %s when picking up your share."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:147
+msgid "A password needs to be at least 4 words or letters long"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:150
+msgid "That doesn't look like an email address"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:155
+msgid "The user name {0} is already in use"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:161
+msgid "Your passwords are not the same"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:218
+msgid "Payment Details"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:222
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:235
+msgid "Do you agree with the terms of our membership agreement?"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:223
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:660
+msgid "Membership Agreement"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:224
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:246
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:291
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:321
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:346
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:367
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:388
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:429
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:450
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:555
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:576
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:598
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:617
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:638
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/my-shares.phtml:390
+msgid "This field is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:238
+msgid "View Membership Agreement"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:244
+msgid "Please choose a payment option"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:245
+msgid "Payment Options"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:251
+msgid "Pay in Full"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:256
+msgid "Weekly Installments"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:261
+msgid "Monthly Installments"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:268
+#, php-format
+msgid "%s Installments"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:280
+msgid "Please choose a payment plan"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:289
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:301
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/my-shares.phtml:388
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/my-shares.phtml:400
+msgid "Please choose a payment method"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:290
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/my-shares.phtml:389
+msgid "Payment Method"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:304
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/my-shares.phtml:403
+msgid "Choose a payment method"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:305
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/my-shares.phtml:404
+msgid "Cash or Check"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:306
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/my-shares.phtml:405
+msgid "Online Payment"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:316
+msgid "Create Account"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:320
+msgid "Account"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:334
+msgid "Please choose"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:335
+msgid "Create a new account"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:336
+msgid "Use an existing account"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:344
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:352
+msgid "Please enter your first name"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:345
+msgid "First Name"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:365
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:373
+msgid "Please enter your last name"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:366
+msgid "Last Name"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:386
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:394
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:407
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:414
+msgid "Please enter your address"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:387
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:408
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-email-farm.phtml:17
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/addons-email-farm.phtml:17
+msgid "Address"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:427
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:435
+msgid "Please enter your town or city"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:428
+msgid "Town"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:448
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:469
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:479
+msgid "Please enter your state"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:449
+msgid "State"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:493
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:500
+msgid "Please enter your zip code"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:494
+msgid "Zip Code"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:513
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:520
+msgid "Please enter your email"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:514
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-email-farm.phtml:8
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/addons-email-farm.phtml:8
+msgid "Email"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:533
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:540
+msgid "Please enter your telephone"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:534
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-email-farm.phtml:13
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/addons-email-farm.phtml:13
+msgid "Telephone"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:553
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:561
+msgid "Please enter a user name to log in with"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:554
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:616
+msgid "User Name"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:574
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:582
+msgid "Please enter a password to log in with"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:575
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:637
+msgid "Password"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:596
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:604
+msgid "Please confirm your password"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:597
+msgid "Confirm Password"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:624
+msgid "Please enter your user name"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:645
+msgid "Please enter your password"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:682
+msgid "Huh?"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step2.phtml:683
+msgid "It doesn't look like you selected any shares.  Please go back and add a share."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-email-farm.phtml:1
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/addons-email-farm.phtml:1
+msgid "Customer"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-email-farm.phtml:4
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/addons-email-farm.phtml:4
+msgid "Name"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/all-shares.phtml:16
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/my-shares.phtml:29
+#, php-format
+msgid "%s Shares RSS Feed"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/all-shares.phtml:27
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/my-shares.phtml:40
+#, php-format
+msgid "%s Shares Atom Feed"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/all-shares.phtml:35
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/all-shares.phtml:37
+msgid "Shares RSS Feed"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/all-shares.phtml:157
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/my-shares.phtml:169
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/all-shares.feed.phtml:185
+msgid "Certified Organic"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/all-shares.phtml:160
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/my-shares.phtml:172
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/all-shares.feed.phtml:188
+msgid "Biodynamic"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/all-shares.phtml:163
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/my-shares.phtml:175
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/all-shares.feed.phtml:191
+msgid "Certified Naturally Grown"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/all-shares.phtml:166
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/my-shares.phtml:178
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/all-shares.feed.phtml:194
+msgid "Naturally Grown"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/all-shares.phtml:169
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/my-shares.phtml:181
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/all-shares.feed.phtml:197
+msgid "Pastured"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/all-shares.phtml:172
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/my-shares.phtml:184
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/all-shares.feed.phtml:200
+msgid "Transition to Organic"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/all-shares.phtml:175
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/my-shares.phtml:187
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/all-shares.feed.phtml:203
+msgid "Non Organic"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/all-shares.phtml:178
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/my-shares.phtml:190
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/all-shares.feed.phtml:206
+msgid "Spray Free"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/all-shares.phtml:221
+msgid "No Shares To Display"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:13
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:168
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:195
+msgid "Choose a location"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:26
+#, php-format
+msgid "Location: %s, %s"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:32
+#, php-format
+msgid "Location: %s"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:41
+#, php-format
+msgid "Day: %s, %s - %s"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:52
+#, php-format
+msgid "Fee: %s per delivery"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:57
+msgid "Click here for more information"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:142
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:578
+msgid "Choose a share size"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:278
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:453
+msgid "More Details"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:280
+msgid "Less"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:307
+msgid "Please make a selection"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:433
+msgid "Choose Your Share"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:435
+msgid "Choose Your Shares"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:441
+msgid "No shares are currently available.  Please try back later."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:474
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:515
+msgid "Please choose which share delivery option you would like"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:476
+msgid "Options"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:480
+msgid "Please choose a delivery option"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:490
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:545
+msgid "weekly"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:493
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:548
+msgid "semi-monthly"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:496
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:551
+msgid "monthly"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:501
+#, php-format
+msgid "%1$s %2$s deliveries ~ Running: %3$s to %4$s"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:536
+msgid "Delivery"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:556
+#, php-format
+msgid "%s %s deliveries, running %s to %s"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:571
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:597
+msgid "Please specify a share size"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:573
+msgid "Size"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:621
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:659
+msgid "Please specify a pickup or delivery location where you will be receiving this share"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:622
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:724
+msgid "Location"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:676
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:695
+msgid "Please choose how many shares you wish to purchase"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:743
+msgid "Delivery Day"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:760
+msgid "Delivery Fee"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step1.phtml:763
+#, php-format
+msgid "%s per delivery"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-email-customer.phtml:11
+msgid "Thank You For Registering!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-email-customer.phtml:18
+#, php-format
+msgid "Welcome to %s!  To complete registration for your share, please send a cheque for %s to:"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-email-customer.phtml:35
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-email-customer.phtml:53
+#, php-format
+msgid "Welcome to %s!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-email-customer.phtml:45
+#, php-format
+msgid "Welcome to %s!  Your payment of %s should have been completed through Paypal.  A separate invoice will be emailed  to you for that."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register.phtml:2
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register.phtml:9
+msgid "Share Sign Up"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register.phtml:34
+msgid "Select the shares you wish to purchase"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register.phtml:35
+msgid "Choose Shares"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register.phtml:51
+msgid "Confirm your share order"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register.phtml:52
+msgid "Confirm Order"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register.phtml:69
+msgid "Pay for your ordered shares"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register.phtml:70
+msgid "Make Payment"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register.phtml:90
+msgid "Oh No!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register.phtml:91
+msgid "Something is not right with what you entered.  Check below for hints on how to fix things up."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register.phtml:105
+msgid "Next"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register.phtml:118
+msgid "Previous"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register.phtml:126
+msgid "Place Order"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step3.phtml:26
+msgid "Registered!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step3.phtml:27
+msgid "You have successfully signed up for your shares!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step3.phtml:31
+msgid "Thank you for your registration!  Please print out this receipt for your records."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step3.phtml:37
+msgid "To complete payment for your share, you will be redirected to Paypal.  Click here to continue:"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step3.phtml:43
+#, php-format
+msgid "%s Share Sign Up Fee"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-step3.phtml:60
+#, php-format
+msgid "To complete registration for your share, please send a cheque for %s to:"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/addons-email-farm.phtml:27
+msgid "Delivery Location"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/addons-email-farm.phtml:48
+msgid "Week"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/addons-email-farm.phtml:51
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/my-shares.phtml:380
+msgid "Payment"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/addons-email-farm.phtml:81
+#, php-format
+msgid "Week of %s"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/addons-email-customer.phtml:78
+#, php-format
+msgid "To pay for your add ons, please provide a check or cash for %s when picking up your share."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/addons-email-customer.phtml:84
+msgid "Your payment should have been completed through Paypal.  A separate invoice will be emailed to you for that."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/addons-email-customer.phtml:88
+msgid "Thank you for your business!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/my-shares.phtml:2
+msgid "My Upcoming Shares"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/my-shares.phtml:53
+#, php-format
+msgid "My Shares for the Week of %s to %s"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/my-shares.phtml:63
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/my-shares.phtml:77
+msgid "Hey!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/my-shares.phtml:64
+msgid "You currently don't have any active shares."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/my-shares.phtml:69
+#, php-format
+msgid "To register for a share, <a href=\"%s\">please visit our sign up form</a>."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/my-shares.phtml:78
+msgid "There are no share delivieries scheduled for this week yet."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/my-shares.phtml:83
+#, php-format
+msgid "Please check back soon.  In the mean time, wet your appetite by <a href=\"%s\">viewing share details of previous weeks</a>."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/my-shares.phtml:321
+#, php-format
+msgid "Share Add Ons for %s"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/my-shares.phtml:343
+#, php-format
+msgid "Quantity of %s to order"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/my-shares.phtml:423
+msgid "Order"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/all-shares.feed.phtml:6
+#, php-format
+msgid "%s Shares"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/all-shares.feed.phtml:12
+#, php-format
+msgid "%s upcoming shares"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/all-shares.feed.phtml:92
+#, php-format
+msgid "%s - %s"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-order-summary.phtml:119
+msgid "Order Summary"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-order-summary.phtml:145
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:288
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:918
+msgid "Share Size"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-order-summary.phtml:150
+msgid "Pickup Location"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-order-summary.phtml:167
+msgid "Pickup Location Details"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-order-summary.phtml:177
+#, php-format
+msgid "%s weekly deliveries, running %s to %s"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-order-summary.phtml:185
+#, php-format
+msgid "Fee: %s per week"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-order-summary.phtml:191
+#, php-format
+msgid "%s semi-monthly deliveries, running %s to %s"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-order-summary.phtml:199
+#, php-format
+msgid "Fee: %s each semi-month"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-order-summary.phtml:205
+#, php-format
+msgid "%s monthly deliveries, running %s to %s"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-order-summary.phtml:213
+#, php-format
+msgid "Fee: %s per month"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-order-summary.phtml:230
+msgid "Modify"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-order-summary.phtml:247
+msgid "Cash"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-order-summary.phtml:250
+msgid "Paypal"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-order-summary.phtml:283
+msgid "Payment Plan"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-order-summary.phtml:292
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-order-summary.phtml:314
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-order-summary.phtml:336
+#, php-format
+msgid "%s installments starting %s and ending %s"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-order-summary.phtml:298
+msgid "Payment Plan Schedule"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-order-summary.phtml:320
+msgid "Monthly Payment Plan Schedule"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-order-summary.phtml:342
+msgid "Weekly Payment Plan Schedule"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/public/register-order-summary.phtml:366
+msgid "Payable Now"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery-report.phtml:15
+#, php-format
+msgid "Delivery Report: %s to %s"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery-report.phtml:78
+msgid "Filter Locations: "
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery-report.phtml:111
+#, php-format
+msgid "%s - %s to %s"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery-report.phtml:121
+msgid "Member"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery-report.phtml:124
+msgid "Phone"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery-report.phtml:238
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery-report.phtml:247
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery-report.phtml:335
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery-report.phtml:344
+#, php-format
+msgid "%s (%s) x %s"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery-report.phtml:299
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery-report.phtml:309
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery-report.phtml:358
+#, php-format
+msgid "%s x %s"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery-report.phtml:328
+msgid "Totals"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:4
+msgid "New Share"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:7
+msgid "Edit Share"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:136
+msgid "Before you can save your share, at lease one full share size needs to be added."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:287
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:917
+msgid "Please enter a share size"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:294
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:924
+msgid "Half Share"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:295
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:925
+msgid "Full Share"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:296
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:926
+msgid "2x Share"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:305
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:443
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:460
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:783
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:815
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:935
+msgid "Please enter the number of deliveries per year"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:313
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:321
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:949
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:957
+msgid "Please enter a name for this share size"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:328
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:336
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:970
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:978
+msgid "Please enter the price of this share size for a _single delivery_"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:329
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:971
+msgid "Price Per Delivery"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:343
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:350
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:991
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:998
+msgid "Please enter any details about this share size"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:344
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:668
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:992
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/addon.phtml:224
+msgid "Details"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:357
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:1010
+msgid "Remove this size for this share"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:358
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:499
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:876
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:1011
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:345
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:680
+msgid "Remove"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:364
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:1017
+msgid "Remove This Size"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:376
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:404
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:701
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:729
+msgid "Please enter the week of the year that this share will start"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:377
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:702
+msgid "Start Week"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:390
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:423
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:715
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:756
+#, php-format
+msgid "Week %s (e.g.: %s - %s)"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:411
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:436
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:743
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:769
+msgid "Please enter the last week of the year that purchases are available to"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:412
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:744
+msgid "Purchase Cut Off"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:444
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:784
+msgid "Deliveries a Year"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:467
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:475
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:829
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:837
+msgid "Please enter the number of _full shares_ available"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:468
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:830
+msgid "Full Shares for Purchase"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:481
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:491
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:850
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:861
+msgid "Specify which pickup or delivery locations this share duration should be limited to"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:482
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:851
+msgid "Limit to Locations"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:498
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:875
+msgid "Remove this duration for this share"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:505
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:882
+msgid "Remove This Duration"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:538
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:384
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:261
+msgid "General Info"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:541
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:549
+msgid "Please enter a name for your share"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:562
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:573
+msgid "Please enter the calendar delivery schedule this share will be following"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:563
+msgid "Delivery Schedule"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:577
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:210
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/shares.phtml:114
+msgid "Weekly"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:578
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/shares.phtml:117
+msgid "Semi-Monthly"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:579
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:273
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/shares.phtml:120
+msgid "Monthly"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:592
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:613
+msgid "Provide an image of your share"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:593
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/addon.phtml:149
+msgid "Image"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:625
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:477
+msgid "Should this share be disabled?"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:626
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/addons.phtml:99
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/deliveries.phtml:96
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/addon.phtml:182
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/locations.phtml:117
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/shares.phtml:91
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:478
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:306
+msgid "Enabled"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:636
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:638
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:488
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:490
+msgid "Don't enable share for purchase"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:639
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:135
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:177
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:230
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:293
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:356
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/addon.phtml:195
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:491
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:319
+msgid "Disable"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:646
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:655
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:498
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:507
+msgid "Share should be enabled for purchase"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:656
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:152
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:194
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:241
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:304
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:367
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/addon.phtml:212
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:508
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:336
+msgid "Enable"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:667
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:674
+msgid "Please enter any details about this share"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:688
+msgid "A share duration marks what dates a share will be available from, and for how long"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:689
+msgid "Durations"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:889
+msgid "Add a new duration for this share"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:890
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:1025
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:694
+msgid "Add New"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:896
+msgid "Add New Duration"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:906
+msgid "Sizes"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:1024
+msgid "Add a new size for this share"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:1031
+msgid "Add New Size"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/share.phtml:1041
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:458
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/addon.phtml:245
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:710
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:632
+msgid "Save!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/addons.phtml:48
+msgid "Are you sure you want to delete this addon?  No turning back after a share delete."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/addons.phtml:79
+msgid "Add On Name"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/addons.phtml:86
+msgid "Add On Price"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/addons.phtml:92
+msgid "Add On Inventory"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/addons.phtml:93
+msgid "Inv."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/addons.phtml:98
+msgid "Add On Status"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/addons.phtml:104
+msgid "Add On Actions"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/addons.phtml:127
+msgid "Unlimited"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/addons.phtml:133
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/deliveries.phtml:139
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/locations.phtml:159
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/shares.phtml:127
+msgid "Yes"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/addons.phtml:134
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/deliveries.phtml:140
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/locations.phtml:160
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/shares.phtml:128
+msgid "No"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/addons.phtml:154
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/addons.phtml:157
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/deliveries.phtml:160
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/deliveries.phtml:163
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/locations.phtml:179
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/locations.phtml:182
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/shares.phtml:148
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/shares.phtml:151
+msgid "Delete"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/addons.phtml:171
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/addons.phtml:174
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/shares.phtml:165
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/shares.phtml:168
+msgid "Add share"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/addons.phtml:186
+#, php-format
+msgid "You haven't added an add on yet.  <a href=\"%s\">Let's add one now.</a>"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:2
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:14
+msgid "Shares Options"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:118
+msgid "General"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:121
+msgid "Should shares be disabled?"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:122
+msgid "Enable Shares?"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:132
+msgid "Don't enable shares for purchase"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:134
+msgid "Don't enabled shares for purchase"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:142
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:151
+msgid "Shares should be enabled"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:163
+msgid "Should share add ons be disabled?"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:164
+msgid "Enable Share Add Ons?"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:174
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:176
+msgid "Don't enable share add ons for purchase"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:184
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:193
+msgid "Share add ons should be enabled"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:206
+msgid "Payment Plans"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:209
+msgid "Should weekly payment plans be disabled?"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:220
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:229
+msgid "Don't enabled weekly payment plans"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:237
+msgid "Should weekly payment plans should be enabled"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:240
+msgid "Shares weekly payment plans should be enabled"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:252
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:315
+msgid "Should an upfront lump sum be required on signup, indicate the amount as a percent of the total cost for share"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:253
+msgid "Weekly Upfront Payment %"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:259
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:322
+msgid "Please enter the percent for upfront payment of the total cost for share"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:272
+msgid "Should monthly payment plans be disabled?"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:283
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:292
+msgid "Don't enabled monthly payment plans"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:300
+msgid "Should monthly payment plans should be enabled"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:303
+msgid "Shares monthly payment plans should be enabled"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:316
+msgid "Monthly Upfront Payment %"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:335
+msgid "Should fixed date payment plans be disabled?"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:336
+msgid "Fixed"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:346
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:355
+msgid "Don't enabled fixed date payment plans"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:363
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:366
+msgid "Should fixed date payment plans should be enabled"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:378
+msgid "What dates should payments be made on"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:379
+msgid "Fixed Dates"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:385
+msgid "Please enter the dates that payments shoudl be made on"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:398
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:405
+msgid "Please enter any terms and details about this payment plan"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:399
+msgid "Terms"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:422
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:429
+msgid "Please enter the time of day that add ons can no longer be purchased.  Defaults to the day prior to the share delivery day."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/options.phtml:423
+msgid "Purchase Cut Off Time"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery-reports.phtml:2
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery-reports.phtml:65
+msgid "Delivery Reports"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery-reports.phtml:57
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/deliveries.phtml:51
+msgid "Are you sure you want to delete this delivery?  No turning back after a delivery delete."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery-reports.phtml:88
+msgid "Delivery Year"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery-reports.phtml:90
+msgid "Year"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery-reports.phtml:95
+msgid "Delivery Week"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery-reports.phtml:101
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/deliveries.phtml:89
+msgid "Delivery Date"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery-reports.phtml:102
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/deliveries.phtml:90
+msgid "Date"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery-reports.phtml:107
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/deliveries.phtml:101
+msgid "Delivery Actions"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery-reports.phtml:135
+#, php-format
+msgid "Week of %s to %s"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery-reports.phtml:146
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery-reports.phtml:150
+msgid "View"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery-reports.phtml:163
+#, php-format
+msgid "You haven't added a delivery yet, so there is nothing to report on yet.  <a href=\"%s\">Add a delivery.</a>"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/deliveries.phtml:82
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/shares.phtml:77
+msgid "Share Name"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/deliveries.phtml:84
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:388
+msgid "Share"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/deliveries.phtml:95
+msgid "Delivery Status"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/deliveries.phtml:177
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/deliveries.phtml:180
+msgid "Add delivery"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/deliveries.phtml:193
+#, php-format
+msgid "You haven't added a delivery yet.  <a href=\"%s\">Let's add one now.</a>"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/deliveries.phtml:199
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/shares.phtml:180
+#, php-format
+msgid "You haven't added a share yet.  <a href=\"%s\">Let's add one now.</a>"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/addon.phtml:4
+msgid "New Add On"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/addon.phtml:7
+msgid "Edit Add On"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/addon.phtml:86
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/addon.phtml:94
+msgid "Please enter the name of your add on"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/addon.phtml:107
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/addon.phtml:115
+msgid "Enter the price for 1 unit"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/addon.phtml:128
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/addon.phtml:135
+msgid "Enter inventory amount (empty for no limit)"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/addon.phtml:129
+msgid "Inventory"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/addon.phtml:148
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/addon.phtml:169
+msgid "Provide an image of your add on"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/addon.phtml:181
+msgid "Should this add on be disabled?"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/addon.phtml:192
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/addon.phtml:194
+msgid "Don't enable add on for purchase"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/addon.phtml:202
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/addon.phtml:211
+msgid "Add on should be enabled"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/addon.phtml:223
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/addon.phtml:229
+msgid "Please enter a description for this add on"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/locations.phtml:2
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/locations.phtml:74
+msgid "Delivery & Pickup Locations"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/locations.phtml:66
+msgid "Are you sure you want to delete this location?  No turning back after a location delete."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/locations.phtml:97
+msgid "Location Name"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/locations.phtml:104
+msgid "Location Town or City"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/locations.phtml:110
+msgid "Location Pickup Day and Time"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/locations.phtml:111
+msgid "Time"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/locations.phtml:116
+msgid "Location Enabled?"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/locations.phtml:122
+msgid "Location Actions"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/locations.phtml:196
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/locations.phtml:199
+msgid "Add delivery or pickup location"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/locations.phtml:211
+#, php-format
+msgid "You haven't added a delivery or pickup location yet.  <a href=\"%s\">Let's add one now.</a>"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/shares.phtml:46
+msgid "Are you sure you want to delete this share?  No turning back after a share delete."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/shares.phtml:84
+msgid "Share Delivery Schedule"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/shares.phtml:90
+msgid "Share Status"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/shares.phtml:96
+msgid "Share Actions"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:4
+msgid "New Delivery"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:7
+msgid "Edit Delivery"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:233
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:242
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:532
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:541
+msgid "Please enter the name of the delivery item"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:234
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:533
+msgid "Item"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:249
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:257
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:554
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:562
+msgid "Please enter the source of this item, if it is not from your farm"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:250
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:555
+msgid "Source"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:264
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:288
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:575
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:599
+msgid "Please the include how this item was grown"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:265
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:576
+msgid "Type"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:296
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:305
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:613
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:622
+msgid "Please enter the quantity of this item for a full share"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:297
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:614
+msgid "Share Quantity"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:312
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:321
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:635
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:644
+msgid "Please enter the quantity of this item for a half share"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:313
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:636
+msgid "1/2 Share Quantity"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:328
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:337
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:657
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:666
+msgid "Please enter the quantity of this item for a double share"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:329
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:658
+msgid "2x Share Quantity"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:344
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:351
+msgid "Remove this item"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:387
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:399
+msgid "Please select a share"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:414
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:462
+msgid "Please set the week for this delivery"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:521
+msgid "Items"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:679
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:686
+msgid "Remove This Item"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:693
+msgid "Add a new item for this delivery"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/delivery.phtml:700
+msgid "Add New Item"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:4
+msgid "New Delivery or Pickup Location"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:7
+msgid "Edit Delivery or Pickup Location"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:43
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:196
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:199
+msgid "Time doesn't look right"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:264
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:272
+msgid "Please enter the name of your pickup or delivery location"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:285
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:292
+msgid "Enter the price for delivery (if any) for one delivery at this location"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:286
+msgid "Location Price"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:305
+msgid "Should this location be disabled?"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:316
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:318
+msgid "Don't enabled location for share purchases"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:326
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:335
+msgid "Location should be enabled"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:347
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:353
+msgid "Please enter any instructions about your pickup or delivery location"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:348
+msgid "Instructions"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:365
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:372
+msgid "Enter the limit (if any) for how many customers can sign up for this location"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:366
+msgid "Member Limit"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:390
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:397
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:410
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:417
+msgid "Please enter the address of your pickup or delivery location"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:430
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:438
+msgid "Please enter the town or city of your pickup or delivery location"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:451
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:472
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:482
+msgid "Please enter the state of your pickup or delivery location"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:496
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:503
+msgid "Please enter the zip code of your pickup or delivery location"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:516
+msgid "Please mark your pickup or delivery location on the map by clicking on it"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:517
+msgid "Map Location"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:521
+msgid "Click on the map to mark your pickup or delivery location"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:528
+msgid "Day & Time"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:531
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:558
+msgid "Please enter the day of the week that this pickup or delivery location will be on"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:532
+msgid "Day of Week"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:571
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:579
+msgid "Please enter the time that this pickup or delivery location will start"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:572
+msgid "Start Time"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:599
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:607
+msgid "Please enter the time that this pickup or delivery location will end"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/shares/views/scripts/admin/location.phtml:600
+msgid "End Time"
+msgstr ""
+

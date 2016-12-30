@@ -1,0 +1,42 @@
+<h1>
+    <?= $this->translate(
+        'My List'
+    ); ?>
+</h1>
+
+<dl>
+    <dt><?= $this->translate('Date') ?></dt>
+    <dd><?= $this->escape($this->currentLocation['date']) ?></dd>
+</dl>
+
+<?php
+    $currentCategory = null;
+    $changeCategory = false;
+?>
+
+<?php foreach ($this->addons as $addon) { ?>
+    <?php if ($currentCategory != $addon['categoryName']) { ?>
+        <?php
+            $changeCategory = true;
+            $currentCategory = $addon['categoryName'];
+        ?>
+    <div>
+        <h3><?= $this->escape($addon['categoryName']) ?></h3>
+    <?php } ?>
+        <ul>
+            <li>
+                <?= $this->escape($addon['name']) ?>
+                <?php if (!empty($addon['source'])) { ?>
+                (<?= $this->escape($addon['source']) ?>)
+                <?php } ?>
+            </li>
+        </ul>
+
+    <?php if ($changeCategory) { ?>
+        <?php $changeCategory = false; ?>
+    </div>
+    <?php } ?>
+
+<?php } ?>
+
+<p><?= $this->translate('Thanks for shopping with us!') ?></p>

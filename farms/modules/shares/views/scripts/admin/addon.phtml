@@ -1,0 +1,807 @@
+<?php
+
+    if (empty($this->addon)) {
+        $title = $this->translate('New Product');
+
+    } else {
+        $title = $this->translate('Edit Product');
+    }
+
+    $this->headTitle($title);
+
+    $this->loader()->append('jquery_validate')
+        ->append('ckeditor_ckeditor.js')
+        ->append('ckeditor_adapters_jquery.js')
+        ->append('jquery_ui_multiselect.js')
+        ->append('hhf_modules_shares_admin_addon');
+
+    $this->loadDatejs(Bootstrap::$locale);
+?>
+
+<?php $this->placeholder('head')->captureStart() ?>
+<script type="text/javascript">
+    window.CKEDITOR_BASEPATH = '<?= (!empty($_SERVER['HTTPS'])) ? 'https://static.' : 'http://static.' ?><?= Bootstrap::$rootDomain ?>/_js/ckeditor/';
+</script>
+<?php $this->placeholder('head')->captureEnd() ?>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+    hhf.modules.shares.admin.addon.init({
+        lang: {
+            'unit' : "<?= addslashes($this->translate('Unit')) ?>",
+            'weight' : "<?= addslashes($this->translate('Weight')) ?>",
+            'g' : "<?= addslashes($this->translate('Grams')) ?>",
+            'kg' : "<?= addslashes($this->translate('Kilograms')) ?>",
+            'oz' : "<?= addslashes($this->translate('Ounce')) ?>",
+            'lb' : "<?= addslashes($this->translate('Pound')) ?>",
+        },
+        domain: '<?= addslashes(Bootstrap::$rootDomain) ?>',
+        sources: <?= json_encode($this->sources) ?>,
+        externalId: <?= ($this->getFormValue('id') != null && $this->getFormValue('distributorId') != null) ? $this->getFormValue('id') : 'null' ?>,
+        distributorId: <?= ($this->getFormValue('distributorId') != null) ? $this->getFormValue('distributorId') : 'null' ?>,
+        vendorId: <?= (int) $this->farm->id ?>
+    });
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<h2>
+    <span class="icon-menu icon-menu-shares" style="float: left; margin: -10px 7px 0 0;"></span>
+    <?= $title ?>
+</h2>
+
+<section class="container_12">
+    <article class="grid_11">
+
+        <form id="addon" action="/admin/shares/addon?<?= http_build_query($_GET) ?>" method="post" accept-charset="utf-8" class="cmxform large" enctype="multipart/form-data">
+
+            <section id="formError" class="error ui-widget ui-state-error ui-corner-all" style="<?= (!empty($this->errors)) ? '' : 'display:none;' ?>">
+                <div>
+                    <i class="fa fa-exclamation-triangle"></i>
+                    <strong><?= $this->translate('Oh No!'); ?></strong>
+                    <?= $this->translate('Something is not right with what you entered.  Check below for hints on how to fix things up.'); ?>
+                </div>
+            </section>
+
+            <fieldset>
+                <legend><?= $this->translate('Description') ?></legend>
+
+                <p>
+                    <label for="name" class="required">
+                        <?= $this->translate('Name'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+                    <input
+                        id="name"
+                        name="name"
+                        type="text"
+                        value="<?= $this->getFormValue('name'); ?>"
+                        class="required large"
+                        placeholder="<?= $this->translate('Product name') ?>"
+                        maxlength="255" />
+
+                    <span class="tooltip"
+                        title="<?= $this->translate('Enter the name of your product'); ?>">
+                        [?]
+                    </span>
+
+                    <?php if (!empty($this->errors['name'])) { ?>
+                    <label for="name" class="error">
+                        <?= implode('; ', $this->errors['name']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="categoryId" class="required">
+                        <?= $this->translate('Category'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+
+                    <?=
+                        $this->formSelect(
+                            'categoryId',
+                            $this->getFormValue('categoryId'),
+                            array(
+                                'id' => 'categoryId',
+                                'class' => 'required'
+                            ),
+                            $this->categories
+                        );
+                    ?>
+
+                    <span class="tooltip"
+                        title="<?= $this->translate('Choose a category that this product should be displayed in'); ?>">
+                        [?]
+                    </span>
+
+                    <?php if (!empty($this->errors['categoryId'])) { ?>
+                    <label for="categoryId" class="error">
+                        <?= implode('; ', $this->errors['categoryId']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p id="newCategory" style="display: none;">
+                    <label for="categoryNew" class="required">
+                        <?= $this->translate('New Category'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+
+                    <input
+                        id="categoryNew"
+                        name="categoryNew"
+                        type="text"
+                        value="<?= $this->getFormValue('categoryNew'); ?>"
+                        class="large"
+                        placeholder="<?= $this->translate('New category name') ?>"
+                        maxlength="255" />
+
+                    <span class="tooltip"
+                        title="<?= $this->translate('Enter the name of a new category for your product'); ?>">
+                        [?]
+                    </span>
+
+                    <?php if (!empty($this->errors['categoryNew'])) { ?>
+                    <label for="categoryNew" class="error">
+                        <?= implode('; ', $this->errors['categoryNew']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="certification">
+                        <?= $this->translate('Method'); ?>:
+                    </label>
+
+                    <?= $this->formSelect(
+                        'certification',
+                        $this->getFormValue('certification'),
+                        array(
+                            'id' => 'certification',
+                            'title' => $this->translate('Please include how this item was grown')
+                        ),
+                        HHF_Domain_Certification::getSelectOptions()
+                    ) ?>
+
+                    <?php if (!empty($this->errors['certification'])) { ?>
+                        <label for="certification" class="error">
+                            <?= implode('; ', $this->errors['certification']) ?>
+                        </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="imageUpload">
+                        <?= $this->translate('Image'); ?>:</label>
+
+                    <?php if ($this->addon != false && !empty($this->addon->image)) { ?>
+                        <?php if (is_numeric($this->addon->image)) { ?>
+                            <img
+                                src="/default/file/id/<?= $this->escape($this->addon->image) ?>/s/<?= HHF_Domain_File::IMAGE_THUMBNAIL ?>"
+                                alt="<?= $this->getFormValue('name') ?>" />
+                        <?php } else { ?>
+                            <img
+                                src="<?= $this->escape($this->addon->image) ?>"
+                                alt="<?= $this->getFormValue('name') ?>" />
+                        <?php } ?>
+
+                        <br style="clear:left;" />
+                    <?php } ?>
+
+                    <input
+                        id="image"
+                        name="image"
+                        type="hidden"
+                        value="<?= $this->getFormValue('image'); ?>" />
+
+                    <input
+                        id="imageUpload"
+                        name="imageUpload"
+                        type="file"
+                        value=""
+                        style="<?= ($this->addon != false && !empty($this->addon->image)) ? 'padding-left: 185px' : '' ?>"/>
+
+                    <span class="tooltip"
+                        title="<?= $this->translate('Optionally provide an image of your product'); ?>">
+                        [?]
+                    </span>
+
+                    <?php if (!empty($this->errors['imageUpload'])) { ?>
+                    <label for="imageUpload" class="error">
+                        <?= implode('; ', $this->errors['imageUpload']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="source" title="<?= $this->translate('Please enter the source of this item, if it is not from your farm'); ?>">
+                        <?= $this->translate('Source'); ?>:
+                    </label>
+
+                    <input
+                        id="source"
+                        name="source"
+                        type="text"
+                        title="<?= $this->translate('Please enter the source of this item, if it is not from your farm'); ?>"
+                        value="<?= $this->getFormValue('source'); ?>"
+                        placeholder="<?= $this->translate('Source of this item if it is not from your farm'); ?>"
+                        class=""
+                        maxlength="255" />
+
+                    <span class="tooltip"
+                          title="<?= $this->translate('If this item is sourced from a company outside of your farm, you can indicate that here.'); ?>">
+                        [?]
+                    </span>
+
+                    <?php if (!empty($this->errors['source'])) { ?>
+                        <label for="source" class="error">
+                            <?= implode('; ', $this->errors['source']) ?>
+                        </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="enabled_1" class="required">
+                        <?= $this->translate('Enabled'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+
+                    <input
+                        id="enabled_0"
+                        type="radio"
+                        name="enabled"
+                        value="0"
+                        class="required"
+                        title="<?= $this->translate('Don\'t enable product for purchase'); ?>"
+                        <?php echo (($this->getFormValue('enabled') == '0') ? 'checked="checked"' : '') ?> />
+                        <label for="enabled_0" class="radio" title="<?= $this->translate('Don\'t enable product for purchase'); ?>">
+                            <?= $this->translate('Disable'); ?>
+                        </label>
+                    <input
+                        id="enabled_1"
+                        type="radio"
+                        name="enabled"
+                        value="1"
+                        title="<?= $this->translate('Product should be enabled'); ?>"
+                        <?php
+                            $value = $this->getFormValue('enabled');
+                            if ($value === null) {
+                                echo 'checked="checked"';
+                            } else if ($value == 1) {
+                                echo 'checked="checked"';
+                            }
+                        ?> />
+                        <label for="enabled_1" class="radio" title="<?= $this->translate('Product should be enabled'); ?>">
+                            <?= $this->translate('Enable'); ?>
+                        </label>
+
+                    <span class="tooltip"
+                        title="<?= $this->translate('Should this product be disabled?'); ?>">
+                        [?]
+                    </span>
+
+                    <?php if (!empty($this->errors['enabled'])) { ?>
+                        <label for="enabled" class="error">
+                            <?= implode('; ', $this->errors['enabled']) ?>
+                        </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="details" class="" title="<?= $this->translate('Please enter a description for this product'); ?>">
+                        <?= $this->translate('Details'); ?>:
+                    </label>
+                    <textarea
+                        id="details"
+                        name="details"
+                        title="<?= $this->translate('Please enter a description for this product'); ?>"
+                        class="large"
+                        cols="10"
+                        rows="10"><?= $this->getFormValue('details'); ?></textarea>
+                    <?php if (!empty($this->errors['details'])) { ?>
+                    <label for="details" class="error">
+                        <?= implode('; ', $this->errors['details']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+            </fieldset>
+
+            <fieldset>
+                <legend><?= $this->translate('Price') ?></legend>
+
+                <p>
+                    <label for="priceBy" class="required">
+                        <?= $this->translate('Price By'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+
+                    <?=
+                        $this->formSelect(
+                            'priceBy',
+                            $this->getFormValue('priceBy'),
+                            array(
+                                'id' => 'priceBy',
+                                'class' => 'required'
+                            ),
+                            array(
+                                HHF_Domain_Addon::PRICE_BY_UNIT => $this->translate('Unit'),
+                                HHF_Domain_Addon::PRICE_BY_WEIGHT => $this->translate('Weight'),
+                            )
+                        );
+                    ?>
+
+                    <span class="tooltip"
+                        title="<?= $this->translate('Choose a pricing type.  Pricing by unit is for items sold at a fixed price by quantity.  Pricing by weight is for items based off of weight of item to purchase.'); ?>">
+                        [?]
+                    </span>
+
+                    <?php if (!empty($this->errors['priceBy'])) { ?>
+                    <label for="priceBy" class="error">
+                        <?= implode('; ', $this->errors['priceBy']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p style="<?= ($this->getFormValue('priceBy') == HHF_Domain_Addon::PRICE_BY_UNIT) ? 'display: none' : '' ?>">
+                    <label for="unitType" class="required">
+                        <?= $this->translate('Weight Measure'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+
+                    <?php
+                        if ($this->getFormValue('priceBy') == HHF_Domain_Addon::PRICE_BY_UNIT) {
+                            $unitTypes = array(
+                                HHF_Domain_Addon::UNIT_TYPE_UNIT => $this->translate('Units')
+                            );
+                        } else {
+                            $unitTypes = array(
+                                HHF_Domain_Addon::UNIT_TYPE_G => $this->translate('Grams'),
+                                HHF_Domain_Addon::UNIT_TYPE_KG => $this->translate('Kilograms'),
+                                HHF_Domain_Addon::UNIT_TYPE_OZ => $this->translate('Ounce'),
+                                HHF_Domain_Addon::UNIT_TYPE_LB => $this->translate('Pound'),
+                            );
+                        }
+
+                        echo $this->formSelect(
+                            'unitType',
+                            $this->getFormValue('unitType'),
+                            array(
+                                'id' => 'unitType',
+                                'class' => 'required'
+                            ),
+                            $unitTypes
+                        );
+                    ?>
+
+                    <span class="tooltip"
+                        title="<?= $this->translate('Choose a unit of weight measure.'); ?>">
+                        [?]
+                    </span>
+
+                    <?php if (!empty($this->errors['priceBy'])) { ?>
+                    <label for="priceBy" class="error">
+                        <?= implode('; ', $this->errors['priceBy']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="price" class="required">
+                        <?= $this->translate('Price'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+                    <input
+                        id="price"
+                        name="price"
+                        type="text"
+                        value="<?= $this->getFormValue('price'); ?>"
+                        class="number required"
+                        placeholder="<?= $this->translate('E.g.: $5') ?>"
+                        style="width: 175px"
+                        maxlength="8" />
+
+                    <span id="priceUnit" style="font-weight: bold">
+                        /
+                        <?php
+                            switch ($this->getFormValue('priceBy')) {
+                                case HHF_Domain_Addon::PRICE_BY_UNIT :
+                                    echo $this->translate('Unit');
+                                    break;
+
+                                case HHF_Domain_Addon::PRICE_BY_WEIGHT :
+                                    $unit = $this->getFormValue('unitType');
+
+                                    if (empty($unit)) {
+                                        echo $this->translate('Weight');
+                                    } else {
+                                        echo strtolower($unit);
+                                    }
+                                    break;
+                            }
+                        ?>
+                    </span>
+
+                    <span class="tooltip"
+                        title="<?= $this->translate('What is the price for a single unit, or the price by weight for this product?'); ?>">
+                        [?]
+                    </span>
+
+                    <?php if (!empty($this->errors['price'])) { ?>
+                    <label for="price" class="error">
+                        <?= implode('; ', $this->errors['price']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+            </fieldset>
+
+            <fieldset>
+                <legend><?= $this->translate('Availability') ?></legend>
+
+                <p>
+                    <label for="inventory">
+                        <?= $this->translate('Inventory'); ?>:
+                    </label>
+
+                    <?php
+                        $inventory = $this->getFormValue('inventory');
+
+                        if (strpos($inventory, '.00')) {
+                            $inventory = (int) $inventory;
+                        }
+
+                    ?>
+
+                    <input
+                        id="inventory"
+                        name="inventory"
+                        type="text"
+                        value="<?= $inventory ?>"
+                        placeholder="<?= $this->translate('E.g.: \'200\' units for sale') ?>"
+                        class="number"
+                        maxlength="5" />
+
+                    <span class="tooltip"
+                        title="<?= $this->translate('Enter inventory amount (leave empty for no inventory limits)'); ?>">
+                        [?]
+                    </span>
+
+                    <?php if (!empty($this->errors['inventory'])) { ?>
+                    <label for="inventory" class="error">
+                        <?= implode('; ', $this->errors['inventory']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p style="<?= ($inventory === null || strlen($inventory) === 0) ? 'display: none;' : '' ?>">
+                    <label for="inventoryMinimumAlert">
+                        <?= $this->translate('Minimum Alert'); ?>:
+                    </label>
+
+                    <?php
+                        $inventoryMinimumAlert = $this->getFormValue('inventoryMinimumAlert');
+
+                        if (strpos($inventoryMinimumAlert, '.00')) {
+                            $inventoryMinimumAlert = (int) $inventoryMinimumAlert;
+                        }
+
+                    ?>
+
+                    <input
+                        id="inventoryMinimumAlert"
+                        name="inventoryMinimumAlert"
+                        type="text"
+                        value="<?= $inventoryMinimumAlert ?>"
+                        placeholder="<?= $this->translate('E.g: \'5\' units') ?>"
+                        class="number"
+                        maxlength="5" />
+
+                    <span class="tooltip"
+                        title="<?= $this->translate('Enter inventory minimum amount to trigger a restocking alert (empty for no alert)'); ?>">
+                        [?]
+                    </span>
+
+                    <?php if (!empty($this->errors['inventoryMinimumAlert'])) { ?>
+                    <label for="inventoryMinimumAlert" class="error">
+                        <?= implode('; ', $this->errors['inventoryMinimumAlert']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="unitOrderMinimum">
+                        <?= $this->translate('Minimum Order'); ?>:
+                    </label>
+
+                    <?php
+                        $unitOrderMinimum = $this->getFormValue('unitOrderMinimum');
+
+                        if (strpos($unitOrderMinimum, '.00')) {
+                            $unitOrderMinimum = (int) $unitOrderMinimum;
+                        }
+                    ?>
+
+                    <input
+                        id="unitOrderMinimum"
+                        name="unitOrderMinimum"
+                        type="text"
+                        value="<?= $unitOrderMinimum ?>"
+                        placeholder="<?= $this->translate('E.g.: min of \'2\' units') ?>"
+                        class="number"
+                        maxlength="5" />
+
+                    <span class="tooltip"
+                        title="<?= $this->translate('Enter a minimum amount that can be ordered by a customer (empty for no minimum)'); ?>">
+                        [?]
+                    </span>
+
+                    <?php if (!empty($this->errors['unitOrderMinimum'])) { ?>
+                    <label for="unitOrderMinimum" class="error">
+                        <?= implode('; ', $this->errors['unitOrderMinimum']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="pendingOnOrder_0" class="required">
+                        <?= $this->translate('Place in Pending'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+
+                    <input
+                        id="pendingOnOrder_0"
+                        type="radio"
+                        name="pendingOnOrder"
+                        value="0"
+                        class="required"
+                        title="<?= $this->translate('This add-on should be approved immediately'); ?>"
+                        <?php
+                            $value = $this->getFormValue('pendingOnOrder');
+                            if ($value === null) {
+                                echo 'checked="checked"';
+                            } else if ($value == 0) {
+                                echo 'checked="checked"';
+                            }
+                        ?> />
+                        <label for="pendingOnOrder_0" class="radio" title="<?= $this->translate('This add-on should be approved immediately'); ?>">
+                            <?= $this->translate('No'); ?>
+                        </label>
+                    <input
+                        id="pendingOnOrder_1"
+                        type="radio"
+                        name="pendingOnOrder"
+                        value="1"
+                        title="<?= $this->translate('This product should place the order in a pending state for review'); ?>"
+                        <?php echo (($this->getFormValue('pendingOnOrder') == '1') ? 'checked="checked"' : '') ?> />
+                        <label for="pendingOnOrder_1" class="radio" title="<?= $this->translate('This product should place the order in a pending state for review'); ?>">
+                            <?= $this->translate('Yes'); ?>
+                        </label>
+
+                    <span class="tooltip"
+                        title="<?= $this->translate('Should any order of this product place the invoice in a pending state for review?'); ?>">
+                        [?]
+                    </span>
+
+                    <?php if (!empty($this->errors['pendingOnOrder'])) { ?>
+                        <label for="pendingOnOrder_0" class="error">
+                            <?= implode('; ', $this->errors['pendingOnOrder']) ?>
+                        </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="locations">
+                        <?= $this->translate('Limit to Locations'); ?>:
+                    </label>
+
+                    <?= $this->formSelectTitle(
+                        'locations[]',
+                        $this->getFormValue('locations'),
+                        array(
+                            'id' => 'locations',
+                            'class' => 'locations',
+                            'title' => $this->translate('Specify which pickup or delivery locations this product should be limited to')
+                        ),
+                        $this->locations
+                    );
+                    ?>
+
+                    <span class="tooltip"
+                          title="<?= $this->translate('Specify which pickup or delivery locations this product should be limited to, or leave blank so that all locations will be available for selection.'); ?>">
+                            [?]
+                        </span>
+
+                    <?php if (!empty($this->errors['locations'])) { ?>
+                        <label for="locations" class="error">
+                            <?= implode('; ', $this->errors['locations']) ?>
+                        </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="expirationDate">
+                        <?= $this->translate('Available Until'); ?>:
+                    </label>
+
+                    <input
+                        id="expirationDate"
+                        name="expirationDate"
+                        type="text"
+                        value="<?= $this->getFormValue('expirationDate') ?>"
+                        placeholder="<?= $this->translate('E.g.: %s', date('Y-m-d', time() + 2592000)) ?>" />
+
+                    <span class="tooltip"
+                          title="<?= $this->translate('Date that this product should be no longer be available for purchase'); ?>">
+                        [?]
+                    </span>
+
+                    <?php if (!empty($this->errors['expirationDate'])) { ?>
+                        <label for="expirationDate" class="error">
+                            <?= implode('; ', $this->errors['expirationDate']) ?>
+                        </label>
+                    <?php } ?>
+                </p>
+            </fieldset>
+
+            <?php if (!empty($this->distributors)) { ?>
+                <fieldset>
+                    <legend><?= $this->translate('Distribution Network') ?></legend>
+
+                    <p>
+                        <label for="publishToNetwork_0" class="required">
+                            <?= $this->translate('Publish to Distributor'); ?>:
+                        </label>
+
+                        <input
+                            id="publishToNetwork"
+                            type="checkbox"
+                            name="publishToNetwork"
+                            value="1"
+                            title="<?= $this->translate('This product will be published to a distributor in your network'); ?>"
+                            <?php echo (($this->getFormValue('publishToNetwork') == '1') ? 'checked="checked"' : '') ?> />
+                        <label for="publishToNetwork" class="radio" title="<?= $this->translate('This product will be published to a distributor in your network'); ?>">
+                            <?= $this->translate('Yes'); ?>
+                        </label>
+
+                        <span class="tooltip"
+                              title="<?= $this->translate('Do you want to publish this product to a distributor in your network?'); ?>">
+                            [?]
+                        </span>
+
+                        <?php if (!empty($this->errors['publishToNetwork'])) { ?>
+                            <label for="publishToNetwork" class="error">
+                                <?= implode('; ', $this->errors['publishToNetwork']) ?>
+                            </label>
+                        <?php } ?>
+                    </p>
+
+                    <?php $publishToNetwork = $this->getFormValue('publishToNetwork') ?>
+
+                    <div id="distributionPick" style="display: <?= (empty($publishToNetwork) ? 'none' : 'block') ?>">
+                        <p>
+                            <label for="distributorId" class="required">
+                                <?= $this->translate('Distributor'); ?>:
+                            </label>
+
+                            <?=
+                            $this->formSelect(
+                                'distributorId',
+                                $this->getFormValue('distributorId'),
+                                array(
+                                    'id' => 'distributorId',
+                                    'class' => 'required'
+                                ),
+                                array('' => '') + $this->distributors
+                            );
+                            ?>
+
+                            <span class="tooltip"
+                                  title="<?= $this->translate('Enter the name of your product'); ?>">
+                                [?]
+                            </span>
+
+                            <?php if (!empty($this->errors['distributorId'])) { ?>
+                                <label for="distributorId" class="error">
+                                    <?= implode('; ', $this->errors['distributorId']) ?>
+                                </label>
+                            <?php } ?>
+                        </p>
+
+                        <p>
+                            <label for="distributorCategory">
+                                <?= $this->translate('Category'); ?>:
+                            </label>
+
+                            <?= $this->formSelectTitle(
+                                'distributor[categoryId]',
+                                $this->getFormValue('categoryId', 'distributor'),
+                                array(
+                                    'id' => 'distributorCategoryId',
+                                    'class' => 'distributorCategoryId',
+                                    'title' => $this->translate('Choose a category that this product should be displayed in')
+                                )
+                            );
+                            ?>
+
+                            <span class="tooltip"
+                                  title="<?= $this->translate('Choose a category that this product should be displayed in'); ?>">
+                                [?]
+                            </span>
+
+                            <?php if (!empty($this->errors['distributor']['categoryId'])) { ?>
+                                <label for="distributorLocations" class="error">
+                                    <?= implode('; ', $this->errors['distributor']['categoryId']) ?>
+                                </label>
+                            <?php } ?>
+                        </p>
+
+                        <p>
+                            <label for="distributorLocations">
+                                <?= $this->translate('Limit to Locations'); ?>:
+                            </label>
+
+                            <?= $this->formSelectTitle(
+                                'distributor[locations][]',
+                                $this->getFormValue('locations', 'distributor'),
+                                array(
+                                    'id' => 'distributorLocations',
+                                    'class' => 'distributorLocations',
+                                    'title' => $this->translate('Specify which pickup or delivery locations this product should be limited to')
+                                )
+                            );
+                            ?>
+
+                            <span class="tooltip"
+                                  title="<?= $this->translate('Specify which pickup or delivery locations this product should be limited to, or leave blank so that all locations will be available for selection.'); ?>">
+                                [?]
+                            </span>
+
+                            <?php if (!empty($this->errors['distributor']['locations'])) { ?>
+                                <label for="distributorLocations" class="error">
+                                    <?= implode('; ', $this->errors['distributor']['locations']) ?>
+                                </label>
+                            <?php } ?>
+                        </p>
+
+                        <p>
+                            <label for="distributorCertification">
+                                <?= $this->translate('Method'); ?>:
+                            </label>
+
+                            <?= $this->formSelectTitle(
+                                'distributor[certification]',
+                                $this->getFormValue('certification', 'distributor'),
+                                array(
+                                    'id' => 'distributorCertification',
+                                    'class' => 'distributorCertification',
+                                    'title' => $this->translate('Please include how this item was grown')
+                                )
+                            );
+                            ?>
+
+                            <span class="tooltip"
+                                  title="<?= $this->translate('Optionally specify a method that this product produced as recognized by this distributor.'); ?>">
+                                [?]
+                            </span>
+
+                            <?php if (!empty($this->errors['distributor']['certification'])) { ?>
+                                <label for="distributorCertification" class="error">
+                                    <?= implode('; ', $this->errors['distributor']['certification']) ?>
+                                </label>
+                            <?php } ?>
+                        </p>
+                    </div>
+
+                </fieldset>
+            <?php } ?>
+
+            <p>
+                <button type="submit" class="submit fieldset-align ui-button ui-widget ui-corner-all ui-button-text-only ui-state-default">
+                    <span class="ui-button-text">
+                        <i class="fa fa-check"></i>
+                        <?= $this->translate('Save!'); ?>
+                    </span>
+                </button>
+            </p>
+        </form>
+    </article>
+</section>

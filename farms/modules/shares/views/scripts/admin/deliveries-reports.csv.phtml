@@ -1,0 +1,110 @@
+<?php
+
+while (ob_get_level()) {
+    ob_end_clean();
+}
+
+header('Content-Type: application/vnd.ms-excel');
+header('Content-Disposition: attachment; filename="deliveries-reports-' . (int) $this->year . '.csv"');
+
+$displayedHeader = false;
+
+function filter (&$data) {
+    str_replace(
+        array(
+            "\t",
+            "\r\n",
+            "\r",
+            "\n",
+            '"'
+        ),
+        array(
+            '\t',
+            '\n',
+            '\n',
+            '\n',
+            '""'
+        ),
+        $data
+    );
+
+    $data = '"' . $data . '"';
+};
+
+foreach ($this->deliveryReports as $deliveryReport) {
+
+    if(!empty($deliveryReport->vacationOption)){
+        switch($deliveryReport->vacationOption){
+            case 'Opt Out': $shareQty = 0;
+                break;
+            case 'Donate': $shareQty = $deliveryReport->customerShareQuantity;
+                break;
+        }
+    } else {
+        $shareQty = $deliveryReport->customerShareQuantity;
+    }
+    
+    $row = array(
+        'deliveryWeek' => $deliveryReport->deliveryWeek,
+        'customerFirstName' => $deliveryReport->customerFirstName,
+        'customerLastName' => $deliveryReport->customerLastName,
+	    'shareId' => $deliveryReport->shareId,
+	    'shareName' => $deliveryReport->shareName,
+	    'shareSizeSize' => $deliveryReport->shareSizeSize,
+	    'shareSizeName' => $deliveryReport->shareSizeName,
+	    'locationName' => $deliveryReport->locationName,
+	    'locationDayOfWeek' => $deliveryReport->locationDayOfWeek,
+	    'customerShareQuantity' => $shareQty,
+        'vacationOption' => $deliveryReport->vacationOption,
+	    'vacationStart' => $deliveryReport->vacationStart,
+	    'vacationEnds' => $deliveryReport->vacationEnds
+    );
+
+    if ($displayedHeader == false) {
+        $rowHeaderArray = array_keys($row);
+        array_walk($rowHeaderArray, 'filter');
+        echo implode(',', $rowHeaderArray) . "\r\n";
+        $displayedHeader = true;
+    }
+
+    $deliveryWeek = new DateTime($deliveryReport->deliveryWeek);
+    $customerShareStartWeek = new DateTime($deliveryReport->customerShareStartWeek);
+
+    if ($customerShareStartWeek > $deliveryWeek) {
+        continue;
+    }
+
+    $customerShareEndWeek = new DateTime($deliveryReport->customerShareEndWeek);
+
+    if ($customerShareEndWeek < $deliveryWeek) {
+        continue;
+    }
+
+    $shareStartWeek = new DateTime($deliveryReport->shareYear . 'W' . sprintf('%02d', $deliveryReport->shareDurationStartWeek));
+
+    if ($shareStartWeek > $deliveryWeek) {
+        continue;
+    }
+
+    switch ($deliveryReport->shareDeliverySchedule) {
+        case HHF_Domain_Share::DELIVERY_SCHEDULE_WEEKLY :
+            $shareStartWeek->modify('+' . $deliveryReport->shareDurationIterations . ' week');
+            break;
+        case HHF_Domain_Share::DELIVERY_SCHEDULE_SEMI_MONTHLY :
+            $shareStartWeek->modify('+' . ($deliveryReport->shareDurationIterations * 2) . ' week');
+            break;
+        case HHF_Domain_Share::DELIVERY_SCHEDULE_MONTHLY :
+            $shareStartWeek->modify('+' . $deliveryReport->shareDurationIterations . ' month');
+            break;
+    }
+
+    if ($shareStartWeek < $deliveryWeek) {
+        continue;
+    }
+
+    array_walk($row, 'filter');
+
+    echo implode(',', $row) . "\r\n";
+}
+
+exit();

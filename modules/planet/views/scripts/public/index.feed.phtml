@@ -1,0 +1,87 @@
+<?php
+$feed = new Zend_Feed_Writer_Feed();
+
+$feed->setTitle($this->translate('Planet HarvestHand'));
+
+$feed->setDescription(
+    $this->translate(
+        'An aggregated source for all your organic / urban / small scale farming, food security, locavore foodies, food & tech'
+    )
+);
+$feed->setLink('http://planet.' . Bootstrap::$rootDomain .'/');
+$feed->setFeedLink(
+    'http://planet.' . Bootstrap::$rootDomain .'/' . '?format=atom',
+    'atom'
+);
+$feed->setFeedLink(
+    'http://planet.' . Bootstrap::$rootDomain .'/' . '?format=rss',
+    'rss'
+);
+$feed->addAuthor(
+    'Planet HarvestHand',
+    'farmnik@harvesthand.com',
+    'http://www.' . Bootstrap::$rootDomain .'/'
+);
+
+if (!empty($this->category)) {
+    $feed->addCategory(array('term' => $this->category));
+}
+
+$feed->setIcon(
+    array(
+        'uri' => 'http://www.' . Bootstrap::$rootDomain .'/_images/favicon.png'
+    )
+);
+$feed->setImage(
+    array(
+        'uri' => 'http://www.' . Bootstrap::$rootDomain .'/_images/apple-touch-icon.png',
+        'title' => 'Planet HarvestHand',
+        'link' => 'http://planet.' . Bootstrap::$rootDomain .'/',
+        'width' => 129,
+        'height' => 129
+    )
+);
+$feed->setGenerator('Planet HarvestHand');
+
+$first = null;
+
+if ($this->posts->count()) {
+    foreach ($this->posts as $post) { 
+    
+        if ($first === null) {
+            $feed->setDateModified($post->updatedDatetime);
+            $feed->setDateCreated($post->addedDatetime);
+            $first = false;
+        }
+        
+        $entry = $feed->createEntry();
+        
+        $entry->setTitle($post->title);
+        $entry->setDateModified($post->updatedDatetime);
+        $entry->setDateCreated($post->addedDatetime);
+        $entry->setLink($post->postUrl);
+        
+        if (!empty($entry->content)) {
+            $entry->setContent($entry->content);
+        }
+        
+        if (!empty($post->author)) {
+            $entry->addAuthor(
+                $post->author,
+                null,
+                $post->blogUrl
+            );
+        }
+        
+        $this->post = $post;
+        $this->trimSummary = false;
+        
+        $entry->setDescription($this->render('article.phtml'));
+        $feed->addEntry($entry);
+    } 
+} else {
+    $feed->setDateModified(Zend_Date::now());
+    $feed->setDateCreated(Zend_Date::now());
+}
+
+echo $feed->export($this->format);

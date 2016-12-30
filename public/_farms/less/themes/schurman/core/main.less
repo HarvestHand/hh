@@ -1,0 +1,97 @@
+@import "../bootstrap/main.less";
+@import "../bootstrap/responsive.less";
+
+@linkColor: #5A6633;
+@navbarLinkColor: #D6E1BD;
+@navbarLinkColorHover: #FFFFFF;
+@navbarBackground: #5A6633;
+@navbarLinkColorActive: #FFFFFF;
+
+body {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+#header-nav, #footer {
+  background: #5A6633 url('/_farms/images/themes/schurman/footer.png') 50% 50% repeat;
+}
+
+#header {
+  margin-bottom: 10px;
+}
+
+#header .navbar-inner {
+  padding-left: 0px;
+  padding-right: 0px;
+  border: 0px;
+  background-image: inherit;
+  background-color: inherit;
+  background-repeat: inherit;
+}
+
+#header .navbar {
+  margin-bottom: 7px;
+}
+
+#footer, #footer a {
+  color: #D6E1BD;
+  padding: 20px 20px 40px 20px;
+}
+#footer-support h3 {
+  visibility: hidden;
+}
+#footer ul {
+  margin: 0 0 0 2px;
+}
+#footer ul li {
+  list-style: none;
+}
+#footer-contact ul {
+  list-style: none;
+}
+#footer-contact li {
+  float: left;
+  list-style: none;
+  padding: 0px 8px 0px 0px;
+  font-size: 30px;
+}
+#footer-support a {
+  font-size: 73%;
+  text-align: right;
+}
+
+#header-nav {
+  border-bottom: #565A43 2px solid;
+}
+
+#header button.navbar-toggle {
+  color: #D6E1BD;
+  border-color: #D6E1BD;
+}
+
+.navbar .brand, .navbar .nav > li > a, .dropdown-menu > li > a {
+  text-shadow: none;
+}
+
+@media (min-width: 980px) {
+  .dropdown-menu > li > a {
+    color: @grayDark;
+  }
+
+  #header .brand {
+    display: none;
+  }
+
+  #header .navbar-inner {
+    float:none;
+    margin: 0 auto;
+    display: table;
+    table-layout: fixed;
+  }
+}
+
+.text-center {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}

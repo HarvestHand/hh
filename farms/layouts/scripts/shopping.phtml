@@ -1,0 +1,144 @@
+<?php
+$piwikId = $this->farm->getPreferences()->get('piwikId', 'website', false);
+?>
+
+<!doctype html>
+<!--[if lt IE 7 ]> <html class="no-js ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]>    <html class="no-js ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]>    <html class="no-js ie8" lang="en"> <![endif]-->
+<!--[if IE 9 ]>    <html class="no-js ie9" lang="en"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+<head>
+    <!--Shopping-->
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <!-- set the correct name -->
+    <meta name="application-name" content="<?= $this->translate('What\'s Fresh') ?>" />
+    <meta name="apple-mobile-web-app-title" content="<?= $this->translate('What\'s Fresh') ?>">
+
+    <link rel="manifest" href="/_farms/assets/themes/shopping/manifest.json">
+
+    <!-- Icons -->
+    <!-- icon in the highest resolution we need it for -->
+    <link rel="icon" sizes="228x228" href="/_farms/images/themes/shopping/Icon228.png">
+    <link rel="icon" sizes="192x192" href="/_farms/images/themes/shopping/Icon192.png">
+    <link rel="icon" sizes="128x128" href="/_farms/images/themes/shopping/Icon128.png">
+    <link rel="apple-touch-icon" href="/_farms/images/themes/shopping/Icon228.png">
+
+    <!-- multiple icons for IE11 on Win8 (actual images are 1.8 larger, per MS recommendation) -->
+    <meta name="msapplication-square70x70logo" content="/_farms/images/themes/shopping/Icon128.png">
+    <meta name="msapplication-square150x150logo" content="/_farms/images/themes/shopping/Icon128.png">
+    <meta name="msapplication-wide310x150logo" content="/_farms/images/themes/shopping/Icon558x270.png">
+    <meta name="msapplication-square310x310logo" content="/_farms/images/themes/shopping/Icon558.png">
+
+    <!-- Tile icon for IE10 on Win8 (144x144 + tile color) -->
+    <meta name="msapplication-TileImage" content="/_farms/images/themes/shopping/Icon144.png">
+    <meta name="msapplication-TileColor" content="#FFFFFF">
+
+    <!-- Safari specific -->
+    <!-- Status bar style -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="white">
+    <!-- Startup Image-->
+    <!-- iOS 6 & 7 iPad (retina, portrait) -->
+    <link href="/_farms/images/themes/shopping/Icon1536x2008.png"
+          media="(device-width: 768px) and (device-height: 1024px)
+            and (orientation: portrait)
+            and (-webkit-device-pixel-ratio: 2)"
+          rel="apple-touch-startup-image">
+    <!-- iOS 6 & 7 iPad (retina, landscape) -->
+    <link href="/_farms/images/themes/shopping/Icon1496x2048.png"
+          media="(device-width: 768px) and (device-height: 1024px)
+            and (orientation: landscape)
+            and (-webkit-device-pixel-ratio: 2)"
+          rel="apple-touch-startup-image">
+    <!-- iOS 6 iPad (portrait) -->
+    <link href="/_farms/images/themes/shopping/Icon768x1004.png"
+          media="(device-width: 768px) and (device-height: 1024px)
+            and (orientation: portrait)
+            and (-webkit-device-pixel-ratio: 1)"
+          rel="apple-touch-startup-image">
+    <!-- iOS 6 iPad (landscape) -->
+    <link href="/_farms/images/themes/shopping/Icon748x1024.png"
+          media="(device-width: 768px) and (device-height: 1024px)
+            and (orientation: landscape)
+            and (-webkit-device-pixel-ratio: 1)"
+          rel="apple-touch-startup-image">
+    <!-- iOS 6 & 7 iPhone 5 -->
+    <link href="/_farms/images/themes/shopping/Icon640x1096.png"
+          media="(device-width: 320px) and (device-height: 568px)
+            and (-webkit-device-pixel-ratio: 2)"
+          rel="apple-touch-startup-image">
+    <!-- iOS 6 & 7 iPhone (retina) -->
+    <link href="/_farms/images/themes/shopping/Icon640x920.png"
+          media="(device-width: 320px) and (device-height: 480px)
+            and (-webkit-device-pixel-ratio: 2)"
+          rel="apple-touch-startup-image">
+    <!-- iOS 6 iPhone -->
+    <link href="/_farms/images/themes/shopping/Icon320x460.png"
+          media="(device-width: 320px) and (device-height: 480px)
+            and (-webkit-device-pixel-ratio: 1)"
+          rel="apple-touch-startup-image">
+
+    <!-- MS specific -->
+    <!-- Tooltip (Desktop) -->
+    <meta name="msapplication-tooltip" content="<?= $this->translate('What\'s Fresh') ?>">
+    <!-- Start url when pinned (Desktop) -->
+    <meta name="msapplication-starturl" content="/shares/shopping">
+    <!-- Color of navigation buttons (back/forward) (Desktop) -->
+    <meta name="msapplication-navbutton-color" content="#FFFFFF" />
+
+    <?php echo $this->headTitle() ?>
+
+    <?php echo $this->headStyle() ?>
+    <script src="/_js/modernizr.js"></script>
+    <?php echo $this->headLink() ?>
+    <?php echo $this->placeholder('head'); ?>
+</head>
+
+<body>
+<div id="body-content" class="container">
+    <div class="row" id="<?= $this->contentId ?>">
+        <div class="col-md-12" id="<?= $this->contentId ?>">
+            <?php echo $this->layout()->content ?>
+        </div>
+    </div>
+</div>
+
+<?php
+echo $this->loader()->prepend(
+    array(
+        'jquery1111',
+        'jquery_bootstrap',
+        'hh',
+        'addtohomescreen'
+    )
+)->toString(HH_View_Helper_Loader::JS);
+?>
+<?php echo $this->headScript() ?>
+<?php echo $this->placeholder('foot'); ?>
+<?php if (!empty($piwikId)) { ?>
+    <script type="text/javascript">
+        document.write(unescape("%3Cscript src='/_stats/piwik.js' type='text/javascript'%3E%3C/script%3E"));
+    </script><script type="text/javascript">
+        try {
+            var piwikTracker = Piwik.getTracker("/_stats/piwik.php", <?= (int) $piwikId ?>);
+            piwikTracker.trackPageView();
+            piwikTracker.enableLinkTracking();
+        } catch( err ) {}
+    </script><noscript><p><img src="/_stats/piwik.php?idsite=<?= (int) $piwikId ?>" style="border:0" alt="" /></p></noscript>
+<?php } ?>
+<?php if (!empty($this->farm->domain) && !empty($_SESSION['session']['transfer'])) { ?>
+    <img width="1"
+         height="1"
+         alt="t"
+         border="0"
+         style="border: 0"
+         src="http://www.<?= Bootstrap::$rootDomain ?>/service/default/sync/i.gif?i=<?= urlencode(HH_Crypto::encrypt(Zend_Session::getId())); ?>" />
+<?php } ?>
+</body>
+</html>

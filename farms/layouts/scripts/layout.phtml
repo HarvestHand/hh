@@ -1,0 +1,231 @@
+<!doctype html>
+<!--[if lt IE 7 ]> <html class="ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]>    <html class="ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]>    <html class="ie8" lang="en"> <![endif]-->
+<!--[if IE 9 ]>    <html class="ie9" lang="en"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html lang="en"> <!--<![endif]-->
+    <head>
+        <!--Layout-->
+        <meta http-equiv="X-UA-Compatible" content="chrome=1">
+        <meta charset="utf-8">
+        <?php echo $this->headTitle() ?>
+        <link rel="shortcut icon" href="/_images/favicon.png">
+        <link rel="apple-touch-icon" href="/_images/apple-touch-icon.png">
+        <link rel="stylesheet" href="/_css/style.css?v=7">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
+        <link href='http://fonts.googleapis.com/css?family=Josefin+Sans' rel='stylesheet' type='text/css'>
+        <?php echo $this->headStyle() ?>
+        <link rel="stylesheet" media="handheld" href="/_css/handheld.css?v=1">
+        <?= $this->loader()->toString(HH_View_Helper_Loader::CSS); ?>
+        <script src="/_js/modernizr.js"></script>
+        <?php echo $this->headLink() ?>
+        <?php echo $this->placeholder('head'); ?>
+        <style>
+            body {
+                font-family: 'Josefin Sans', sans-serif;
+                font-size: 17px;
+            }
+        </style>
+    </head>
+    <body>
+        <header id="top">
+            <div id="header" class="container_12">
+
+                <div class="grid_12">
+                    <div class="grid_3 alpha">
+                        <a href="/admin"><img id="logo" src="<?= $this->images ?>logo.png" width="176" height="40" alt="<?= $this->translate('HarvestHand - Local Food &amp; Communities'); ?>" /></a>
+                    </div>
+
+                    <nav id="nav-main" class="grid_9  omega">
+                        <ul id="nav-main-two">
+                            <?php if ($this->isAuthenticated()) { ?>
+                                <li>
+                                    <form id="customerQuickJumpForm" class="cmxform">
+                                        <input type="text"
+                                               id="customerQuickJump"
+                                               placeholder="<?= $this->translate('Customer Search'); ?>"
+                                               style="width: 100%;position:relative;top:-5px;" />
+                                    </form>
+                                </li>
+                                <li><a href="/"><?= $this->translate('MY WEBSITE'); ?></a></li>
+                                <li><a href="http://www.<?= Bootstrap::$rootDomain ?>/logout"><?= $this->translate('LOG OUT'); ?></a></li>
+                            <?php } else { ?>
+                                <li><a id="signup" href="http://www.<?= Bootstrap::$rootDomain ?>/signup"><?= $this->translate('SIGN UP'); ?></a></li>
+                                <li><a href="http://www.<?= Bootstrap::$rootDomain ?>/login"><?= $this->translate('LOG IN'); ?></a></li>
+                            <?php } ?>
+                        </ul>
+                        <ul id="nav-main-one">
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+        <section id="body">
+            <div class="center">
+                <div id="body-header">
+                <nav>
+                    <ul>
+                        <li>
+                            <a href="/admin"
+                               class="first"
+                               title="<?= $this->translate('Head up to the administrative launchpad.  The magic starts here.'); ?>"
+                               style="border-left: 0px solid transparent; -moz-border-radius-topleft: 6px; -webkit-border-top-left-radius: 6px; border-top-left-radius: 6px; -moz-border-radius-bottomleft: 6px; -webkit-border-bottom-left-radius: 6px; border-bottom-left-radius: 6px;">
+                                <span class="icon-menu icon-menu-dashboard"></span>
+                                <?= $this->translate('Dashboard') ?>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/admin/customers"
+                               title="<?= $this->translate('Your customer rolodex. Find everyone who is a customer, past, present, and future.'); ?>">
+                                <span class="icon-menu icon-menu-members"></span>
+                                <?= $this->translate('Customers') ?>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/admin/shares"
+                               title="<?= $this->translate('Set up shares for purchase, additional produce for purchase, &amp; what\'s to be expected in upcoming deliveries.'); ?>">
+                                <span class="icon-menu icon-menu-shares"></span>
+                                <?= $this->translate('Products') ?>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/admin/website"
+                               title="<?= $this->translate('Your customer facing website.  Edit your website pages, add blog postings, manage recipes.'); ?>">
+                                <span class="icon-menu icon-menu-website"></span>
+                                <?= $this->translate('Website') ?>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/admin/newsletter"
+                               title="<?= $this->translate('Communicate with your customers through your newsletter.  Create and edit issues of your newsletter here.'); ?>">
+                                <span class="icon-menu icon-menu-newsletter"></span>
+                                <?= $this->translate('Newsletter') ?>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/admin/default/options"
+                               title="<?= $this->translate('Customize how HarvestHand works.  Tweak it \'till it
+                               sings.'); ?>">
+                                <span class="icon-menu icon-menu-options"></span>
+                                <?= $this->translate('Options') ?>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/admin/default/support"
+                               title="<?= $this->translate('Report an issue you\'re having.'); ?>"
+                               class="last">
+                                <span class="icon-menu icon-menu-question"></span>
+                                <?= $this->translate('Support') ?>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                </div>
+            </div>
+            <section id="body-content" class="container_12">
+                <div id="body-content-left" class="grid_12 ">
+                    <div id="body-content-right">
+                        <div id="body-content-content">
+                            <?php echo $this->layout()->content ?>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+            <br class="clear"/>
+        </section>
+
+        <footer id="footer">
+            <div class="container_12">
+                <div class="grid_12">
+                    <div id="footer-company" class="grid_4 alpha">
+
+                        <h3><?= $this->translate('Company'); ?></h3>
+
+                        <ul>
+                            <li><a href="http://www.<?= Bootstrap::$rootDomain ?>/about"><?= $this->translate('About'); ?></a></li>
+                            <li><a href="http://planet.<?= Bootstrap::$rootDomain ?>/" title="<?= $this->translate('Planet HarvestHand'); ?>"><?= $this->translate('Planet'); ?></a></li>
+                            <li><a href="http://www.<?= Bootstrap::$rootDomain ?>/legal"><?= $this->translate('Legal'); ?></a></li>
+                        </ul>
+                    </div>
+                    <div id="footer-contact" class="grid_4">
+                        <h3><?= $this->translate('Stay in Touch'); ?></h3>
+
+                        <ul>
+                            <li><a href="mailto:farmnik@harvesthand.com" title="<?= $this->translate('Email'); ?>"><span class="icon-social icon-social-email"></span></a></li>
+                            <li><a href="http://harvesthand.<?= Bootstrap::$rootDomain ?>/blog?format=rss" title="<?= $this->translate('RSS'); ?>"><span class="icon-social icon-social-rss"></span></a></li>
+                            <li><a href="http://www.facebook.com/pages/HarvestHand/143523832349725" title="<?= $this->translate('Facebook'); ?>"><span class="icon-social icon-social-facebook"></span></a></li>
+                            <li><a href="http://twitter.com/HarvestHand" title="<?= $this->translate('Twitter'); ?>"><span class="icon-social icon-social-twitter"></span></a></li>
+                            <li><a href="https://github.com/michaelcaplan/HH" title="<?= $this->translate('Github Code Repository'); ?>"><span class="icon-social icon-social-github"></span></a></li>
+                        </ul>
+                    </div>
+                    <div id="footer-support" class="grid_4 omega">
+                        <h3><?= $this->translate('Support'); ?></h3>
+
+                        <ul>
+                            <!-- <li><a href="#"><?= $this->translate('Get Help'); ?></a></li> -->
+                            <li><a href="http://www.<?= Bootstrap::$rootDomain; ?>/forum"><?= $this->translate('Forum'); ?></a></li>
+                            <!-- <li><a href="#"><?= $this->translate('Create Support Ticket'); ?></a></li> -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <br class="clear"/>
+        </footer>
+
+        <?php
+            echo $this->loader()->prepend(
+                array(
+                    'jquery',
+                    'jquery_ui',
+                    'jquery_qtip',
+                    'hh'
+                )
+            )->toString(HH_View_Helper_Loader::JS);
+        ?>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $("#body-header a").qtip({
+                    position: {
+                      my: 'top center',
+                      at: 'bottom center'
+                   },
+                   style: {
+                       classes: 'ui-tooltip-shadow ui-tooltip-rounded',
+                       widget: true,
+                       width:200
+                   },
+                   show: {
+                      delay: 500,
+                      effect: function() { $(this).slideDown(100); }
+                   },
+                   hide: {
+                       effect: function() { $(this).slideUp(100); }
+                   }
+                });
+
+                $("#customerQuickJump").autocomplete({
+                    source: '/admin/customers/search',
+                    select: function( event, ui ) {
+                        window.location = '/admin/customers/customer?id=' + ui.item.id;
+
+                        return false;
+                    }
+                })
+            });
+        </script>
+        <?php echo $this->headScript() ?>
+        <?php echo $this->placeholder('foot'); ?>
+        <script type="text/javascript">
+        document.write(unescape("%3Cscript src='/_stats/piwik.js' type='text/javascript'%3E%3C/script%3E"));
+        </script><script type="text/javascript">
+        try {
+        var piwikTracker = Piwik.getTracker("/_stats/piwik.php", 1);
+        piwikTracker.trackPageView();
+        piwikTracker.enableLinkTracking();
+        } catch( err ) {}
+        </script><noscript><p><img src="/_stats/piwik.php?idsite=1" style="border:0" alt="" /></p></noscript>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    </body>
+</html>

@@ -1,0 +1,166 @@
+<?php
+$title = $this->translate('Farm Info');
+
+$this->headTitle($title);
+
+$this->loader()
+    ->append('jquery_dataTables')
+    ->append('jquery_dropdown');
+?>
+
+<h2>
+    <span class="icon-menu icon-menu-dashboard" style="float: left; margin: -10px 7px 0 0;"></span>
+    <?= $this->farm->name ?>
+</h2>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+    $(function() {
+        // Make table interactive.
+        var table = $("#farmers").dataTable({
+            bJQueryUI: true,
+            bAutoWidth: true,
+            bDeferRender: true,
+            bLengthChange: false,
+            bProcessing: true,
+            bPaginate: true,
+            aaSorting: [[0, "asc"]],
+            aoColumns: [
+                {},
+                {},
+                {},
+                {
+                    // Actions column.
+                    bSortable: false,
+                    bSearchable: false
+                }
+            ]
+        });
+
+        // Hover effects.
+        table.delegate("tbody tr", "mouseover mouseout", function(e) {
+            if (e.type == "mouseover") {
+                $(e.currentTarget).addClass('hover');
+            } else {
+                $(e.currentTarget).removeClass('hover');
+            }
+        });
+
+        // Static table header.
+        new FixedHeader(table);
+    });
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<section class="container_12">
+    <article class="grid_11">
+
+        <?php if (!empty($this->messages)) { ?>
+            <section class="info ui-widget ui-state-highlight ui-corner-all">
+                <div>
+                    <i class="fa fa-info-circle"></i>
+                    <strong><?= $this->translate('Hey!'); ?></strong>
+                    <?= $this->escape(implode('; ', $this->messages)); ?>
+                </div>
+            </section>
+        <?php } ?>
+
+        <div class="ui-widget-content ui-corner-all" style="padding: 0.4em; position: relative;">
+
+            <h3 class="ui-widget-header ui-corner-all" style="margin: 0 0 0.8em 0; padding: 0.4em; text-align: center;">
+                <?= $title ?>
+            </h3>
+
+            <?php if ($this->farm->isMasterFarm()) { ?>
+                <p><?= $this->translate('This is the master farm.'); ?></p>
+            <?php } ?>
+
+            <dl>
+                <dt style="font-weight: bold"><?= $this->translate('Type'); ?></dt>
+                <dd><?= $this->escape($this->farm->type); ?></dd>
+
+                <dt style="font-weight: bold"><?= $this->translate('Status'); ?></dt>
+                <dd><?= $this->escape($this->farm->status); ?></dd>
+
+                <dt style="font-weight: bold"><?= $this->translate('Address'); ?></dt>
+                <dd>
+                    <?= $this->escape($this->farm->address); ?>
+                    <?php if ($this->farm->address2) { ?>
+                        <br>
+                        <?= $this->escape($this->farm->address); ?>
+                    <?php } ?>
+                </dd>
+
+                <dt style="font-weight: bold"><?= $this->translate('Primary Farmer'); ?></dt>
+                <dd>
+                    <?= $this->escape($this->primaryFarmer->getFullName()); ?>
+                </dd>
+
+                <dt style="font-weight: bold"><?= $this->translate('Email'); ?></dt>
+                <dd>
+                    <a href="mailto:<?= $this->escape($this->farm->email); ?>">
+                        <?= $this->escape($this->farm->email); ?>
+                    </a>
+                </dd>
+
+                <dt style="font-weight: bold"><?= $this->translate('URL'); ?></dt>
+                <dd>
+                    <a href="<?= $this->farm->getBaseUri(); ?>">
+                        <?= $this->farm->getBaseUri(); ?>
+                    </a>
+                </dd>
+            </dl>
+
+        </div>
+
+        <br>
+        <h3>
+            <?= $this->translate('Farmers'); ?>
+        </h3>
+
+        <?php if (count($this->farmers)) { ?>
+            <table id="farmers" class="display">
+                <thead>
+                <tr>
+                    <th title="<?= $this->translate('User Name') ?>">
+                        <?= $this->translate('User Name'); ?>
+                    </th>
+                    <th title="<?= $this->translate('First Name') ?>">
+                        <?= $this->translate('First Name'); ?>
+                    </th>
+                    <th title="<?= $this->translate('Last Name') ?>">
+                        <?= $this->translate('Last Name'); ?>
+                    </th>
+                    <th title="<?= $this->translate('User Actions') ?>">
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($this->farmers as $farmer) { ?>
+                    <tr>
+                        <td>
+                            <?= $this->escape($farmer->userName); ?>
+                        </td>
+                        <td>
+                            <?= $this->escape($farmer->firstName); ?>
+                        </td>
+                        <td>
+                            <?= $this->escape($farmer->lastName); ?>
+                        </td>
+                        <td class="right">
+                            <a href="/admin/default/become_user?username=<?= $this->escape($farmer->userName); ?>"
+                               title="<?= $this->translate('Become this user') ?>"
+                               class="btn">
+                                <?= $this->translate('Become') ?>
+                            </a>
+                        </td>
+                    </tr>
+                <?php } ?>
+                </tbody>
+            </table>
+        <?php } else { ?>
+            <p><?= $this->translate('No farmers available in this farm.'); ?></p>
+        <?php } ?>
+
+    </article>
+</section>

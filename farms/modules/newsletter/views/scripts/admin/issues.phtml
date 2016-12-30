@@ -1,0 +1,243 @@
+<?php
+    $this->headTitle($this->translate('Newsletter Issues'));
+    
+    $this->loader()->append('jquery_dataTables')
+        ->append('jquery_dropdown');
+?>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $.fn.dataTableExt.aoFeatures.push({
+            "fnInit": function(oSettings) {
+                return $('<ul class="dataTables_add dropdown-container"><li class="dropdown btn-group">' +
+                    '<a href="/admin/newsletter/issue" title="<?= $this->translate('Add issue') ?>" class="btn">' +
+                    '<?= addslashes($this->translate('Add')) ?></a></li></ul>')[0];
+            },
+            "cFeature": "a",
+            "sFeature": "Add"
+        });
+        
+        var table = $("#issues").dataTable({
+            "bJQueryUI": true,
+            "bAutoWidth": false,
+            "bDeferRender": true,
+            "bLengthChange": false,
+            "bProcessing": true,
+            "iDisplayLength": 50,
+            "iDeferLoading": <?= $this->foundRows ?>,
+            "aaSorting": [[3, "desc"]],
+            "aoColumns": [ 
+                {
+                    "sType": "html",
+                    "mDataProp": "title",
+                    "fnRender": function (oObj) {
+                        if (!oObj.aData.hasOwnProperty("id")) {
+                            return oObj.aData.title;
+                        } else {
+                            return '<a href="/admin/newsletter/issue?id=' + parseInt(oObj.aData.id) + '">' +
+                                oObj.aData.title
+                                    .replace(/&/g,'&amp;')
+                                    .replace(/</g,'&lt;')
+                                    .replace(/>/g,'&gt;') + '</a>';
+                        }
+                    }
+                },
+                {
+                    "sType": "string",
+                    "mDataProp": "publish",
+                    "fnRender": function (oObj) {
+                        if (!oObj.aData.hasOwnProperty("id")) {
+                            return oObj.aData.publish;
+                        }
+                        
+                        if (parseInt(oObj.aData.publish)) {
+                            return '<?= addslashes($this->translate('Yes')) ?>';
+                        } else {
+                            return '<?= addslashes($this->translate('No')) ?>';
+                        }
+                    }
+                },
+                {
+                    "sType": "string",
+                    "mDataProp": "archive",
+                    "fnRender": function (oObj) {
+                        if (!oObj.aData.hasOwnProperty("id")) {
+                            return oObj.aData.archive;
+                        }
+                    
+                        if (parseInt(oObj.aData.archive)) {
+                            return '<?= addslashes($this->translate('Yes')) ?>';
+                        } else {
+                            return '<?= addslashes($this->translate('No')) ?>';
+                        }
+                    }
+                },
+                {
+                    "sType": "string",
+                    "mDataProp": "addedDatetime"
+                },
+                { 
+                    "bSortable": false,
+                    "bSearchable": false,
+                    "mDataProp": "_actions",
+                    "sClass": "right",
+                    "fnRender": function (oObj) {
+                        if (!oObj.aData.hasOwnProperty("id")) {
+                            return oObj.aData._actions;
+                        }
+                        return '<ul class="dropdown-container">' +
+                            '<li class="dropdown btn-group">' +
+                            '<a href="/admin/newsletter/issue?id=' + parseInt(oObj.aData.id) + '" ' +
+                            'title="<?= $this->translate('Edit') ?>" class="btn">' +
+                            '<?= $this->translate('Edit') ?>' +
+                            '</a><button type="button" class="btn dropdown-toggle" data-toggle="dropdown">' +
+                            '<span class="caret"></span></button>' +
+                            '<ul class="dropdown-menu"><li class="divider"></li>' +
+                            '<li><a class="delete" href="/admin/newsletter/issue?a=delete&id=' + parseInt(oObj.aData.id) + '">' +
+                            '<?= $this->translate('Delete') ?>' +
+                            '</a></li></ul></li></ul>';
+                    }
+                }
+            ],
+            "bSortClasses": false,
+            "sAjaxSource": "<?= addslashes($this->Url()) ?>",
+            "bServerSide": true,
+            "sDom": '<"H"af<"clear">r<"right"ip>>t<"F"<"right"ip>>'
+        })
+        .delegate("tbody tr", "mouseover mouseout", function(e) {
+            if (e.type == "mouseover") {
+                $(e.currentTarget).addClass('hover');
+            } else {
+                $(e.currentTarget).removeClass('hover');
+            }
+        })
+        .delegate(".delete", "click", function(){
+            return window.confirm("<?= $this->translate('Are you sure you want to delete this issue?  No turning back after an issue delete.'); ?>");
+        })
+        .fnSetFilteringDelay(1000);
+        
+        new FixedHeader(table);
+        
+        $('.dropdown-toggle').dropdown();
+    });
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<h2>
+    <span class="icon-menu icon-menu-newsletter" style="float: left; margin: -10px 7px 0 0;"></span>
+    <?= $this->translate('Newsletter Issues') ?>
+</h2>
+
+<section class="container_12">
+    <article class="grid_9">
+
+        <?php if (!empty($this->messages)) { ?>
+            <section class="info ui-widget ui-state-highlight ui-corner-all">
+                <div>
+                    <i class="fa fa-info-circle"></i>
+                    <strong><?= $this->translate('Hey!'); ?></strong>
+                    <?= $this->escape(implode('; ', $this->messages)); ?>
+                </div>
+            </section>
+        <?php } ?>
+
+        <?php if (count($this->issues)) { ?>
+
+            <table id="issues" class="display">
+                <thead>
+                    <tr>
+                        <th 
+                            width="36%"
+                            title="<?= $this->translate('Issue Title') ?>">
+                            <?= $this->translate('Title'); ?>
+                        </th>
+                        <th 
+                            width="16%"
+                            title="<?= $this->translate('Issue Published?') ?>">
+                                <?= $this->translate('Published') ?>
+                        </th>
+                        <th 
+                            width="16%"
+                            title="<?= $this->translate('Issue Published to Website?') ?>">
+                                <?= $this->translate('Website') ?>
+                        </th>
+                        <th 
+                            width="16%"
+                            title="<?= $this->translate('Date Added') ?>">
+                                <?= $this->translate('Added') ?>
+                        </th>
+                        <th 
+                            width="15%"
+                            title="<?= $this->translate('Issue Actions') ?>">
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($this->issues as $issue) { ?>
+                        <tr>
+                            <td>
+                                <a href="/admin/newsletter/issue?id=<?= (int) $issue->id ?>">
+                                    <?= $this->escape($issue->title); ?>
+                                </a>
+                            </td>
+                            <td>
+                                <?php if ((int) $issue->publish) { ?>
+                                    <?= $this->translate('Yes') ?>
+                                <?php } else { ?>
+                                    <?= $this->translate('No') ?>
+                                <?php } ?>
+                            </td>
+                            <td>
+                                <?php if ((int) $issue->archive) { ?>
+                                    <?= $this->translate('Yes') ?>
+                                <?php } else { ?>
+                                    <?= $this->translate('No') ?>
+                                <?php } ?>
+                            </td>
+                            <td>
+                                <?= $this->escape($issue->addedDatetime->toString('yyyy-MM-dd')); ?>
+                            </td>
+                            <td class="right">
+                                <ul class="dropdown-container">
+                                    <li class="dropdown btn-group">
+                                        <a href="/admin/newsletter/issue?id=<?= (int) $issue->id ?>"
+                                           title="<?= $this->translate('Edit') ?>"
+                                           class="btn">
+                                            <?= $this->translate('Edit') ?>
+                                        </a>
+                                        <button type="button"
+                                                class="btn dropdown-toggle"
+                                                data-toggle="dropdown">
+                                            <span class="caret"></span>
+                                        </button>
+
+                                        <ul class="dropdown-menu">
+                                            <li class="divider"></li>
+                                            <li>
+                                                <a class="delete" href="/admin/newsletter/issue?a=delete&id=<?= (int) $issue->id ?>">
+                                                    <?= $this->translate('Delete') ?>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+
+        <?php } else { ?>
+
+            <p><?=
+                $this->translate(
+                    'You haven\'t added a newsletter issue yet.  <a href="%s">Let\'s add one now.</a>',
+                    '/admin/newsletter/issue'
+                ); ?></p>
+
+        <?php } ?>
+    </article>
+
+    <?= $this->render('admin-sub-nav.phtml'); ?>
+</section>

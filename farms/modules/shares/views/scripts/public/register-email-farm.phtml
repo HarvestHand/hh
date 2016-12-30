@@ -1,0 +1,37 @@
+<h1 style="color: black !important;"><?= $this->translate('New Share Purchased From HarvestHand'); ?></h1>
+
+<h3><?= $this->translate('Customer') ?></h3>
+
+<dl>
+    <dt><?= $this->translate('Name'); ?></dt>
+    <dd><?= $this->escape($this->customer->firstName); ?> <?= $this->escape($this->customer->lastName); ?></dd>
+
+    <dt><?= $this->translate('Customer #'); ?></dt>
+    <dd><?= $this->escape($this->customer->id); ?></dd>
+
+    <?php if (!empty($this->customer->email)) { ?>
+        <dt><?= $this->translate('Email'); ?></dt>
+        <dd><?= $this->escape($this->customer->email); ?></dd>
+    <?php } ?>
+
+    <?php if (!empty($this->customer->telephone)) { ?>
+        <dt><?= $this->translate('Telephone'); ?></dt>
+        <dd><?= $this->escape($this->customer->telephone); ?></dd>
+    <?php } ?>
+
+    <dt><?= $this->translate('Address'); ?></dt>
+    <dd>
+        <?= $this->escape($this->customer->address); ?>,
+        <?php if (!empty($this->customer->address2)) { ?><br />
+            <?= $this->escape($this->customer->address2); ?><br />
+        <?php } ?>
+        <?= $this->escape($this->customer->city); ?>, <?= $this->escape($this->customer->state); ?>  <?= $this->escape($this->customer->zipCode); ?>
+    </dd>
+</dl>
+
+<?php
+    $this->orderEdit = false;
+    $this->paymentMethod = true;
+    $this->mapLinks = false;
+    echo $this->render('public/register-order-summary.phtml'); 
+?>

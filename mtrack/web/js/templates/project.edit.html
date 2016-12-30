@@ -1,0 +1,79 @@
+<div class='modal hide repoeditor'>
+  <div class='modal-header'>
+    <a class='close' data-dismiss='modal'>&times;</a>
+    <% if (isnew) { %>
+    <h3>Create Project</h3>
+    <% } else { %>
+    <h3>Edit Project <%- shortname %></h3>
+    <% } %>
+  </div>
+  <div class='modal-body'>
+
+    <ul class="nav nav-tabs">
+      <li class='active'><a href='#project-main' data-toggle='tab'>Details</a></li>
+      <li><a href='#project-groups' data-toggle='tab'>Groups</a></li>
+      <li><a href='#project-perms' data-toggle='tab'>Permissions</a></li>
+    </ul>
+    <div class='tab-content'>
+      <div class='tab-pane active' id='project-main'>
+        <% if (isnew) { %>
+        <p>
+          Short name:<br>
+          <input type='text' name='shortname'
+          placeholder="Enter shortname; choose wisely, it cannot be changed!"
+          value="<%- shortname %>"
+          >
+        </p>
+        <% } %>
+        <p>
+          Descriptive name:<br>
+          <input type='text' name='name'
+          placeholder="Enter descriptive name"
+          value="<%- name %>"
+          >
+        </p>
+        <p>
+          Send Notification Email to:<br>
+          <input type='text' name='notifyemail'
+          placeholder="Enter an email address"
+          value="<%- notifyemail %>"
+          >
+        </p>
+      </div>
+
+      <div class='tab-pane' id='project-groups'>
+        <% if (isnew) { %>
+        <p>Save this project to enable group editing</p>
+        <% } else { %>
+          <div class='tabbable tabs-left'
+              style='overflow:auto; height:19em;'>
+            <ul class='nav nav-tabs'>
+            </ul>
+            <div class='tab-content' style='width:auto'>
+            </div>
+          </div>
+          <hr>
+          <input type='text' name='newgroup'
+            placeholder='Enter new group name'>
+            <button id='addgroup' class='btn'
+              ><i class='icon-plus'></i> Add Group</button>
+        <% } %>
+
+      </div>
+
+      <div class='tab-pane' id='project-perms'>
+        <% if (isnew) { %>
+        <p>Save this project to enable permission editing</p>
+        <% } %>
+      </div>
+    </div>
+
+  </div>
+  <div class='modal-footer'>
+    <button class='btn' data-dismiss='modal'>Cancel</button>
+    <button id='saveproj'
+      class='btn btn-primary'>Save Project</button>
+  </div>
+    </form>
+</div>
+

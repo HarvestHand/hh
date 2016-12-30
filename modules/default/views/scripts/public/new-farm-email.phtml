@@ -1,0 +1,37 @@
+<p>Hi Team,</p>
+
+<p><?= $this->farm->name ?> has signed up for HarvestHand! Take a look at <a href="<?php $this->farm->getBaseUri(); ?>"><?php $this->farm->getBaseUri(); ?></a></p>
+
+<h3>About the Farm</h3>
+
+<dl>
+    <dt><?= $this->translate('Name'); ?></dt>
+    <dd><?= $this->escape($this->farm->name); ?></dd>
+
+    <dt><?= $this->translate('Address'); ?></dt>
+    <dd>
+        <?= $this->escape($this->farm->address); ?>,
+        <?php if (!empty($this->farm->address2)) { ?><br />
+            <?= $this->escape($this->farm->address2); ?><br />
+        <?php } ?>
+        <?= $this->escape($this->farm->city); ?>, <?= $this->escape($this->farm->state); ?>  <?= $this->escape($this->farm->zipCode); ?><br />
+        <?= $this->escape($this->farm->country) ?>
+    </dd>
+</dl>
+
+<h3>About the Farmer</h3>
+
+<dl>
+    <dt><?= $this->translate('Name'); ?></dt>
+    <dd><?= $this->escape($this->farmer->firstName); ?> <?= $this->escape($this->farmer->lastName); ?></dd>
+
+    <?php if (!empty($this->farmer->email)) { ?>
+        <dt><?= $this->translate('Email'); ?></dt>
+        <dd><?= $this->escape($this->farmer->email); ?></dd>
+    <?php } ?>
+
+    <?php if (!empty($this->farmer->userName)) { ?>
+        <dt><?= $this->translate('User Name'); ?></dt>
+        <dd><?= $this->escape($this->farmer->userName); ?></dd>
+    <?php } ?>
+</dl>

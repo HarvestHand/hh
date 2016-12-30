@@ -1,0 +1,93 @@
+<?php
+    $post = $this->post;
+
+    if (!empty($post['media'])) {
+        $media = unserialize($post['media']);
+    } else {
+        $media = array(
+            'width' => 0,
+            'height' => 0
+        );
+    }
+
+    if (!empty($post['tags'])) {
+        $tags = unserialize($post['tags']);
+    } else {
+        $tags = array();
+    }
+?>
+<article data-id="<?= $this->escape($post['id']) ?>"
+            itemscope itemtype="http://schema.org/BlogPosting"
+            class="post">
+    <figure>
+        <a href="<?= $this->escape($post['postUrl']) ?>"
+            title="<?= $this->escape($post['title']) ?>"
+            itemprop="url"
+            target="_blank">
+            <img src="http://planet.<?= Bootstrap::$rootDomain ?><?= $this->escape($this->Url(array('action' => 'thumb', 'id' => urlencode($post['id'])))) ?>/img.png" 
+                    width="<?= $media['width'] ?>" 
+                    height="<?= $media['height'] ?>"
+                    itemprop="image" />
+        </a>
+        <figcaption itemprop="name">
+            <?= $this->escape($post['title']) ?>
+        </figcaption>
+    </figure>
+    <?php if (!empty($post['summary'])) { ?>
+    <details open="open">
+        <summary><?= $this->translate('Summary'); ?></summary>
+        <p itemprop="description"><?php
+            $summary = strip_tags($post['summary']);
+
+            if (strlen($summary) > 255 && $this->trimSummary) {
+                echo mb_substr($summary, 0, 255, 'UTF-8') . '...';
+            } else {
+                echo $summary;
+            }
+        ?></p>
+    </details>
+    <?php } ?>
+    <footer>
+        <p>
+            <?= $this->translate('Posted') ?> 
+            <time itemprop="datePublished" 
+                    datetime="<?= $post->addedDatetime->get(Zend_Date::ISO_8601) ?>"
+                    title="<?= $post->addedDatetime->get(Zend_Date::ISO_8601) ?>"
+                    pubdate>
+                <?= $post->addedDatetime->toString('yyyy-MM-dd') ?> 
+            </time>
+            <?= $this->translate('by') ?> 
+            <?php if (!empty($post['author'])) { ?>
+            <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+                <span itemprop="name">
+                    <?= $this->escape($post['author']) ?>
+                </span>
+            </span> 
+            @
+            <?php } ?>
+            <span itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+                <a href="<?= $this->escape($post['blogUrl']) ?>"
+                    itemprop="url"
+                    target="_blank">
+                    <span itemprop="name"><?= $this->escape($post['blogName']) ?></span>
+                </a>
+            </span>
+        </p>
+
+        <dl class="categories">
+            <dt><?= $this->translate('Category') ?></dt>
+            <dd itemprop="genre">
+                <?= $this->escape($post['category']) ?>
+            </dd>
+            <?php if (!empty($tags)) { ?>
+            <dt class="visuallyhidden"><?= $this->translate('Tags') ?></dt>
+            <dd class="visuallyhidden" itemprop="keywords">
+                <?php foreach ($tags as $tag) { ?>
+                <span class="tag"><?= $this->escape($tag) ?></span>;
+                <?php } ?>
+            </dd>
+            <?php } ?>
+        </dl>
+
+    </footer>
+</article>

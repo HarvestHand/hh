@@ -1,0 +1,508 @@
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+img {
+    border: none;
+}
+
+.clear {
+    clear: both;
+}
+
+.space {
+    clear: both;
+    height: 10px;
+}
+
+body {
+    background: #69523b;
+    color: #29371d;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+}
+
+#main {
+    width: 1200px;
+    margin: 0px auto;
+    height: 1400px;
+}
+
+#header {
+    width: 980px;
+    margin: 0px auto;
+}
+
+.searchBar {
+    background: none;
+    float: left;
+    text-align: right;
+    width: 100%;
+}
+
+.signIn {
+    background: transparent url(/_farms/css/themes/beetjuice/images/signInBg.png) no-repeat top center;
+    width: 102px;
+    height: 25px;
+    color: #e7daaa;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 10px 5px;
+    float: right;
+}
+
+.search {
+    float: right;
+    background: url(/_farms/css/themes/beetjuice/images/searchBg.png) no-repeat top center;
+    height: 45px;
+    width: 400px;
+    padding: 6px 20px;
+}
+
+input {
+    margin: 0px 0px;
+}
+
+.txt input {
+    border: 1px solid #b0c5a4;
+    height: 16px;
+    padding: 5px;
+    width: 285px;
+    float: left;
+}
+
+.searchBt input {
+    background: url(/_farms/css/themes/beetjuice/images/searchBtBg.png) no-repeat center bottom;
+    width: 97px;
+    height: 28px;
+    color: #ffffff;
+    border: none;
+    text-transform: uppercase;
+    padding: 3px 15px 3px 0px;
+    float: right;
+}
+
+.logo {
+    text-align: center;
+    clear: both;
+    width: 100%;
+    height: 175px;
+    overflow: hidden;
+}
+
+.logo img:hover {
+    cursor: pointer;
+}
+
+.menu {
+    float: left;
+    margin-top: 75px;
+    width: auto;
+}
+
+.menu ul {
+    margin: 0px 15px;
+}
+
+.menu ul li {
+    display: inline;
+    text-transform: uppercase;
+    font-size: 15px;
+    color: #6b4916;
+    font-weight: bold;
+}
+
+.menu ul li a {
+    text-decoration: none;
+    color: #6b4916;
+}
+
+.menu ul li a:hover {
+    color: #ffffff;
+}
+
+.menu .active a {
+    background: url(/_farms/css/themes/beetjuice/images/commitAhover.png) no-repeat bottom center;
+    color: #f7eee2;
+    padding: 10px 22px 5px;
+}
+
+.menu .active a:hover {
+    background: url(/_farms/css/themes/beetjuice/images/commitAhover.png) no-repeat bottom center;
+    padding: 10px 22px 5px;
+}
+
+.menu a {
+    background: url(/_farms/css/themes/beetjuice/images/commitA.png) no-repeat bottom center;
+    padding: 10px 18px 5px;
+}
+
+.menu a:hover {
+    background: url(/_farms/css/themes/beetjuice/images/commitAhover.png) no-repeat bottom center;
+    padding: 10px 18px 5px;
+}
+
+.subs {
+    background: url(/_farms/css/themes/beetjuice/images/subsBg.png) no-repeat center bottom;
+    width: 158px;
+    float: right;
+    padding: 10px 20px;
+    margin-top: 60px;
+    margin-bottom: -10px;
+}
+
+.subs img {
+    float: right;
+}
+
+.subs p {
+    float: left;
+    color: #e9dbac;
+    text-transform: uppercase;
+    width: auto;
+}
+
+#contentTop {
+    background: url(/_farms/css/themes/beetjuice/images/contentTop.png) no-repeat top;
+    height: 10px;
+    width: 988px;
+    margin: 0px auto;
+    padding: 0px 10px;
+}
+
+#contentBottom {
+    background: url(/_farms/css/themes/beetjuice/images/contentBottom.png) no-repeat bottom;
+    height: 10px;
+    width: 988px;
+    margin: 0px auto;
+    padding: 0px 10px;
+}
+
+#content {
+    background: url(/_farms/css/themes/beetjuice/images/contentBg.png) repeat-y top center;
+    padding: 10px 15px;
+    width: 978px;
+    margin: 0px auto;
+}
+
+.welcomeHolder {
+    background: url(/_farms/css/themes/beetjuice/images/welcomeTop.png) no-repeat top center;
+    width: 940px;
+    margin: 0px auto;
+    padding-top: 7px;
+}
+
+.welcome {
+    background: url(/_farms/css/themes/beetjuice/images/welcomeBg.png) repeat-y top center;
+    width: 910px;
+    margin: 0px auto;
+    padding: 5px 15px;
+    line-height: 20px;
+    clear: both;
+}
+
+.welcome img {
+    float: right;
+    margin: 0px 0px 0px 30px;
+}
+
+.welcomeBottom {
+    background: url(/_farms/css/themes/beetjuice/images/welcomeBottom.png) no-repeat bottom center;
+    height: 5px;
+    width: 940px;
+}
+
+h1 {
+    color: #6b4916;
+    font-size: 28px;
+    font-style: italic;
+    line-height: normal;
+    margin: 5px 0px 10px;
+}
+
+.view {
+    background: url(/_farms/css/themes/beetjuice/images/view.png) no-repeat center;
+    width: 192px;
+    height: 29px;
+    color: #ffffff;
+    border: none;
+    text-transform: uppercase;
+    padding: 1px 15px 3px 0px;
+    margin: 25px 0px 0px;
+    line-height: 25px;
+    cursor: pointer;
+}
+
+.view:hover {
+    color: #f7cc1e;
+}
+
+.heading {
+    background: url(/_farms/css/themes/beetjuice/images/headingBg.png) no-repeat center top;
+    height: 25px;
+    margin: 15px -10px;
+    color: #f7eee2;
+    font-weight: bold;
+    font-style: italic;
+    font-size: 18px;
+    padding: 5px 30px;
+}
+
+.organic {
+    clear: both;
+    width: 980px;
+    margin: 15px auto 0px 10px;
+}
+
+.organicHolder {
+    float: left;
+    width: 300px;
+    background: url(/_farms/css/themes/beetjuice/images/organicHolder.jpg) no-repeat bottom center;
+    padding-bottom: 5px;
+    margin: 0px 10px;
+}
+
+.organicContent {
+    background: url(/_farms/css/themes/beetjuice/images/organicContent.jpg) repeat-y top center;
+    padding: 0px 0px 10px;
+    height: 275px;
+}
+
+.organicContent h2 {
+    margin: 10px 15px;
+    font-size: 15px;
+    color: #674512;
+}
+
+.organicContent p {
+    margin: 0px 12px;
+    color: #29371d;
+    text-align: justify;
+    font-size: 14px;
+    line-height: 19px;
+}
+
+.vegetable {
+    background: url(/_farms/css/themes/beetjuice/images/img07.jpg) no-repeat bottom center;
+    margin-bottom: -5px;
+    height: 290px;
+}
+
+h3 {
+    color: #6b4916;
+    font-size: 28px;
+    font-style: italic;
+    padding: 10px;
+}
+
+.hr {
+    border: none 0;
+    background: url(/_farms/css/themes/beetjuice/images/hr.jpg) repeat-x left;
+    height: 2px; /*whatever the total width of the border-top and border-bottom equal*/
+    margin: 20px 17px;
+}
+
+#footer {
+    width: 980px;
+    margin: 10px auto;
+    /*	background:url(/_farms/css/themes/beetjuice/images/contentBg.png) repeat-y top center;*/
+}
+
+.contactHeading {
+    background: url(/_farms/css/themes/beetjuice/images/contactHeading.png) no-repeat left top;
+    height: 25px;
+    width: 149px;
+    margin: -20px 0px 0px -8px;
+    color: #f7eee2;
+    font-weight: bold;
+    font-style: italic;
+    font-size: 18px;
+    padding: 5px 25px;
+    position: relative;
+    z-index: 100;
+}
+
+.footerHolder {
+    background: url(/_farms/css/themes/beetjuice/images/footerBg.jpg) no-repeat center bottom;
+    font-size: 17px;
+    font-style: italic;
+    font-weight: bold;
+    height: 58px;
+    padding: 35px 50px;
+    margin-top: -10px;
+}
+
+.footerLeft {
+    width: 190px;
+    float: left;
+}
+
+.footerRight {
+    width: 240px;
+    float: left;
+    margin-left: 150px;
+    margin-top: -10px;
+}
+
+.left {
+    float: left;
+    color: #7e9c23;
+    text-align: right;
+    width: auto;
+}
+
+.right {
+    color: #51350c;
+    float: right;
+    width: auto;
+}
+
+.bottomHolder {
+    font-size: 12px;
+    color: #26120f;
+    margin: 5px auto;
+    width: 980px;
+}
+
+.copy {
+    float: left;
+    width: auto;
+}
+
+.design {
+    float: right;
+    width: auto;
+}
+
+.design a {
+    color: #26120f;
+    text-decoration: none;
+}
+
+.design a:hover {
+    color: #26120f;
+    text-decoration: underline;
+}
+
+#main-content * {
+    background: none;
+}
+
+.grid {
+    background: white;
+    margin: 0 0 20px 0;
+}
+
+.grid:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+[class*='col-'] {
+    float: left;
+    padding-right: 20px;
+}
+
+[class*='col-'] * {
+    padding: 5px;
+}
+
+.grid [class*='col-']:last-of-type {
+    padding-right: 0;
+}
+
+.col-2-3 {
+    width: 66.66%;
+}
+
+.col-1-3 {
+    width: 33.33%;
+}
+
+.col-1-2 {
+    width: 50%;
+}
+
+.col-1-4 {
+    width: 25%;
+}
+
+.col-1-8 {
+    width: 12.5%;
+}
+
+/* Opt-in outside padding */
+.grid-pad {
+    padding: 20px 0 20px 20px;
+}
+
+[class*='col-']:last-of-type {
+    padding-right: 20px;
+}
+
+.signIn a,
+.subs a,
+.subs p{
+    color: white;
+}
+
+select {
+    width: 230px;
+}
+
+#main-content{
+    padding: 14px;
+}
+
+section .info {
+    border-radius: 8px;
+    border: 2px solid lightblue;
+    padding: 8px;
+    margin: 4px 0;
+}
+
+section .error {
+    border-radius: 8px;
+    border: 2px solid lightcoral;
+    padding: 8px;
+    margin: 4px 0;
+}
+
+section .info > div,
+section .error > div {
+    width: inherit;
+}
+
+button,
+.btn,
+.button {
+    color: white;
+    background-color: #674512 !important;
+    padding: 10px !important;
+    border: none;
+    margin: 2px !important;
+    float: right;
+}
+
+#body-content-register fieldset > legend,
+.fa,
+.btn-group,
+.ui-icon,
+#login .button ,
+#blog-rss {
+    display: none;
+}
+
+a {
+    color: #674512;
+}
+
+#body-content-register fieldset {
+    border: none;
+}
+
+textarea {
+    width: 100% !important;
+}

@@ -1,0 +1,585 @@
+<?php
+    $title = ($this->object['pending'])
+        ? $this->translate('Finalize Customer Invoice') : $this->translate('Edit Invoice');
+
+    $this->loader()->append('jquery_validate')
+        ->append('jquery_metadata')
+        ->append('jquery_ui_spinner');
+
+    $this->loader(true, true)
+        ->append('invoiceEdit')
+        ->init();
+
+    $this->loader(true, true)->append('invoiceEdit', HH_View_Helper_Loader::CSS);
+
+    $this->headTitle($title);
+?>
+
+<h2 style="display: inline-block; vertical-align: middle; margin-right: 15px; margin-bottom: 11px;">
+    <span class="icon-menu icon-menu-members" style="float: left; margin: -10px 7px 0 0;"></span>
+    <?= $title ?>
+</h2>
+
+
+<section class="container_12">
+    <article class="grid_11">
+
+        <form id="invoice"
+              action="/admin/customers/invoice?<?= http_build_query($_GET) ?>"
+              method="post"
+              accept-charset="utf-8"
+              class="cmxform large">
+
+            <section id="formError"
+                     class="error ui-widget ui-state-error ui-corner-all"
+                     style="<?= (!empty($this->errors)) ? '' : 'display:none;' ?>">
+                <div>
+                    <i class="fa fa-exclamation-triangle"></i>
+                    <strong><?= $this->translate('Oh No!'); ?></strong>
+                    <?= $this->translate('Something is not right with what you entered.  Check below for hints on how to fix things up.'); ?>
+                </div>
+            </section>
+
+            <fieldset>
+                <legend><?= $this->translate('Customer') ?></legend>
+
+                <p>
+                    <label>
+                        <?= $this->translate('Customer'); ?>:
+                    </label>
+
+                    <a href="/admin/customers/customer?id=<?= $this->customer->id ?>">
+                        <?php if (!empty($this->customer->firstName)) { ?>
+                            <?= $this->escape($this->customer->firstName) ?>,
+                        <?php } ?>
+                        <?= $this->escape($this->customer->lastName) ?>
+                    </a>
+                </p>
+            </fieldset>
+            <?php foreach ($this->object->getLines() as $line) { ?>
+                <?php if ($line['type'] == 'SHARE') { ?>
+
+                <fieldset id="lines_<?= $line['id'] ?>" class="item">
+                    <legend><?= $this->translate('Share') ?></legend>
+
+                    <input type="hidden"
+                           name="lines[<?= $line['id'] ?>][id]"
+                           value="<?= $line['id'] ?>" />
+
+                    <p>
+                        <label>
+                            <?= $this->translate('Item'); ?>:
+                        </label>
+
+                        <a href="/admin/customers/subscription?id=<?= (int) $line['referenceId'] ?>">
+                            <?= $this->escape($line['description']) ?>
+                        </a>
+                    </p>
+
+                    <p>
+                        <label for="lines_<?= $line['id'] ?>_unitPrice"
+                               class="required"
+                               title="<?= $this->translate('Amount per single unit'); ?>">
+
+                            <?= $this->translate('Unit Price'); ?>:
+                            <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                        </label>
+
+                        <input type="text"
+                               name="lines[<?= $line['id'] ?>][unitPrice]"
+                               id="lines_<?= $line['id'] ?>_unitPrice"
+                               value="<?= $this->escape($line['unitPrice']) ?>"
+                               data-id="<?= $line['id'] ?>"
+                               class="number required unit-price"
+                               maxlength="8" />
+
+                        <?php if (!empty($this->errors['line'][$line['id']]['unitPrice'])) { ?>
+                            <label for="lines_<?= $line['id'] ?>_unitPrice" class="error">
+                                <?= implode('; ', $this->errors['lines'][$line['id']]['unitPrice']) ?>
+                            </label>
+                        <?php } ?>
+                    </p>
+
+                    <p>
+                        <input type="hidden"
+                               name="lines[<?= $line['id'] ?>][quantity]"
+                               id="lines_<?= $line['id'] ?>_quantity"
+                               data-id="<?= $line['id'] ?>"
+                               value="<?= $line['quantity'] ?>" />
+
+                        <label for="lines_<?= $line['id'] ?>_quantity"
+                               class="required"
+                               title="<?= $this->translate('Quantity ordered'); ?>">
+
+                            <?= $this->translate('Quantity'); ?>:
+                            <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                        </label>
+
+                        <span>
+                            <?= $this->escape($line['quantity']) ?>
+                        </span>
+
+                        <?php if (!empty($this->errors['lines'][$line['id']]['quantity'])) { ?>
+                            <label for="lines_<?= $line['id'] ?>_quantity" class="error">
+                                <?= implode('; ', $this->errors['lines'][$line['id']]['quantity']) ?>
+                            </label>
+                        <?php } ?>
+                    </p>
+
+                    <p>
+                        <label>
+                            <?= $this->translate('Total'); ?>:
+                        </label>
+
+                        <span class="item-total">
+                            <?= $this->escape($this->currency($line['total'])) ?>
+                        </span>
+
+                        <input type="hidden"
+                               name="lines[<?= $line['id'] ?>][total]"
+                               id="lines_<?= $line['id'] ?>_total"
+                               class="line-total"
+                               data-id="<?= $line['id'] ?>"
+                               value="<?= $this->escape($line['total']) ?>"
+                               maxlength="8" />
+                    </p>
+                </fieldset>
+
+                <?php } else if ($line['type'] == 'ADDON') { ?>
+
+                <?php
+                    $addon = $line->getType();
+                ?>
+                <fieldset id="lines_<?= $line['id'] ?>" class="item">
+                    <legend><?= $this->translate('Product') ?></legend>
+
+                    <input type="hidden"
+                           name="lines[<?= $line['id'] ?>][id]"
+                           value="<?= $line['id'] ?>" />
+
+                    <p>
+                        <label>
+                            <?= $this->translate('Item'); ?>:
+                        </label>
+
+                        <a href="/admin/customers/addon?id=<?= (int) $line['referenceId'] ?>">
+                            <?= $this->escape($line['description']) ?>
+                        </a>
+                    </p>
+
+                    <p>
+                        <label for="lines_<?= $line['id'] ?>_unitPrice"
+                               class="required"
+                               title="<?= $this->translate('Amount per single unit'); ?>">
+
+                            <?= $this->translate('Unit Price'); ?>:
+                            <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                        </label>
+
+                        <input type="text"
+                               name="lines[<?= $line['id'] ?>][unitPrice]"
+                               id="lines_<?= $line['id'] ?>_unitPrice"
+                               value="<?= $this->escape($line['unitPrice']) ?>"
+                               data-id="<?= $line['id'] ?>"
+                               class="number required unit-price"
+                               maxlength="8" />
+
+                        <?php if (!$addon->isEmpty() && $addon['priceBy'] == HHF_Domain_Addon::PRICE_BY_WEIGHT) { ?>
+                            <span> / <?= $this->translate(strtolower($addon['unitType'])) ?></span>
+                        <?php } ?>
+
+                        <?php if (!empty($this->errors['line'][$line['id']]['unitPrice'])) { ?>
+                        <label for="lines_<?= $line['id'] ?>_unitPrice" class="error">
+                            <?= implode('; ', $this->errors['lines'][$line['id']]['unitPrice']) ?>
+                        </label>
+                        <?php } ?>
+                    </p>
+
+                    <p>
+                        <label for="lines_<?= $line['id'] ?>_quantity"
+                               class="required"
+                               title="<?= $this->translate('Quantity ordered'); ?>">
+
+                            <?= $this->translate('Quantity'); ?>:
+                            <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                        </label>
+
+                        <input type="text"
+                               name="lines[<?= $line['id'] ?>][quantity]"
+                               id="lines_<?= $line['id'] ?>_quantity"
+                               data-id="<?= $line['id'] ?>"
+                               value="<?= $this->escape($line['quantity']) ?>"
+                               class="quantity {required : true, number: true}"
+                               maxlength="8" />
+
+                        <?php if (!$addon->isEmpty() && $addon['priceBy'] == HHF_Domain_Addon::PRICE_BY_WEIGHT) { ?>
+                            <span><?= $this->translate(strtolower($addon['unitType'])) ?></span>
+                        <?php } ?>
+
+                        <?php if (!empty($this->errors['lines'][$line['id']]['quantity'])) { ?>
+                        <label for="lines_<?= $line['id'] ?>_quantity" class="error">
+                            <?= implode('; ', $this->errors['lines'][$line['id']]['quantity']) ?>
+                        </label>
+                        <?php } ?>
+                    </p>
+
+                    <p>
+                        <label>
+                            <?= $this->translate('Total'); ?>:
+                        </label>
+
+                        <span class="item-total">
+                            <?= $this->escape($this->currency($line['total'])) ?>
+                        </span>
+
+                        <input type="hidden"
+                               name="lines[<?= $line['id'] ?>][total]"
+                               id="lines_<?= $line['id'] ?>_total"
+                               class="line-total"
+                               data-id="<?= $line['id'] ?>"
+                               value="<?= $this->escape($line['total']) ?>"
+                               maxlength="8" />
+                    </p>
+                </fieldset>
+
+                <?php } else if ($line['type'] == 'DELIVERY') { ?>
+
+                <fieldset id="lines_<?= $line['id'] ?>" class="item">
+                    <legend><?= $this->translate('Delivery Fee') ?></legend>
+
+                    <input type="hidden"
+                           name="lines[<?= $line['id'] ?>][id]"
+                           value="<?= $line['id'] ?>" />
+
+                    <p>
+                        <label>
+                            <?= $this->translate('Item'); ?>:
+                        </label>
+
+                        <span>
+                            <?= $this->escape($line['description']) ?>
+                        </span>
+                    </p>
+
+                    <p>
+                        <label for="lines_<?= $line['id'] ?>_unitPrice"
+                               class="required"
+                               title="<?= $this->translate('Amount per single unit'); ?>">
+
+                            <?= $this->translate('Unit Price'); ?>:
+                            <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                        </label>
+
+                        <input type="text"
+                               name="lines[<?= $line['id'] ?>][unitPrice]"
+                               id="lines_<?= $line['id'] ?>_unitPrice"
+                               value="<?= $this->escape($line['unitPrice']) ?>"
+                               data-id="<?= $line['id'] ?>"
+                               class="number required unit-price"
+                               maxlength="8" />
+
+                        <?php if (!empty($this->errors['line'][$line['id']]['unitPrice'])) { ?>
+                            <label for="lines_<?= $line['id'] ?>_unitPrice" class="error">
+                                <?= implode('; ', $this->errors['lines'][$line['id']]['unitPrice']) ?>
+                            </label>
+                        <?php } ?>
+                    </p>
+
+                    <p>
+                        <input type="hidden"
+                               name="lines[<?= $line['id'] ?>][quantity]"
+                               id="lines_<?= $line['id'] ?>_quantity"
+                               data-id="<?= $line['id'] ?>"
+                               value="<?= $line['quantity'] ?>" />
+
+                        <label for="lines_<?= $line['id'] ?>_quantity"
+                               class="required"
+                               title="<?= $this->translate('Quantity ordered'); ?>">
+
+                            <?= $this->translate('Quantity'); ?>:
+                            <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                        </label>
+
+                        <span>
+                            <?= $this->escape($line['quantity']) ?>
+                        </span>
+
+                        <?php if (!empty($this->errors['lines'][$line['id']]['quantity'])) { ?>
+                            <label for="lines_<?= $line['id'] ?>_quantity" class="error">
+                                <?= implode('; ', $this->errors['lines'][$line['id']]['quantity']) ?>
+                            </label>
+                        <?php } ?>
+                    </p>
+
+                    <p>
+                        <label>
+                            <?= $this->translate('Total'); ?>:
+                        </label>
+
+                        <span class="item-total">
+                            <?= $this->escape($this->currency($line['total'])) ?>
+                        </span>
+
+                        <input type="hidden"
+                               name="lines[<?= $line['id'] ?>][total]"
+                               id="lines_<?= $line['id'] ?>_total"
+                               class="line-total"
+                               data-id="<?= $line['id'] ?>"
+                               value="<?= $this->escape($line['total']) ?>"
+                               maxlength="8" />
+                    </p>
+                </fieldset>
+
+                <?php } else if ($line['type'] == HHF_Domain_Customer_Invoice_Line::TYPE_ADMINISTRATION) { ?>
+
+                    <fieldset id="lines_<?= $line['id'] ?>" class="item">
+                        <legend><?= $this->translate('Administrative Fee') ?></legend>
+
+                        <input type="hidden"
+                               name="lines[<?= $line['id'] ?>][id]"
+                               value="<?= $line['id'] ?>" />
+
+                        <p>
+                            <label>
+                                <?= $this->translate('Item'); ?>:
+                            </label>
+
+                        <span>
+                            <?= $this->escape($line['description']) ?>
+                        </span>
+                        </p>
+
+                        <p>
+                            <label for="lines_<?= $line['id'] ?>_unitPrice"
+                                   class="required"
+                                   title="<?= $this->translate('Amount per single unit'); ?>">
+
+                                <?= $this->translate('Unit Price'); ?>:
+                                <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                            </label>
+
+                            <input type="text"
+                                   name="lines[<?= $line['id'] ?>][unitPrice]"
+                                   id="lines_<?= $line['id'] ?>_unitPrice"
+                                   value="<?= $this->escape($line['unitPrice']) ?>"
+                                   data-id="<?= $line['id'] ?>"
+                                   class="number required unit-price"
+                                   maxlength="8" />
+
+                            <?php if (!empty($this->errors['line'][$line['id']]['unitPrice'])) { ?>
+                                <label for="lines_<?= $line['id'] ?>_unitPrice" class="error">
+                                    <?= implode('; ', $this->errors['lines'][$line['id']]['unitPrice']) ?>
+                                </label>
+                            <?php } ?>
+                        </p>
+
+                        <p>
+                            <input type="hidden"
+                                   name="lines[<?= $line['id'] ?>][quantity]"
+                                   id="lines_<?= $line['id'] ?>_quantity"
+                                   data-id="<?= $line['id'] ?>"
+                                   value="<?= $line['quantity'] ?>" />
+
+                            <label for="lines_<?= $line['id'] ?>_quantity"
+                                   class="required"
+                                   title="<?= $this->translate('Quantity ordered'); ?>">
+
+                                <?= $this->translate('Quantity'); ?>:
+                                <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                            </label>
+
+                        <span>
+                            <?= $this->escape($line['quantity']) ?>
+                        </span>
+
+                            <?php if (!empty($this->errors['lines'][$line['id']]['quantity'])) { ?>
+                                <label for="lines_<?= $line['id'] ?>_quantity" class="error">
+                                    <?= implode('; ', $this->errors['lines'][$line['id']]['quantity']) ?>
+                                </label>
+                            <?php } ?>
+                        </p>
+
+                        <p>
+                            <label>
+                                <?= $this->translate('Total'); ?>:
+                            </label>
+
+                        <span class="item-total">
+                            <?= $this->escape($this->currency($line['total'])) ?>
+                        </span>
+
+                            <input type="hidden"
+                                   name="lines[<?= $line['id'] ?>][total]"
+                                   id="lines_<?= $line['id'] ?>_total"
+                                   class="line-total"
+                                   data-id="<?= $line['id'] ?>"
+                                   value="<?= $this->escape($line['total']) ?>"
+                                   maxlength="8" />
+                        </p>
+                    </fieldset>
+
+                <?php } else { ?>
+
+                <fieldset id="lines_<?= $line['id'] ?>" class="item">
+                    <legend><?= $this->translate('Item') ?></legend>
+
+                    <input type="hidden"
+                           name="lines[<?= $line['id'] ?>][id]"
+                           value="<?= $line['id'] ?>" />
+
+                    <p>
+                        <label>
+                            <?= $this->translate('Item'); ?>:
+                        </label>
+
+                        <span>
+                            <?= $this->escape($line['description']) ?>
+                        </span>
+                    </p>
+
+                    <p>
+                        <label for="lines_<?= $line['id'] ?>_unitPrice"
+                               class="required"
+                               title="<?= $this->translate('Amount per single unit'); ?>">
+
+                            <?= $this->translate('Unit Price'); ?>:
+                            <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                        </label>
+
+                        <input type="text"
+                               name="lines[<?= $line['id'] ?>][unitPrice]"
+                               id="lines_<?= $line['id'] ?>_unitPrice"
+                               value="<?= $this->escape($line['unitPrice']) ?>"
+                               data-id="<?= $line['id'] ?>"
+                               class="number required unit-price"
+                               maxlength="8" />
+
+                        <?php if (!empty($this->errors['line'][$line['id']]['unitPrice'])) { ?>
+                            <label for="lines_<?= $line['id'] ?>_unitPrice" class="error">
+                                <?= implode('; ', $this->errors['lines'][$line['id']]['unitPrice']) ?>
+                            </label>
+                        <?php } ?>
+                    </p>
+
+                    <p>
+                        <label for="lines_<?= $line['id'] ?>_quantity"
+                               class="required"
+                               title="<?= $this->translate('Quantity ordered'); ?>">
+
+                            <?= $this->translate('Quantity'); ?>:
+                            <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                        </label>
+
+                        <input type="text"
+                               name="lines[<?= $line['id'] ?>][quantity]"
+                               id="lines_<?= $line['id'] ?>_quantity"
+                               data-id="<?= $line['id'] ?>"
+                               value="<?= $this->escape($line['quantity']) ?>"
+                               class="quantity {required : true, number: true}"
+                               maxlength="8" />
+
+                        <?php if (!empty($this->errors['lines'][$line['id']]['quantity'])) { ?>
+                            <label for="lines_<?= $line['id'] ?>_quantity" class="error">
+                                <?= implode('; ', $this->errors['lines'][$line['id']]['quantity']) ?>
+                            </label>
+                        <?php } ?>
+                    </p>
+
+                    <p>
+                        <label>
+                            <?= $this->translate('Total'); ?>:
+                        </label>
+
+                        <span class="item-total">
+                            <?= $this->escape($this->currency($line['total'])) ?>
+                        </span>
+
+                        <input type="hidden"
+                               name="lines[<?= $line['id'] ?>][total]"
+                               id="lines_<?= $line['id'] ?>_total"
+                               class="line-total"
+                               data-id="<?= $line['id'] ?>"
+                               value="<?= $this->escape($line['total']) ?>"
+                               maxlength="8" />
+                    </p>
+                </fieldset>
+                <?php } ?>
+            <?php } ?>
+
+            <fieldset>
+                <legend><?= $this->translate('Summary') ?></legend>
+
+                <p>
+                    <label>
+                        <?= $this->translate('Sub-Total') ?>:
+                    </label>
+                    <span>
+                        <?php if (is_numeric($this->object['subTotal'])) { ?>
+                            <?= $this->escape($this->currency($this->object['subTotal'])) ?>
+                        <?php } ?>
+                    </span>
+
+                    <input type="hidden"
+                        name="subTotal"
+                        id="subTotal"
+                        value="<?= $this->escape($this->object['subTotal']) ?>"
+                        maxlength="8" />
+                </p>
+
+                <p>
+                    <label>
+                        <?= $this->translate('Tax') ?>:
+                    </label>
+                    <span>
+                        <?php if (is_numeric($this->object['tax'])) { ?>
+                            <?= $this->escape($this->currency($this->object['tax'])) ?>
+                        <?php } ?>
+                    </span>
+
+                    <input type="hidden"
+                        name="tax"
+                        id="tax"
+                        value="<?= $this->escape($this->object['tax']) ?>"
+                        maxlength="8" />
+                </p>
+
+                <p>
+                    <label>
+                        <?= $this->translate('Total') ?>:
+                    </label>
+                    <span>
+                        <?php if (is_numeric($this->object['total'])) { ?>
+                            <?= $this->escape($this->currency($this->object['total'])) ?>
+                        <?php } ?>
+                    </span>
+
+                    <input type="hidden"
+                        name="total"
+                        id="total"
+                        value="<?= $this->escape($this->object['total']) ?>"
+                        maxlength="8" />
+                </p>
+
+                <p>
+                    <label for="message"
+                           title="<?= $this->translate('Custom invoice message'); ?>">
+                        <?= $this->translate('Message') ?>:
+                    </label>
+
+                    <textarea id="message"
+                              name="message"><?= $this->escape($this->object->message) ?></textarea>
+                </p>
+
+            </fieldset>
+
+            <p>
+                <button type="submit" class="submit fieldset-align ui-button ui-widget ui-corner-all ui-button-text-only ui-state-default">
+                    <span class="ui-button-text">
+                        <i class="fa fa-check"></i>
+                        <?= $this->translate('Save!'); ?>
+                    </span>
+                </button>
+            </p>
+        </form>
+    </article>
+</section>

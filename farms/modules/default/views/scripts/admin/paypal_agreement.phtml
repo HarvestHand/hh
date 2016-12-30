@@ -1,0 +1,15 @@
+<?php $this->headTitle($this->translate('PayPal User Agreement')); ?>
+
+<?php if (empty($this->errors)) { ?>
+
+    <h2><?= $this->translate('PayPal User Agreement') ?></h2>
+
+    <?= nl2br($this->escape($this->agreement)); ?>
+
+<?php } else { ?>
+    
+    <h2><?= $this->translate('PayPal User Agreement') ?></h2>
+
+    <p><?= $this->escape($this->errors); ?></p>
+    
+<?php } ?>

@@ -1,0 +1,154 @@
+<?php
+    $title = $this->translate('Customer Invoice');
+
+    $this->loader()->append('jquery_dropdown')
+        ->append('jquery_ui_spinner');
+
+    $this->headTitle($title);
+?>
+
+<h2 style="display: inline-block; vertical-align: middle; margin-right: 15px; margin-bottom: 11px;">
+    <span class="icon-menu icon-menu-members" style="float: left; margin: -10px 7px 0 0;"></span>
+    <?= $title ?>
+</h2>
+
+<?php if (!empty($this->messages)) { ?>
+    <section class="info ui-widget ui-state-highlight ui-corner-all">
+        <div>
+            <i class="fa fa-info-circle"></i>
+            <strong><?= $this->translate('Hey!'); ?></strong>
+            <?= $this->escape(implode('; ', $this->messages)); ?>
+        </div>
+    </section>
+<?php } ?>
+
+<?php if (!$this->object->isEmpty() && $this->object['pending']) { ?>
+    <section class="info ui-widget ui-state-highlight ui-corner-all">
+        <div>
+            <i class="fa fa-info-circle"></i>
+            <strong><?= $this->translate('Hey!'); ?></strong>
+            <?= $this->translate(
+                'This invoice requires that you <a href="%s">finalize it</a> before it is available for payment.',
+                '/admin/customers/invoice?a=edit&id=' . (int) $this->object['id']
+            ) ?>
+        </div>
+    </section>
+<?php } ?>
+
+<dl class="cmxlist">
+    <dt>
+        <?= $this->translate('Customer') ?>:
+    </dt>
+    <dd>
+        <a href="/admin/customers/customer?id=<?= $this->customer->id ?>">
+            <?php if (!empty($this->customer->firstName)) { ?>
+                <?= $this->escape($this->customer->firstName) ?>,
+            <?php } ?>
+            <?= $this->escape($this->customer->lastName) ?>
+        </a>
+    </dd>
+
+    <dt>
+        <?= $this->translate('Invoice') ?>:
+    </dt>
+
+    <dd>
+        <table style="width: 99%">
+            <thead>
+                <tr>
+                    <th>
+                        <?= $this->translate('Description') ?>
+                    </th>
+                    <th>
+                        <?= $this->translate('Unit Price') ?>
+                    </th>
+                    <th>
+                        <?= $this->translate('Quantity') ?>
+                    </th>
+                    <th>
+                        <?= $this->translate('Total') ?>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($this->object->getLines() as $line) { ?>
+                <tr>
+                    <td>
+                        <?php if ($line['type'] == 'SHARE') { ?>
+                        <a href="/shares/purchased-share?id=<?= (int) $line['referenceId'] ?>">
+                            <?= $this->escape($line['description']) ?>
+                        </a>
+                        <?php } else if ($line['type'] == 'ADDON') { ?>
+                        <a href="/shares/purchased-addon?id=<?= (int) $line['referenceId'] ?>">
+                            <?= $this->escape($line['description']) ?>
+                        </a>
+                        <?php } else { ?>
+                            <?= $this->escape($line['description']) ?>
+                        <?php } ?>
+                    </td>
+                    <td><?= $this->escape($line['unitPrice']) ?></td>
+                    <td><?= $this->escape($line['quantity']) ?></td>
+                    <td><?= $this->escape($line['total']) ?></td>
+                </tr>
+            <?php } ?>
+            </tbody>
+            <tfoot>
+                <tr style="border-top: 1px solid #444;">
+                    <td colspan="3">
+                        <?= $this->translate('Sub-Total') ?>
+                    </td>
+                    <td>
+                        <?= $this->escape($this->object['subTotal']) ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <?= $this->translate('Tax') ?>
+                    </td>
+                    <td>
+                        <?= $this->escape($this->object['tax']) ?>
+                    </td>
+                </tr>
+                <tr style="<?= ($this->object['total'] == $this->object['outstandingAmount']) ? 'font-weight: bold;' : '' ?>">
+                    <td colspan="3">
+                        <?= $this->translate(
+                            'Total (Due %s)',
+                            $this->escape($this->object->dueDate->get('yyyy-MM-dd'))
+                        ) ?>
+                    </td>
+                    <td>
+                        <?= $this->escape($this->object['total']) ?>
+                    </td>
+                </tr>
+
+                <?php if ($this->object['total'] != $this->object['outstandingAmount']) { ?>
+                <tr style="font-weight: bold;">
+                    <td colspan="3">
+                        <?= $this->translate('Outstanding Amount Due') ?>
+                    </td>
+                    <td>
+                        <?= $this->escape($this->object['outstandingAmount']) ?>
+                    </td>
+                </tr>
+                <?php } ?>
+            </tfoot>
+        </table>
+    </dd>
+
+    <?php if (!empty($this->object->message)) { ?>
+    <dt>
+        <?= $this->translate('Message') ?>:
+    </dt>
+    <dd>
+        <?= $this->escape($this->object->message) ?>
+    </dd>
+    <?php } ?>
+</dl>
+
+<a href="/shares/purchase-history#ui-tabs-3">
+    <button type="button"
+            class="submit fieldset-align btn btn-default"
+            title="<?= $this->translate('Back to purchase history') ?>">
+        <i class="fa fa-angle-left"></i>
+    </button>
+</a>

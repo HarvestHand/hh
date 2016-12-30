@@ -1,0 +1,137 @@
+<?php 
+    $this->headTitle($this->translate('Contact Us')); 
+    
+    $this->loader()->append('jquery_validate')
+        ->append('jquery_metadata');
+?>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#contact").validate({
+            rules: {
+            },
+            messages : {
+            },
+            errorContainer: $("#formError")
+        });
+    });
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<h1><?= $this->translate('Contact Us'); ?></h1>
+
+<?php if (!empty($_POST) && empty($this->errors)) { ?>
+    <section class="info ui-widget ui-state-highlight ui-corner-all">
+            <div>
+                <i class="fa fa-info-circle"></i>
+                <strong><?= $this->translate('Message Sent!'); ?></strong>
+                <?= $this->translate('We\'ll be in touch.'); ?>
+            </div>
+        </section>
+<?php } else { ?>
+
+    <form id="contact" action="<?= $this->escape($this->Url()); ?>" method="post" accept-charset="utf-8" class="cmxform large" >
+
+        <section id="formError" class="error ui-widget ui-state-error ui-corner-all" style="<?= (!empty($this->errors)) ? '' : 'display:none;' ?>">
+            <div>
+                <i class="fa fa-exclamation-triangle"></i>
+                <strong><?= $this->translate('Oh No!'); ?></strong>
+                <?= $this->translate('Something is not right with what you entered.  Check below for hints on how to fix things up.'); ?>
+            </div>
+        </section>
+
+        <fieldset>
+            <legend><?= $this->translate('Contact'); ?></legend>
+
+            <p>
+                <label for="name" class="required" title="<?= $this->translate('Please enter your name'); ?>">
+                    <?= $this->translate('Name'); ?>:
+                    <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                </label>
+                <input
+                    id="name"
+                    name="name"
+                    type="text"
+                    title="<?= $this->translate('Please enter a name'); ?>"
+                    value="<?= $this->getFormValue('name'); ?>"
+                    class="required large"
+                    maxlength="255" />
+
+                <?php if (!empty($this->errors['name'])) { ?>
+                <label for="name" class="error">
+                    <?= implode('; ', $this->errors['name']) ?>
+                </label>
+                <?php } ?>
+            </p>
+
+            <p>
+                <label for="email" title="<?= $this->translate('Please enter your email'); ?>">
+                    <?= $this->translate('Email'); ?>:
+                </label>
+                <input
+                    id="email"
+                    name="email"
+                    type="text"
+                    title="<?= $this->translate('Please enter your email'); ?>"
+                    value="<?= $this->getFormValue('email'); ?>"
+                    class="large email"
+                    maxlength="255" />
+
+                <?php if (!empty($this->errors['email'])) { ?>
+                <label for="email" class="error">
+                    <?= implode('; ', $this->errors['email']) ?>
+                </label>
+                <?php } ?>
+            </p>
+
+            <p>
+                <label for="telephone" title="<?= $this->translate('Please enter your telephone'); ?>">
+                    <?= $this->translate('Telephone'); ?>:
+                </label>
+                <input
+                    id="telephone"
+                    name="telephone"
+                    type="text"
+                    title="<?= $this->translate('Please enter your telephone'); ?>"
+                    value="<?= $this->getFormValue('telephone'); ?>"
+                    class="large"
+                    maxlength="255" />
+
+                <?php if (!empty($this->errors['telephone'])) { ?>
+                <label for="telephone" class="error">
+                    <?= implode('; ', $this->errors['telephone']) ?>
+                </label>
+                <?php } ?>
+            </p>
+
+            <p>
+                <label for="note" class="required" title="<?= $this->translate('Please tell us what is on your mind'); ?>">
+                    <?= $this->translate('Note'); ?>:
+                    <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                </label>
+                <textarea
+                    name="note"
+                    class="required"
+                    rows="10"
+                    title="<?= $this->translate('Please tell us what is on your mind'); ?>"><?= $this->getFormValue('note'); ?></textarea>
+
+                <?php if (!empty($this->errors['note'])) { ?>
+                <label for="note" class="error">
+                    <?= implode('; ', $this->errors['note']) ?>
+                </label>
+                <?php } ?>
+            </p>
+
+            <p>
+                <button type="submit" class="submit fieldset-align ui-button ui-widget ui-corner-all ui-button-text-only ui-state-default">
+                    <span class="ui-button-text">
+                        <i class="fa fa-envelope-o"></i>
+                        <?= $this->translate('Send'); ?>
+                    </span>
+                </button>
+            </p>
+
+        </fieldset>
+    </form>
+<?php } ?>

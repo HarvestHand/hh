@@ -1,0 +1,21 @@
+<?php
+    $categories =  HHF_Domain_Post::fetchCategories(
+        $this->farm
+    );
+?>
+
+<form id="blog-sidebar-categories" class="cmxform full">
+    <fieldset>
+            <legend><?= $this->translate('Blog Categories'); ?></legend>
+
+            <ul>
+                <?php foreach ($categories as $id => $category) { ?>
+                <li>
+                    <a href="/blog/category/<?= $this->escape($id) ?>">
+                        <?= $this->escape($category) ?>
+                    </a>
+                </li>
+                <?php } ?>
+            </ul>
+    </fieldset>
+</form>

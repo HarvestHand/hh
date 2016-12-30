@@ -1,0 +1,146 @@
+#!/usr/bin/env php
+<?php # vim:ts=2:sw=2:et:ft=php:
+/* For copyright and licensing terms, see the file named LICENSE */
+/* Since this file may be deployed independently from an mtrack installation,
+ * you may find the license here:
+ * https://bitbucket.org/wez/mtrack/raw/806d9189c089/LICENSE
+ */
+/* This file implements an mtrack-api client utility.
+ * It is intended to be used on development machines that do not have the full
+ * mtrack bits installed and therefore must only use standard PHP facilities.
+ */
+
+/* native getopt() function doesn't munge argument array, so might as well
+ * just do the whole thing "by-hand" */
+$opts = array();
+$args = array();
+$arg_list = $argv;
+array_shift($arg_list);
+while (count($arg_list)) {
+  $arg = array_shift($arg_list);
+  if (preg_match("/^-+(\S+)=(.*)$/", $arg, $M)) {
+    $opts[$M[1]] = $M[2];
+    continue;
+  }
+  if (preg_match("/^-+(\S+)$/", $arg, $M)) {
+    $val = array_shift($arg_list);
+    $opts[$M[1]] = $val;
+    continue;
+  }
+  $args[] = $arg;
+}
+
+if (!isset($opts['s'])) {
+  fprintf(STDERR, "missing -s option to specify server\n");
+  exit(1);
+}
+
+/* non parameter arguments should be like: GET /user/name [payloadfile] */
+
+if (count($args) < 2 || count($args) > 3) {
+  fprintf(STDERR, "Invalid number of arguments\n");
+  exit(1);
+}
+list($method, $uri) = $args;
+$payloadfile = null;
+if (count($args) == 3) {
+  $payloadfile = $args[2];
+  if ($payloadfile == '-') {
+    $payloadfile = STDIN;
+  } else {
+    $payloadfile = fopen($payloadfile, 'rb');
+    if (!$payloadfile) {
+      fprintf(STDERR, "Invalid payload file %s\n", $args[2]);
+      exit(1);
+    }
+  }
+}
+
+if (isset($opts['d'])) {
+  /* we have a payload string instead */
+  $payloadfile = $opts['d'];
+}
+
+/* parse the server url info */
+
+$url = parse_url($opts['s']);
+// var_dump($url);
+
+$head = new stdclass;
+$head->headers = array(
+  'Content-Type' => 'application/json'
+);
+
+if ($url['scheme'] == 'DEBUG') {
+  /* special mode for testing in a local checkout.
+   * Assumptions:
+   *  * that we're running as an appropriate OS user that can
+   *    read and modify the files in the mtrack install.
+   *  * that this script lives in the mtrack tree
+   *
+   * -s DEBUG://wez@.
+   */
+  putenv("SSH_ORIGINAL_COMMAND=mtrack-api $method $uri");
+  $mtrack_dir = dirname(__FILE__) . '/..';
+  $user = $url['user'];
+
+  $cmd = "$mtrack_dir/bin/codeshell $mtrack_dir/config.ini $user $mtrack_dir";
+} else if ($url['scheme'] == 'ssh') {
+  $mtrack_dir = dirname(__FILE__) . '/..';
+  $user = isset($url['user']) ? $url['user'] : getenv('LOGNAME');
+  $host = $url['host'];
+
+  $cmd = "ssh $user@$host mtrack-api $method $uri";
+} else {
+  fprintf(STDERR, "Missing or invalid -s server option %s\n", $opts['s']);
+  var_dump($url);
+  exit(1);
+}
+
+$pipes = array();
+$proc = proc_open($cmd,
+    array(
+      0 => array('pipe', 'r'),
+      1 => array('pipe', 'w'),
+      2 => STDERR
+    ),
+    $pipes
+);
+
+// var_dump($cmd, $proc, $pipes);
+
+/* send head */
+fwrite($pipes[0], json_encode($head) . "\n\n");
+
+/* send body payload */
+if ($payloadfile) {
+  if (is_string($payloadfile)) {
+    fwrite($pipes[0], $payloadfile);
+  } else {
+    stream_copy_to_stream($payloadfile, $pipes[0]);
+  }
+}
+fclose($pipes[0]);
+
+/* ready response head */
+$resp = fgets($pipes[1]);
+$resp = json_decode($resp);
+
+/* consume blank line */
+fgets($pipes[1]);
+
+/* get the response data */
+$data = stream_get_contents($pipes[1]);
+$hash = base64_encode(md5($data, true));
+
+if ($hash != $resp->headers->{'Content-MD5'}) {
+  $fail = new stdclass;
+  $fail->status = 500;
+  $fail->message = "Hash failed to verify";
+  $fail->full_output = $data;
+  echo json_encode($fail);
+  exit(1);
+}
+
+echo $data;
+

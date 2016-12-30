@@ -1,0 +1,122 @@
+<?php
+    switch ($this->report) {
+        case 'summary' :
+        default :
+            $title = $this->translate('Visits Summary');
+            $module = 'VisitsSummary';
+            $action = 'index';
+            break;
+        case 'live' :
+            $title = $this->translate('Visitors in Real Time');
+            $module = 'Live';
+            $action = 'widget';
+            break;
+        case 'pages' :
+            $title = $this->translate('Page Requests');
+            $module = 'Actions';
+            $action = 'getPageTitles';
+            break;
+        case 'outlinks' :
+            $title = $this->translate('Outlinks');
+            $module = 'Actions';
+            $action = 'getOutlinks';
+            break;
+        case 'inlinks' :
+            $title = $this->translate('Inbound Links');
+            $module = 'Referers';
+            $action = 'getWebsites';
+            break;
+        case 'keywords' :
+            $title = $this->translate('Search Engine Keywords');
+            $module = 'Referers';
+            $action = 'getKeywords';
+            break;
+        case 'seo' :
+            $title = $this->translate('Search Engine Rankings');
+            $module = 'SEO';
+            $action = 'getRank';
+            break;
+        case 'countries' :
+            $title = $this->translate('Visitor Countries');
+            $module = 'UserCountryMap';
+            $action = 'worldMap';
+            break;
+    }
+
+    $this->headTitle($this->translate('Website Statistics'));
+
+    $piwikId = $this->farm->getPreferences()->get('piwikId', 'website', false);
+
+    $statsParams = array(
+        'module' => 'Widgetize',
+        'action' => 'iframe',
+        'moduleToWidgetize' => $module,
+        'actionToWidgetize' => $action,
+        'idSite' => $piwikId,
+        'period' => 'month',
+        'date' => $this->date->get('yyyy-MM-dd'),
+        'disableLink' => 1,
+        'token_auth' => Bootstrap::getZendConfig()->resources->website->piwik->tokenAuth
+    );
+?>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#statsDate").datepicker({
+            dateFormat: 'yy-mm-dd'
+        }).change(function() {
+            window.location = '<?= addslashes($this->Url()) ?>?report=<?= $this->escape($this->report) ?>&statsDate=' + $(this).val();
+        });
+    });
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<h2>
+    <span class="icon-menu icon-menu-website"
+          style="float: left; margin: -10px 7px 0 0;"></span>
+    <?= $this->translate('Website Statistics') ?>
+</h2>
+
+<section class="container_12">
+    <article class="grid_9">
+
+        <div class="ui-widget-content ui-corner-all" style="padding: 0.4em; position: relative;">
+            <h3 class="ui-widget-header ui-corner-all" style="margin: 0 0 0.8em 0; padding: 0.4em; text-align: center;">
+                <?= $title ?>
+            </h3>
+
+            <form id="stats" action="" method="post" accept-charset="utf-8" class="cmxform large">
+                <p>
+                    <label for="statsDate" class="required">
+                        <?= $this->translate('Report Date'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+                    <input
+                        id="statsDate"
+                        name="statsDate"
+                        type="text"
+                        value="<?= $this->getFormValue('statsDate'); ?>"
+                        class="required large"
+                        placeholder="<?= $this->translate('E.g.: ' . date('Y-m-d')) ?>"
+                        maxlength="255" />
+
+                    <?php if (!empty($this->errors['statsDate'])) { ?>
+                    <label for="statsDate" class="error">
+                        <?= implode('; ', $this->errors['statsDate']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+                </form>
+                <div class="wrapper" style="height:625px;">
+                    <div id="widgetIframe" style="height:625px;">
+                            <iframe width="100%" height="625" src="/_stats/index.php?<?= http_build_query($statsParams) ?>"
+                                    scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe>
+                    </div>
+                </div>
+        </div>
+
+    </article>
+
+    <?= $this->render('admin-sub-nav.phtml'); ?>
+</section>

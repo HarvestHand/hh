@@ -1,0 +1,17 @@
+<div class='attachment'>
+  <a class='attachment' href='<%= ABSWEB %>attachment.php/<%- object %>/<%- cid %>/<%- filename %>'><%- filename %></a> (<%- size %>) added by <%- who %>
+  <abbr class='timeinterval' title='<%- changedate %>'><%- changedate %></abbr>
+  <button class='btn btn-mini delattach'><i class='icon-trash'></i></button>
+  <% if (image) {
+    var w = parseInt(width);
+    var h = parseInt(height);
+    var mw = 500;
+    if (w > mw) {
+      var s = w / mw;
+      height = h / s;
+      width = mw;
+    }
+  %>
+  <br><a href='<%= ABSWEB %>attachment.php/<%- object %>/<%- cid %>/<%- filename %>'><img src='<%= ABSWEB %>attachment.php/<%- object %>/<%- cid %>/<%- filename %>' width='<%- width %>' height='<%- height %>' border='0'></a>
+  <% } %>
+</div>

@@ -1,0 +1,97 @@
+<?php $helper = $this->noteHelper(); ?>
+<?php $rowColor = 0; ?>
+
+    <style>
+        div.share {
+            border: 1px ridge lightgrey;
+            padding: 14px;
+        }
+
+        input.remove {
+            float: right;
+        }
+
+        input[type=text] {
+            padding: 7px;
+        }
+
+        td {
+            vertical-align: middle;
+            padding: 6px;
+        }
+    </style>
+
+    <h2><?= $this->translate('Customer Delivery Notes') ?></h2>
+<?php if(!empty($this->notes)){ ?>
+    <table class="break tablesorter">
+        <thead>
+        <tr>
+            <th class="ui-corner-left">
+                <?= $this->translate('Id') ?>
+            </th>
+            <th>
+                <?= $this->translate('Share') ?>
+            </th>
+            <th>
+                <?= $this->translate('Week') ?>
+            </th>
+            <th>
+                <?= $this->translate('Note') ?>
+            </th>
+            <th class="ui-corner-right">
+                <?= $this->translate('Delete') ?>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <?php foreach($this->notes as $note){ ?>
+            <?php
+            if (!$note->getCustomerShare()->getShare()->isInSeason()) {
+                continue;
+            }
+            ?>
+            <?php $rowColor++; ?>
+            <tr class="<?php echo $rowColor % 2 == 0 ? 'even' : 'odd'; ?>">
+                <td>
+                    <?= $note->id ?>
+                </td>
+                <td>
+                    <a href="/admin/shares/share?id=<?= $share->id ?>"><?= $share->name ?></a>
+                </td>
+                <td>
+                    <a href="/admin/shares/delivery-report?week=<?= $note->week ?>"><?= $note->week ?></a>
+                </td>
+                <td>
+                    <?= $note->note ?>
+                </td>
+                <td>
+                    <form method="post" action="/admin/customers/notes">
+                        <input type="hidden" name="customerId" value="<?= $this->customer->id ?>">
+                        <input type="hidden" name="delete" value="<?= $note->id ?>">
+                        <input class="btn remove" type="submit" value="x">
+                    </form>
+                </td>
+            </tr>
+        <?php } ?>
+        </tbody>
+    </table>
+<?php } ?>
+
+<?php if(!empty($this->shares)){ ?>
+    <?php foreach($this->shares as $customerShare){ ?>
+        <div class="share" id="<?= $customerShare->id ?>">
+            <h3><?= $customerShare->getShare()->name ?> -
+                <small><?= $customerShare->getLocation()->name ?></small>
+            </h3>
+            <?php echo $helper->buildForm($customerShare); ?>
+        </div>
+    <?php } ?>
+<?php } else { ?>
+
+    <p><?= $this->customer->firstName ?>&nbsp;<?= $this->translate('doesn\'t have any') ?>
+        <a href="/admin/customers/subscription?customerId=<?= $this->customer->id ?>">
+            <b><?= $this->translate('shares') ?></b></a>.
+        &nbsp;<?= $this->translate('Check back here later.') ?></p>
+
+<?php } ?>

@@ -1,0 +1,66 @@
+  <div class='ticketevent'>
+    <a class='pmark' href='#<%- id %>'>#</a> <a name='<%- id %>'>&nbsp;</a><abbr class='timeinterval' title='<%- changedate %>'><%- changedate %></abbr> <%- who %>
+    <a class='replycomment'
+    href="javascript:mtrack_reply_comment(<%- id %>);">reply</a>
+  </div>
+  <div class='ticketchangeinfo'>
+    <img class='gravatar' src="<%= ABSWEB %>avatar.php?u=<%- who %>&amp;s=48">
+    <%
+    var comment = null;
+
+    _.each(audit, function (ent) {
+      if (ent.label == 'Nsident') {
+        return;
+      }
+      if (ent.label == 'Comment') {
+        comment = ent.value_html;
+        return;
+      }
+
+      if (ent.action == 'deleted') {
+        %><b><%- ent.label %></b> <%- ent.action %><%
+      } else if (ent.label != 'Description') {
+        if (_.isObject(ent.value)) {
+    %>
+      <b><%- ent.label %></b> &rarr;
+    <%
+          var cls = ent.label.toLowerCase();
+          var url = null;
+          if (cls == 'milestone') {
+            url = ABSWEB + 'milestone.php/';
+          }
+          if (cls == 'keyword') {
+            url = ABSWEB + 'search.php?q=keyword:';
+          }
+          if (cls == 'dependencies' || cls == 'blocks' ||
+              cls == 'children' || cls == 'parent') {
+            cls = 'ticketlink';
+            url = ABSWEB + 'ticket.php/';
+          }
+          for (var id in ent.value) {
+            if (url) {
+              %> <span class="<%- cls %>"><a href="<%- url %><%- ent.value[id] %>"><%- ent.value[id] %></a></span><%
+            } else {
+              %> <span class="<%- cls %>"><%- ent.value[id] %></span><%
+            }
+          }
+        } else {
+    %>
+        <b><%- ent.label %></b> &rarr; <%- ent.value %>
+    <%
+        }
+      } else {
+    %>
+        <b><%- ent.label %></b> <%- ent.action %> <button class="btn toggle-desc" desc-id="desc-<%- ent.cid %>">Toggle</button>
+        <p id="desc-<%- ent.cid %>" class="hide-desc"><%- ent.value %></p>
+    <%
+      }
+    %>
+
+    <br/>
+  <%
+    });
+    if (comment) { print(comment); }
+      %>
+  </div>
+

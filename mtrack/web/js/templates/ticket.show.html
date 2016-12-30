@@ -1,0 +1,163 @@
+<style>
+  section {
+    /* compensate for navbar offset for id=XXX anchor targets */
+    padding-top: 5em;
+  }
+  /* similarly, extra compensation for <a name> as we have an extra
+   * nav bar */
+  a[name] {
+    padding-top: 2em;
+  }
+  a[name=description] {
+    top: 0;
+    padding-top: 8em;
+  }
+  div#tkt-description {
+    border: solid 1px #ddd;
+    margin: -0.5em;
+    padding: 0.5em;
+    background-color: #ffc;
+    min-height: 5em;
+  }
+  div.tkt-outline {
+    position: fixed;
+    right: 0px;
+    left: 0px;
+    top: 3em;
+    border: solid 1px #ddd;
+    background-color: #eee;
+    z-index: 10;
+  }
+  div.tkt-outline ul#tkt-nav {
+    margin: 0px;
+  }
+  div.tkt-outline ul#tkt-nav .pull-right {
+    float: right;
+    margin-right: 1em;
+  }
+  div.tkt-outline ul a.btn {
+    padding: 4px 10px;
+  }
+  #tkt-fields {
+    position: fixed;
+    background-color: #eee;
+    right: 0;
+    top: 5.0em;
+    padding: 1em;
+    width: 20em;
+    z-index: 9;
+    border: solid 1px #ddd;
+  }
+  #tkt-fields table tr td {
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
+  }
+  #tkt-fields table tr td.fieldname {
+    text-align: right;
+    font-weight: bold;
+    font-size: 0.8em;
+    white-space: nowrap;
+    color: #777;
+    max-width: 9em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  #tkt-fields img.gravatar {
+    vertical-align: middle;
+  }
+  h1.ticket-summary {
+    margin-top: 1em;
+    width: 30em;
+  }
+  h1.ticket-summary.closed {
+    text-decoration: line-through;
+    color: #777;
+  }
+  div#tkt-comments .ticketchangeinfo {
+    padding-left: 60px;
+    min-height: 64px;
+  }
+  div#tkt-comments div.ticketevent a.replycomment {
+    float: none;
+  }
+  div#tkt-comments div.ticketevent {
+    border-bottom: solid 1px #eee;
+  }
+  div#tkt-comments .ticketchangeinfo img.gravatar {
+    float: none;
+    position: absolute;
+    left: 0px;
+  }
+  div.tkt-outline span.caret {
+    border-top-color: black !important;
+    border-bottom-color: black !important;
+  }
+  div.tkt-outline div.btn-group {
+    padding: 2px;
+  }
+  div.tkt-outline div.btn-group a {
+    padding: 5px 10px;
+  }
+  div.tkt-outline #togglebtn {
+    padding: 5px 10px;
+    padding-bottom: 4px;
+  }
+</style>
+
+<div class='tkt-outline'>
+  <ul id='tkt-nav' class='nav nav-pills'>
+    <li><a href='#description'>Description</a></li>
+    <li><a href='#attach'>Attachments</a></li>
+    <li><a href='#comments'>Comments</a></li>
+    <li class='pull-right'><a href='#' class='btn'
+      id='togglebtn'>Toggle Fields</a></li>
+    <li class='pull-right'><a href='#' class='btn'
+      id='editbtn'><i class='icon-pencil'></i> Edit</a></li>
+    <li class='pull-right'>
+      <div class='btn-group'>
+        <a class='btn dropdown-toggle' data-toggle='dropdown' href='#'>
+          Split
+          <span class='caret'></span>
+        </a>
+        <ul class='dropdown-menu'>
+          <% if (!ptid) { %>
+          <li><a href='#' id='splitchild'>Split and make a child task</a></li>
+          <% } %>
+          <li><a href='#' id='splitsib'>Split and make a sibling task</a></li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<div id='tkt-fields' class='tkt-fields'>
+  <table>
+    <tr>
+      <td class='fieldname'></td>
+      <td class='fieldvalue'></td>
+    </tr>
+  </table>
+</div>
+
+<a name='description'>X</a>
+  <h1 class="ticket-summary <% if (status == 'closed') { %>closed<% } %>">
+  <% if (nsident) { %>
+  #<%- nsident %>
+  <% } else { %>
+  [NEW]
+  <% } %> <%- summary ? summary : '' %></h1>
+
+  <div class="wikipage" id="tkt-description"><%= description_html %></div>
+
+<section id='attach'>
+  <div id='tkt-attach'>
+    <h2>Attachments</h2>
+    <div id="attach-list"></div>
+  </div>
+</section>
+
+<section id='comments'>
+  <h2>Comments</h2>
+  <div id='tkt-comments'>
+  </div>
+</section>

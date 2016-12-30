@@ -1,0 +1,388 @@
+<?php
+
+    if (empty($this->post)) {
+        $title = $this->translate('New Blog Post');
+
+    } else {
+        $title = $this->translate('Edit Blog Post');
+    }
+    
+    $this->headTitle($title);
+
+    $this->loadDatejs(Bootstrap::$locale);
+    
+    $this->loader()->append('jquery_validate')
+        ->append('jquery_metadata')
+        ->append('ckeditor_ckeditor.js')
+        ->append('ckeditor_adapters_jquery.js');
+?>
+
+<?php $this->placeholder('head')->captureStart() ?>
+<script type="text/javascript">
+    window.CKEDITOR_BASEPATH = '<?= (!empty($_SERVER['HTTPS'])) ? 'https://static.' : 'http://static.' ?><?= Bootstrap::$rootDomain ?>/_js/ckeditor/';
+</script>
+<?php $this->placeholder('head')->captureEnd() ?>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+
+    function split(val) {
+        return val.split( /,\s*/ );
+    }
+    
+    function extractLast(term) {
+        return split(term).pop();
+    }
+
+    $(document).ready(function(){
+
+        var config = {
+            customConfig : '',
+            toolbar:
+            [
+                ['Bold','Italic','Underline','Strike'],
+                ['NumberedList','BulletedList','-','Outdent','Indent','Blockquote'],
+                ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
+                ['Link','Unlink','Anchor'],
+                ['Image','Table','HorizontalRule'],
+                ['Cut','Copy','Paste','PasteText','PasteFromWord'],
+                ['Undo','Redo'],
+                '/',
+                ['Format','Font','FontSize'],
+                ['TextColor','BGColor'],
+                ['RemoveFormat'],
+                ['Maximize'],
+                ['Source']
+            ],
+            colorButton_enableMore: false,
+            disableNativeSpellChecker: false,
+            filebrowserImageUploadUrl: '<?= $this->farm->getBaseUri(); ?>admin/default/upload/type/image/category/website',
+            filebrowserUploadUrl: '<?= $this->farm->getBaseUri(); ?>admin/default/upload/type/document/category/website',
+            contentsCss: <?= json_encode(HHF_Theme::singleton($this->farm)
+                ->appendStyleSheet('/_css/ckeditor.css')
+                ->getStyleSheets()) ?>
+        };
+
+        $('#content').ckeditor(
+            function(){
+                var editor = $('#content').ckeditorGet();
+                editor.on( "blur", function() {
+                    this.updateElement();
+                });
+            },
+            config
+        );
+
+        $("#post").validate({
+            errorContainer: $("#formError"),
+            errorPlacement: function(error, element) {
+                if (element.attr("name") == "content") {
+                    error.addClass("no-margin");
+                }
+                error.insertAfter(element);
+            },
+            submitHandler: function(form) {
+                $('#content').ckeditorGet().updateElement();
+                form.submit();
+            }
+        });
+        
+        $("#publishedDatetime").datepicker({
+            dateFormat: 'yy-mm-dd'
+        });
+        
+        $("[name=publish]").change(function(){
+            
+            $publishedDatetime = $("#publishedDatetime");
+            
+            switch ($(this).val()) {
+                case 'PUBLISHED' :
+                    $publishedDatetime.parent("p").show();
+                    
+                    if ($publishedDatetime.val() == '') {
+                                                
+                        $publishedDatetime.val(Date.today().toString('yyyy-MM-dd'));
+                    }
+                    break;
+                case 'DRAFT' :
+                    $publishedDatetime.parent("p").hide();
+                    break;
+            }
+        });
+        
+        $("#category").change(function (){
+            var category = $(this),
+                newCategory = $("#newCategory"),
+                newCategoryInput = newCategory.children('input');
+            
+            if (category.val() == '_new') {
+                
+                newCategory.show();
+                newCategoryInput.addClass('required').focus();
+            } else {
+                newCategory.hide();
+                newCategoryInput.removeClass('required');
+            }
+        });
+        
+        $("#tags").bind("keydown", function(event) {
+            if (event.keyCode === $.ui.keyCode.TAB &&
+                $(this).data("autocomplete").menu.active) {
+                    event.preventDefault();
+            }
+        })
+        .autocomplete({
+            source: function(request, response) {
+                $.getJSON("<?= $this->escape($this->Url()) ?>", {
+                    term: extractLast( request.term )
+                }, response);
+            },
+            search: function() {
+                var term = extractLast(this.value);
+                if (term.length < 2) {
+                    return false;
+                }
+            },
+            focus: function() {
+                return false;
+            },
+            select: function(event, ui) {
+                var terms = split( this.value );
+                // remove the current input
+                terms.pop();
+                // add the selected item
+                terms.push(ui.item.value);
+                // add placeholder to get the comma-and-space at the end
+                terms.push("");
+                this.value = terms.join(", ");
+                return false;
+            }
+        });
+    });
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<h2>
+    <span class="icon-menu icon-menu-website" style="float: left; margin: -10px 7px 0 0;"></span>
+    <?= $title ?>
+</h2>
+
+<section class="container_12">
+    <article class="grid_11">
+
+        <form id="post" action="/admin/website/post?<?= http_build_query($_GET) ?>" method="post" accept-charset="utf-8" class="cmxform large">
+
+            <section id="formError" class="error ui-widget ui-state-error ui-corner-all" style="<?= (!empty($this->errors)) ? '' : 'display:none;' ?>">
+                <div>
+                    <i class="fa fa-exclamation-triangle"></i>
+                    <strong><?= $this->translate('Oh No!'); ?></strong>
+                    <?= $this->translate('Something is not right with what you entered.  Check below for hints on how to fix things up.'); ?>
+                </div>
+            </section>
+            
+            <p>
+                <label for="title" class="required" title="<?= $this->translate('Please enter the title of your blog post'); ?>">
+                    <?= $this->translate('Title'); ?>:
+                    <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                </label>
+                <input
+                    id="title"
+                    name="title"
+                    type="text"
+                    title="<?= $this->translate('Please enter the title of your blog post'); ?>"
+                    value="<?= $this->getFormValue('title'); ?>"
+                    class="required large"
+                    maxlength="255" />
+
+                <?php if (!empty($this->errors['title'])) { ?>
+                <label for="title" class="error">
+                    <?= implode('; ', $this->errors['title']) ?>
+                </label>
+                <?php } ?>
+            </p>
+            
+            <p>
+                <label for="content" class="required" title="<?= $this->translate('Please enter your blog post content'); ?>">
+                    <?= $this->translate('Content'); ?>:
+                    <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                </label>
+                <textarea
+                    id="content"
+                    name="content"
+                    title="<?= $this->translate('Please enter your blog post content'); ?>"
+                    class="required large"
+                    cols="10"
+                    rows="10"><?= $this->getFormValue('content'); ?></textarea>
+                <?php if (!empty($this->errors['content'])) { ?>
+                <label for="content" class="error">
+                    <?= implode('; ', $this->errors['content']) ?>
+                </label>
+                <?php } ?>
+            </p>
+            
+            <p>
+                <label for="category" class="required" title="<?= $this->translate('Please choose a blog category'); ?>">
+                    <?= $this->translate('Category'); ?>:
+                    <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                </label>
+                
+                <?= 
+                    $this->formSelect(
+                        'category',
+                        $this->getFormValue('category'),
+                        array(
+                            'id' => 'category',
+                            'class' => 'required',
+                            'title' => $this->translate('Please choose a blog category')
+                        ),
+                        $this->categories
+                    );
+                ?>
+                
+                <?php if (!empty($this->errors['category'])) { ?>
+                <label for="category" class="error">
+                    <?= implode('; ', $this->errors['category']) ?>
+                </label>
+                <?php } ?>
+            </p>
+            
+            <p id="newCategory" style="display: none;">
+                <label for="categoryNew" class="required" title="<?= $this->translate('Please enter a blog category'); ?>">
+                    <?= $this->translate('New Category'); ?>:
+                    <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                </label>
+            
+                <input
+                    id="categoryNew"
+                    name="categoryNew"
+                    type="text"
+                    title="<?= $this->translate('Please enter a blog category'); ?>"
+                    value="<?= $this->getFormValue('categoryNew'); ?>"
+                    class="large"
+                    maxlength="255" />
+                
+                <?php if (!empty($this->errors['categoryNew'])) { ?>
+                <label for="categoryNew" class="error">
+                    <?= implode('; ', $this->errors['categoryNew']) ?>
+                </label>
+                <?php } ?>
+            </p>
+            
+            <p>
+                <label for="tags" title="<?= $this->translate('Tag your blog post.  Comma seperated please.'); ?>">
+                    <?= $this->translate('Tags'); ?>:
+                </label>
+                <input
+                    id="tags"
+                    name="tags"
+                    type="text"
+                    title="<?= $this->translate('Tag your blog post.  Comma seperated please.'); ?>"
+                    value="<?= $this->getFormValue('tags'); ?>"
+                    class="large"
+                    maxlength="255" />
+
+                <?php if (!empty($this->errors['tags'])) { ?>
+                <label for="tags" class="error">
+                    <?= implode('; ', $this->errors['tags']) ?>
+                </label>
+                <?php } ?>
+            </p>
+            
+            <p>
+                <label for="farmerId" class="required" title="<?= $this->translate('Please choose a blog author'); ?>">
+                    <?= $this->translate('Author'); ?>:
+                    <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                </label>
+                
+                <?= 
+                    $this->formSelect(
+                        'farmerId',
+                        $this->getFormValue('farmerId'),
+                        array(
+                            'id' => 'farmerId',
+                            'class' => 'required',
+                            'title' => $this->translate('Please choose a blog author')
+                        ),
+                        $this->farmers
+                    );
+                ?>
+                
+                <?php if (!empty($this->errors['farmerId'])) { ?>
+                <label for="farmerId" class="error">
+                    <?= implode('; ', $this->errors['farmerId']) ?>
+                </label>
+                <?php } ?>
+            </p>
+            
+            <p>
+                <label for="publish_1" class="required" title="<?= $this->translate('Should this post be displayed on your website?'); ?>">
+                    <?= $this->translate('Publish'); ?>:
+                    <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                </label>
+
+                <input
+                    id="publish_0"
+                    type="radio"
+                    name="publish"
+                    value="DRAFT"
+                    class="required"
+                    title="<?= $this->translate('Don\'t publish to my website'); ?>"
+                    <?php
+                        $value = $this->getFormValue('publish');
+                        if ($value === null) {
+                            echo 'checked="checked"';
+                        } else if ($value == 'DRAFT') {
+                            echo 'checked="checked"';
+                        }
+                    ?> />
+                    <label for="publish_0" class="radio" title="<?= $this->translate('Don\'t publish to my website'); ?>">
+                        <?= $this->translate('Draft'); ?>
+                    </label>
+                <input
+                    id="publish_1"
+                    type="radio"
+                    name="publish"
+                    value="PUBLISHED"
+                    title="<?= $this->translate('Publish to my website'); ?>"
+                    <?php echo (($this->getFormValue('publish') == 'PUBLISHED') ? 'checked="checked"' : '') ?> />
+                    <label for="publish_1" class="radio" title="<?= $this->translate('Publish to my website'); ?>">
+                        <?= $this->translate('Published'); ?>
+                    </label>
+
+
+                <?php if (!empty($this->errors['publish'])) { ?>
+                    <label for="publish" class="error">
+                        <?= implode('; ', $this->errors['publish']) ?>
+                    </label>
+                <?php } ?>
+            </p>
+            <p style="display: <?= ($this->getFormValue('publish') == 'PUBLISHED') ? 'block' : 'none' ?>">
+                <label for="publishedDatetime" class="" title="<?= $this->translate('Please enter the date which your blog post was published'); ?>">
+                    <?= $this->translate('Published Date'); ?>:
+                </label>
+                <input
+                    id="publishedDatetime"
+                    name="publishedDatetime"
+                    type="text"
+                    title="<?= $this->translate('Please enter the date your blog post was published'); ?>"
+                    value="<?= $this->getFormValue('publishedDatetime'); ?>"
+                    class="large"
+                    maxlength="50" />
+
+                <?php if (!empty($this->errors['publishedDatetime'])) { ?>
+                <label for="publishedDatetime" class="error">
+                    <?= implode('; ', $this->errors['publishedDatetime']) ?>
+                </label>
+                <?php } ?>
+            </p>
+            <p>
+                <button type="submit" class="submit fieldset-align ui-button ui-widget ui-corner-all ui-button-text-only ui-state-default">
+                    <span class="ui-button-text">
+                        <i class="fa fa-check"></i>
+                        <?= $this->translate('Save!'); ?>
+                    </span>
+                </button>
+            </p>
+        </form>
+    </article>
+</section>

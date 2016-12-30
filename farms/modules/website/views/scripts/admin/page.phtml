@@ -1,0 +1,570 @@
+<?php
+
+    if (empty($this->page)) {
+        $title = $this->translate('New Website Page');
+
+    } else {
+        $title = $this->translate('Edit Website Page');
+    }
+    
+    $this->headTitle($title);
+
+    $this->loader()->append('jquery_validate')
+        ->append('jquery_metadata')
+        ->append('ckeditor_ckeditor.js')
+        ->append('ckeditor_adapters_jquery.js');
+?>
+
+<?php $this->placeholder('head')->captureStart() ?>
+<script type="text/javascript">
+    window.CKEDITOR_BASEPATH = '<?= (!empty($_SERVER['HTTPS'])) ? 'https://static.' : 'http://static.' ?><?= Bootstrap::$rootDomain ?>/_js/ckeditor/';
+</script>
+<?php $this->placeholder('head')->captureEnd() ?>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+    var pages = <?= Zend_Json::encode($this->structure); ?>;
+    var currentId = "<?= (!empty($this->page)) ? $this->page->id : 'new' ?>";
+
+    $(document).ready(function(){
+
+        var editorInit = false,
+            config = {
+                customConfig : '',
+                toolbar:
+                [
+                    ['Bold','Italic','Underline','Strike'],
+                    ['NumberedList','BulletedList','-','Outdent','Indent','Blockquote'],
+                    ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
+                    ['Link','Unlink','Anchor'],
+                    ['Image','Table','HorizontalRule'],
+                    ['Cut','Copy','Paste','PasteText','PasteFromWord'],
+                    ['Undo','Redo'],
+                    '/',
+                    ['Format','Font','FontSize'],
+                    ['TextColor','BGColor'],
+                    ['RemoveFormat'],
+                    ['Maximize'],
+                    ['Source']
+                ],
+                colorButton_enableMore: false,
+                disableNativeSpellChecker: false,
+                filebrowserImageUploadUrl: '<?= $this->farm->getBaseUri(); ?>admin/default/upload/type/image/category/website',
+                filebrowserUploadUrl: '<?= $this->farm->getBaseUri(); ?>admin/default/upload/type/document/category/website',
+                contentsCss: <?= json_encode(HHF_Theme::singleton($this->farm)
+                    ->appendStyleSheet('/_css/ckeditor.css')
+                    ->getStyleSheets()) ?>
+            };
+
+        switch ($("#target").val()) {
+            case 'EXTERNAL' :
+                initUrl();
+                break;
+            case 'INTERNAL' :
+            default :
+                initEditor();
+                break;
+        }
+
+        function initUrl() {
+            $('#content-field').hide();
+            $('#url-field').show();
+        }
+
+        function initEditor() {
+            $('#content-field').show();
+            $('#url-field').hide();
+            
+            if (!editorInit) {
+                $('#content').ckeditor(
+                    function(){
+                        var editor = $('#content').ckeditorGet();
+                        editor.on( "blur", function() {
+                            this.updateElement();
+                        });
+                    },
+                    config
+                );
+                
+                editorInit = true;
+            }
+        }
+
+        $("#page").validate({
+            errorContainer: $("#formError"),
+            errorPlacement: function(error, element) {
+                if (element.attr("name") == "content") {
+                    error.addClass("no-margin");
+                }
+                error.insertAfter(element);
+            },
+            submitHandler: function(form) {
+                if (editorInit) {
+                    $('#content').ckeditorGet().updateElement();
+                }
+                form.submit();
+            }
+        });
+
+        if (getChildrenByPage($("#parent").val()).length < 1) {
+            $("#sortElement").hide();
+            $("#sort").val(0);
+        }
+
+        $("#parent").change(function(){
+            buildSortList();
+            if (getChildrenByPage($("#parent").val()).length < 1) {
+                $("#sortElement").hide();
+                $("#sort").val(0);
+            } else {
+                $("#sortElement").show();
+            }
+        });
+
+        $("#sortList").sortable({
+            cancel : '.ui-state-disabled',
+            scroll: false,
+            update : function (event, ui) {
+                var $this = $(this);
+                var items = $this.sortable("toArray");
+                var sort = $("#sort");
+                var parent = $("#parent");
+                var parentVal = parent.val();
+                var titleVal = jQuery.trim($("#title").val());
+                var title = (titleVal.length == 0) ? '<?= $this->translate('This Page') ?>' : titleVal;
+
+                for (var x in items) {
+                    if (items[x].substr(5) == currentId) {
+                        sort.val(x);
+                        break;
+                    }
+                }
+
+                $this.find("li").each(function(i, e) {
+                    var $e = $(e);
+                    if (!$e.hasClass("ui-state-disabled")) {
+                        if (!parentVal && i == 0) {
+                            $e.html("<i class=\"fa fa-arrows-v\"></i> (<?= $this->translate('Home Page') ?>) " + title);
+                        } else {
+                            $e.html("<i class=\"fa fa-arrows-v\"></i> " + title);
+                        }
+                    } else {
+                        var re = /\(Home page\) (.*)/i;
+                        var text = jQuery.trim($e.text());
+
+                        if (!parentVal && i == 0) {
+                            if (!text.match(re)) {
+                                $e.text("(<?= $this->translate('Home Page') ?>) " + text);
+                            }
+                        } else {
+                            if (re.test(text)) {
+                                var res = re.exec(text);
+                                if (res !== null && res.length == 2) {
+                                    $e.text(res[1]);
+                                }
+                            }
+                        }
+                    }
+                });
+
+                $("#sortStructure").val($this.sortable("serialize"));
+            }
+        });
+
+        $("#title").change(function(){
+            var $this = $(this);
+            var parentVal = $("#parent").val();
+            var sortVal = $("#sort").val();
+            var titleVal = jQuery.trim($this.val());
+            var title = (titleVal.length == 0) ? '<?= $this->translate('This Page') ?>' : titleVal;
+
+            $("#sortList li").each(function(i, e) {
+                var $e = $(e);
+                if (!$e.hasClass("ui-state-disabled")) {
+                    if (!parentVal && sortVal == 0) {
+                        $e.html(" <i class=\"fa fa-arrows-v\"></i> (<?= $this->translate('Home Page') ?>) " + title);
+                    } else {
+                        $e.html(" <i class=\"fa fa-arrows-v\"></i> " + title);
+                    }
+                }
+            });
+        });
+        
+        $('input[name=target]').change(function() {
+            switch ($(this).val()) {
+                case 'EXTERNAL' :
+                    initUrl();
+                    break;
+                case 'INTERNAL' :
+                default :
+                    initEditor();
+                    break;
+            }
+        });
+    });
+
+    function buildSortList() {
+        var list = $("#sortList");
+        var parentVal = $("#parent").val();
+        var titleVal = jQuery.trim($("#title").val());
+        var title = (titleVal.length == 0) ? '<?= $this->translate('This Page') ?>' : titleVal;
+        var inList = false;
+
+        list.empty();
+        if (pages.hasOwnProperty(parentVal)) {
+
+            pages[parentVal].children.sort(function(a, b){
+                if (a.sort < b.sort) {
+                    return -1
+                }
+                return 1;
+            });
+
+            for (var i in pages[parentVal].children) {
+                if (currentId == pages[parentVal].children[i].id) {
+                    inList = true;
+                    $("#sort").val(i);
+                    if (i == 0 && !parentVal) {
+                        list.append('<li class="ui-state-default ui-corner-all" id="sort_' + pages[parentVal].children[i].id + '"> <i class="fa fa-arrows-v"></i><?= $this->translate('(Home Page) '); ?>' + title + '</li>');
+                    } else {
+                        list.append('<li class="ui-state-default ui-corner-all" id="sort_' + pages[parentVal].children[i].id + '"> <i class="fa fa-arrows-v"></i>' + title + '</li>');
+                    }
+                } else {
+                    if (i == 0 && !parentVal) {
+                        list.append('<li class="ui-state-default ui-corner-all ui-state-disabled" id="sort_' + pages[parentVal].children[i].id + '"> <?= $this->translate('(Home Page) '); ?>' + pages[parentVal].children[i].title + '</li>');
+                    } else {
+                        list.append('<li class="ui-state-default ui-corner-all ui-state-disabled" id="sort_' + pages[parentVal].children[i].id + '">' + pages[parentVal].children[i].title + '</li>');
+                    }
+                }
+            }
+
+            if (currentId == 'new' || !inList) {
+                $("#sort").val(i);
+                list.append('<li class="ui-state-default ui-corner-all" id="sort_' + currentId + '"><i class="fa fa-arrows-v"></i>' + title + '</li>');
+            }
+        }
+
+        list.sortable("refresh");
+        $("#sortStructure").val(list.sortable("serialize"));
+    }
+
+    function getChildrenByPage(id) {
+        if (pages && pages.hasOwnProperty(id)) {
+            return pages[id].children;
+        }
+
+        return [];
+    }
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<h2>
+    <span class="icon-menu icon-menu-website" style="float: left; margin: -10px 7px 0 0;"></span>
+    <?= $title ?>
+</h2>
+
+<section class="container_12">
+    <article class="grid_11">
+
+        <form id="page" action="/admin/website/page?<?= http_build_query($_GET) ?>" method="post" accept-charset="utf-8" class="cmxform large">
+
+            <section id="formError" class="error ui-widget ui-state-error ui-corner-all" style="<?= (!empty($this->errors)) ? '' : 'display:none;' ?>">
+                <div>
+                    <i class="fa fa-exclamation-triangle"></i>
+                    <strong><?= $this->translate('Oh No!'); ?></strong>
+                    <?= $this->translate('Something is not right with what you entered.  Check below for hints on how to fix things up.'); ?>
+                </div>
+            </section>
+
+            <p>
+                <label for="title" class="required" title="<?= $this->translate('Please enter the title of your page'); ?>">
+                    <?= $this->translate('Title'); ?>:
+                    <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                </label>
+                <input
+                    id="title"
+                    name="title"
+                    type="text"
+                    title="<?= $this->translate('Please enter the title of your page'); ?>"
+                    value="<?= $this->getFormValue('title'); ?>"
+                    class="required large"
+                    maxlength="255" />
+
+                <?php if (!empty($this->errors['title'])) { ?>
+                <label for="title" class="error">
+                    <?= implode('; ', $this->errors['title']) ?>
+                </label>
+                <?php } ?>
+            </p>
+            <?php if (empty($this->page)) { ?>
+                <p>
+                    <label for="target_internal" class="required" title="<?= $this->translate('Is this a page to be created on your HarvestHand website, or a link to an external page?'); ?>">
+                        <?= $this->translate('Type'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+
+                    <input
+                        id="target_internal"
+                        type="radio"
+                        name="target"
+                        value="INTERNAL"
+                        class="required"
+                        title="<?= $this->translate('Create page on my HarvestHand website'); ?>"
+                        <?php
+                            $value = $this->getFormValue('target');
+                            if ($value === null) {
+                                echo 'checked="checked"';
+                            } else if ($value == 'INTERNAL') {
+                                echo 'checked="checked"';
+                            }
+                        ?> />
+                        <label for="target_internal" class="radio" title="<?= $this->translate('Create page on my HarvestHand website'); ?>">
+                            <?= $this->translate('Create Page'); ?>
+                        </label>
+                    <input
+                        id="target_external"
+                        type="radio"
+                        name="target"
+                        value="EXTERNAL"
+                        title="<?= $this->translate('Link to an external webpage'); ?>"
+                        <?php echo (($this->getFormValue('target') == 'EXTERNAL') ? 'checked="checked"' : '') ?> />
+                        <label for="target_external" class="radio" title="<?= $this->translate('Publish to my website'); ?>">
+                            <?= $this->translate('Link to Webpage'); ?>
+                        </label>
+
+
+                    <?php if (!empty($this->errors['target'])) { ?>
+                        <label for="target" class="error">
+                            <?= implode('; ', $this->errors['target']) ?>
+                        </label>
+                    <?php } ?>
+                </p>
+            <?php } else { ?>
+                <input id="target" 
+                       type="hidden"
+                       name="target"
+                       value="<?= $this->getFormValue('target') ?>" />
+            <?php } ?>
+            <p id="url-field">
+                <label for="url" class="required" title="<?= $this->translate('Please enter the URL of the webpage you want to link to.'); ?>">
+                    <?= $this->translate('External URL'); ?>:
+                    <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                </label>
+                <input
+                    id="url"
+                    name="url"
+                    type="text"
+                    title="<?= $this->translate('Please enter the URL of the webpage you want to link to'); ?>"
+                    value="<?= $this->getFormValue('url'); ?>"
+                    class="large url"
+                    maxlength="255" />
+
+                <?php if (!empty($this->errors['url'])) { ?>
+                <label for="url" class="error">
+                    <?= implode('; ', $this->errors['url']) ?>
+                </label>
+                <?php } ?>
+            </p>
+            <p id="content-field">
+                <label for="content" class="required" title="<?= $this->translate('Please enter your page content'); ?>">
+                    <?= $this->translate('Content'); ?>:
+                    <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                </label>
+                <textarea
+                    id="content"
+                    name="content"
+                    title="<?= $this->translate('Please enter your page content'); ?>"
+                    class="required large"
+                    cols="10"
+                    rows="10"><?= $this->getFormValue('content'); ?></textarea>
+                <?php if (!empty($this->errors['content'])) { ?>
+                <label for="content" class="error">
+                    <?= implode('; ', $this->errors['content']) ?>
+                </label>
+                <?php } ?>
+            </p>
+            <p>
+                <label for="publish_1" class="required" title="<?= $this->translate('Should this page be displayed on your website?'); ?>">
+                    <?= $this->translate('Publish'); ?>:
+                    <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                </label>
+
+                <input
+                    id="publish_0"
+                    type="radio"
+                    name="publish"
+                    value="DRAFT"
+                    class="required"
+                    title="<?= $this->translate('Don\'t publish to my website'); ?>"
+                    <?php
+                        $value = $this->getFormValue('publish');
+                        if ($value === null) {
+                            echo 'checked="checked"';
+                        } else if ($value == 'DRAFT') {
+                            echo 'checked="checked"';
+                        }
+                    ?> />
+                    <label for="publish_0" class="radio" title="<?= $this->translate('Don\'t publish to my website'); ?>">
+                        <?= $this->translate('Draft'); ?>
+                    </label>
+                <input
+                    id="publish_1"
+                    type="radio"
+                    name="publish"
+                    value="PUBLISHED"
+                    title="<?= $this->translate('Publish to my website'); ?>"
+                    <?php echo (($this->getFormValue('publish') == 'PUBLISHED') ? 'checked="checked"' : '') ?> />
+                    <label for="publish_1" class="radio" title="<?= $this->translate('Publish to my website'); ?>">
+                        <?= $this->translate('Published'); ?>
+                    </label>
+
+
+                <?php if (!empty($this->errors['publish'])) { ?>
+                    <label for="publish" class="error">
+                        <?= implode('; ', $this->errors['publish']) ?>
+                    </label>
+                <?php } ?>
+            </p>
+            <p>
+                <label for="parent" class="required" title="<?= $this->translate('Where do you want this page placed in your navigation'); ?>">
+                    <?= $this->translate('Placement'); ?>:
+                    <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                </label>
+                <?=
+                    $this->formSelectParents(
+                        $this->parents,
+                        $this->getFormValue('parent'),
+                        ((!empty($this->page)) ? $this->page->id : 'null')
+                    );
+                ?>
+                <?php if (!empty($this->errors['parent'])) { ?>
+                    <label for="parent" class="error">
+                        <?= implode('; ', $this->errors['parent']) ?>
+                    </label>
+                <?php } ?>
+            </p>
+
+            <div 
+                id="sortElement"
+                style="display: <?= (!empty($this->structure[$this->getFormValue('parent')]['children'])) ? 'block' : 'none' ?>;">
+                <label title="<?= $this->translate('If you want this page in a particular order, drag it to the location where you want it.'); ?>">
+                    <?= $this->translate('Order'); ?>:
+                </label>
+
+                <ul class="sortable" id="sortList">
+                    <?php
+                        if (!empty($this->structure[$this->getFormValue('parent')]['children'])) {
+
+                            $orderedList = array();
+                            $inOrderedList = false;
+
+                            foreach ($this->structure[$this->getFormValue('parent')]['children'] as $c) {
+                                $sortList[$c['sort']] = $c;
+                            }
+
+                            ksort($sortList, SORT_NUMERIC);
+
+                            foreach ($sortList as $sort => $item) { ?>
+
+                                <?php if (!empty($this->page) && $this->page->id == $item['id']) { $inOrderedList = true; ?>
+                                    <?php if ($sort == 0 && !$this->getFormValue('parent')) { ?>
+                                        <li
+                                            class="ui-state-default ui-corner-all"
+                                            id="sort_<?= $item['id'] ?>">
+                                            <i class="fa fa-arrows-v"></i>
+                                            <?= $this->translate('(Home Page) '); ?>
+                                            <?= $this->escape($item['title']); ?>
+                                        </li>
+                                    <?php } else { ?>
+                                        <li
+                                            class="ui-state-default ui-corner-all"
+                                            id="sort_<?= $item['id'] ?>">
+                                            <i class="fa fa-arrows-v"></i>
+                                            <?= $this->escape($item['title']); ?>
+                                        </li>
+                                    <?php } ?>
+                                <?php } else { ?>
+                                    <?php if ($sort == 0 && !$this->getFormValue('parent')) { ?>
+                                        <li
+                                            class="ui-state-default ui-corner-all ui-state-disabled"
+                                            id="sort_<?= $item['id'] ?>">
+                                            <?= $this->translate('(Home Page) '); ?>
+                                            <?= $this->escape($item['title']); ?>
+                                        </li>
+                                    <?php } else { ?>
+                                        <li
+                                            class="ui-state-default ui-corner-all ui-state-disabled"
+                                            id="sort_<?= $item['id'] ?>">
+                                            <?= $this->escape($item['title']); ?>
+                                        </li>
+                                    <?php } ?>
+                                <?php } ?>
+                    <?php
+                            }
+
+                        } else {
+                            $sort = 0;
+                        }
+
+                    ?>
+                    <?php if (empty($inOrderedList)) { ?>
+                        <?php if (empty($this->page)) { ?>
+                            <li
+                                class="ui-state-default ui-corner-all"
+                                id="sort_new">
+                                <i class="fa fa-arrows-v"></i>
+                                This Page
+                            </li>
+                        <?php } else { ?>
+                            <?php if ($this->page->sort == 0 && !$this->getFormValue('parent')) { ?>
+                                <li
+                                    class="ui-state-default ui-corner-all"
+                                    id="sort_<?= $this->page['id'] ?>">
+                                    <i class="fa fa-arrows-v"></i>
+                                    <?= $this->translate('(Home Page) '); ?>
+                                    <?= $this->escape($this->page['title']); ?>
+                                </li>
+                            <?php } else { ?>
+                                <li
+                                    class="ui-state-default ui-corner-all"
+                                    id="sort_<?= $this->page['id'] ?>">
+                                    <i class="fa fa-arrows-v"></i>
+                                    <?= $this->escape($this->page['title']); ?>
+                                </li>
+                            <?php } ?>
+                        <?php } ?>
+                    <?php } ?>
+                </ul>
+
+                <?php $sort = ($this->getFormValue('sort') !== null) ? $this->getFormValue('sort') : $sort; ?>
+
+                <input
+                    id="sort"
+                    name="sort"
+                    type="hidden"
+                    value="<?= $sort ?>"
+                    class="digits" />
+
+                <input
+                    id="sortStructure"
+                    name="sortStructure"
+                    type="hidden"
+                    value="" />
+
+                <?php if (!empty($this->errors['sort'])) { ?>
+                <label class="error">
+                    <?= implode('; ', $this->errors['sort']) ?>
+                </label>
+                <?php } ?>
+            </div>
+            <p>
+                <button type="submit" class="submit fieldset-align ui-button ui-widget ui-corner-all ui-button-text-only ui-state-default">
+                    <span class="ui-button-text">
+                        <i class="fa fa-check"></i>
+                        <?= $this->translate('Save!'); ?>
+                    </span>
+                </button>
+            </p>
+        </form>
+    </article>
+</section>

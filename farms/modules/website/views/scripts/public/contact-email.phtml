@@ -1,0 +1,19 @@
+<h1><?= $this->translate('New Website Note From HarvestHand') ?></h1>
+
+<dl>
+    <dt><?= $this->translate('Name'); ?></dt>
+    <dd><?= $this->escape($this->name); ?></dd>
+    
+    <?php if (!empty($this->email)) { ?>
+        <dt><?= $this->translate('Email'); ?></dt>
+        <dd><a href="mailto:<?= $this->escape($this->email); ?>"><?= $this->escape($this->email); ?></a></dd>
+    <?php } ?>
+        
+    <?php if (!empty($this->telephone)) { ?>
+        <dt><?= $this->translate('Telephone'); ?></dt>
+        <dd><?= $this->escape($this->telephone); ?></dd>
+    <?php } ?>
+        
+    <dt><?= $this->translate('Note'); ?></dt>
+    <dd><?= nl2br($this->escape($this->note)); ?></dd>
+</dl>

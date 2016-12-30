@@ -1,0 +1,49 @@
+<?php
+    while (ob_get_level()) {
+        ob_end_clean();
+    }
+
+    header('Content-Type: application/vnd.ms-excel');
+    header('Content-Disposition: attachment; filename="customers.csv"');
+
+    $displayedHeader = false;
+    
+    function filter (&$data) {
+        str_replace(
+            array(
+                "\t",
+                "\r\n",
+                "\r",
+                "\n",
+                '"'
+            ),
+            array(
+                '\t',
+                '\n',
+                '\n',
+                '\n',
+                '""'
+            ),
+            $data
+        );
+
+        $data = '"' . $data . '"';
+    };
+
+    foreach ($this->customers as $customer) { 
+        if ($displayedHeader == false) {
+            $customerHeaderArray = array_keys($customer->toArray());
+            array_walk($customerHeaderArray, 'filter');
+            echo implode(',', $customerHeaderArray) . "\r\n";
+            $displayedHeader = true;
+        }
+        
+        $customerArray = $customer->toArray();
+        
+        array_walk($customerArray, 'filter');
+        
+        echo implode(',', $customerArray) . "\r\n";
+    }
+
+    exit();
+?>

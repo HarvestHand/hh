@@ -1,0 +1,66 @@
+a.pmark {
+  color: inherit;
+}
+
+h1.timelineday {
+  font-size: 1.2em;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  border-bottom: solid 1px #bbb;
+  color: #999;
+}
+
+div.timelineevent {
+  padding-bottom: 0.25em;
+  margin-top: 0.5em;
+  width: 100%;
+  overflow: hidden;
+  border-bottom: solid 1px #eee;
+}
+
+div.timelineevent a.userlink.timelineface {
+  float: left;
+  margin: 0 1em 1em 0;
+/*  padding: 0 1em 1em 0; */
+  border-bottom-style: none;
+}
+
+div.timelineevent span.time {
+  color: #999;
+  font-size: 0.9em;
+}
+
+div.timelinetext {
+  padding-left: 64px;
+  width: 50em;
+  padding-bottom: 0.5em;
+}
+
+div.timelinereason {
+  color: rgb(84,84,84);
+  font-size: 0.8em;
+  margin-bottom: 1em;
+}
+
+input.summaryedit {
+  font-size: 1.1em;
+  font-weight: bold;
+}
+
+div.ticketchangeinfo {
+  margin-bottom: 1.5em;
+}
+
+div.ticketchangeinfo img.gravatar {
+  float: right;
+  margin: 0 0em 1em 1em;
+}
+div.timelinereason img.gravatar {
+  float: left;
+  margin: 0 1em 1em 0em;
+}
+div.ticketevent, div.timelineevent, h1.timelineday {
+  clear: both;
+}
+
+

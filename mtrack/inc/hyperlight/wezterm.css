@@ -1,0 +1,90 @@
+/* For licensing and copyright terms, see the file named LICENSE */
+/* A colour scheme based on Wez Furlong's terminal and vim preferences */
+
+.source-code.wezterm {
+	background: black;
+	color: rgb(179,179,179);
+}
+
+.source-code.wezterm .php {
+	/* tomato */
+	color: rgb(255, 85, 85);
+}
+
+.source-code.wezterm .comment {
+	/* cyan */
+	color: rgb(85, 255, 255);
+}
+
+.source-code.wezterm .comment .todo {
+	/* yellow background */
+	background-color: rgb(255, 255, 85);
+	color: black;
+}
+
+.source-code.wezterm .tag {
+	/* cyan */
+	color: rgb(85, 255, 255);
+}
+.source-code.wezterm .php .tag {
+	/* yellow */
+	color: rgb(255, 255, 85);
+}
+
+.source-code.wezterm .identifier {
+	/* regular grey text */
+	color: rgb(179,179,179);
+}
+
+.source-code.wezterm .tag .identifier {
+	/* cyan */
+	color: rgb(85, 255, 255);
+}
+
+.source-code.wezterm .keyword {
+	/* yellow */
+	color: rgb(255, 255, 85);
+}
+
+.source-code.wezterm .preprocessor,
+.source-code.wezterm .preprocessor .identifier,
+.source-code.wezterm .keyword.operator,
+.source-code.wezterm .keyword.builtin {
+	/* blue */
+	color: rgb(85, 85, 204);
+}
+.source-code.wezterm .attribute,
+.source-code.wezterm .keyword.type {
+	/* green */
+	color: rgb(85, 204, 85);
+}
+.source-code.wezterm .number,
+.source-code.wezterm .keyword.literal,
+.source-code.wezterm .string
+{
+	/* purple */
+	color: rgb(255, 85, 255);
+}
+
+.source-code.wezterm::-moz-selection,
+.source-code.wezterm span::-moz-selection
+{
+	background-color: rgb(77, 77, 255);
+}
+
+.source-code.wezterm::selection,
+.source-code.wezterm span::selection
+{
+	background-color: rgb(77, 77, 255);
+}
+
+.source-code.wezterm .preprocessor .tag,
+.source-code.wezterm .preprocessor .number {
+	/* purple like a string.
+	 * this triggers for things like: #include "name"
+	 */
+	color: rgb(255, 85, 255);
+}
+/* vim:ts=2:sw=2:noet:
+ * */
+

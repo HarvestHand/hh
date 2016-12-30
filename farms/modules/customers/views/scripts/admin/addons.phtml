@@ -1,0 +1,340 @@
+<?php
+    $this->headTitle($this->translate('Purchased Products'));
+
+    $this->loader()->append('jquery_dataTables')
+        ->append('jquery_dropdown');
+
+    $this->loadDatejs(Bootstrap::$locale);
+    
+    Bootstrap::getZendCurrency();
+?>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+    $(document).ready(function(){
+
+        $.fn.dataTableExt.aoFeatures.push({
+            "fnInit": function(oSettings) {
+                return $('<ul class="dataTables_add dropdown-container"><li class="dropdown btn-group">' +
+                    '<a href="/admin/customers/addon" title="<?= $this->translate('Add new purchased product') ?>" class="btn">' +
+                    '<?= addslashes($this->translate('Add')) ?></a>' +
+                    '<button type="button" class="btn dropdown-toggle" data-toggle="dropdown">' +
+                    '<span class="caret"></span></button>' +
+                    '<ul class="dropdown-menu"><li><a href="/admin/customers/addons/format/csv/year/<?= (int) $this->year ?>" title="<?= $this->translate('Export to a spreadsheet program') ?>">' +
+                    '<?= $this->translate('Export to CSV') ?></a></li></ul></li></ul>')[0];
+            },
+            "cFeature": "a",
+            "sFeature": "Add"
+        });
+        
+        $.fn.dataTableExt.aoFeatures.push({
+            "fnInit": function(oSettings) {
+                return $(
+                    '<form class="dataTables_year" action="/admin/customers/addons" method="get" style="float: left; padding-right: 10px">' +
+                    <?php if (count($this->years) > 1) { ?>
+                        '<label for="year"><?= addslashes($this->translate('Year')); ?>: </label>' +
+                        '<?=
+                            addslashes(str_replace("\n", '', $this->formSelect(
+                                'year',
+                                $this->year,
+                                array(),
+                                $this->years
+                            )));
+                        ?>' +
+                    <?php } ?>
+                    '</form> '
+                )[0];
+            },
+            "cFeature": "y",
+            "sFeature": "Year"
+        });
+        
+        var table = $("#addons").dataTable({
+            "bJQueryUI": true,
+            "bAutoWidth": false,
+            "bDeferRender": true,
+            "bLengthChange": false,
+            "bProcessing": true,
+            "iDisplayLength": 50,
+            "iDeferLoading": <?= $this->foundRows ?>,
+            "aaSorting": [[0, "desc"]],
+            "aoColumns": [ 
+                {
+                    "sType": "string",
+                    "mDataProp": "week",
+                    "fnRender": function (oObj) {
+                        if (!oObj.aData.hasOwnProperty("id")) {
+                            return oObj.aData.week;
+                        } else {
+                            var weekArray = oObj.aData.week.split("W");
+                            var week = weekArray[1],
+                                year = weekArray[0],
+                                date = new Date(),
+                                range = "";
+                                
+                            date.setYear(year);
+                            date.setWeek(week);
+
+                            if (date.getDay() > 1) {
+                                date.setDate(date.getDate() - (date.getDay() - 1));
+                            } else if (date.getDay() < 1) {
+                                date.setDate(date.getDate() + 1);
+                            }
+
+                            range = date.toString("yyyy-MM-dd") + " - ";
+
+                            date.setDate(date.getDate() + 6);
+
+                            range += date.toString("yyyy-MM-dd");
+                            
+                            return range;
+                        }
+                    }
+                },
+                {
+                    "sType": "text",
+                    "mDataProp": "customer",
+                    "fnRender": function (oObj) {
+                        if (!oObj.aData.hasOwnProperty("id")) {
+                            return oObj.aData.customer;
+                        } else {
+                            return oObj.aData.customerLastName
+                                .replace(/&/g,'&amp;')
+                                .replace(/</g,'&lt;')
+                                .replace(/>/g,'&gt;') + ", " +
+                                oObj.aData.customerFirstName
+                                .replace(/&/g,'&amp;')
+                                .replace(/</g,'&lt;')
+                                .replace(/>/g,'&gt;');
+                        }
+                    }
+                },
+                {
+                    "sType": "text",
+                    "mDataProp": "addonName",
+                    "fnRender": function (oObj) {
+                        if (!oObj.aData.hasOwnProperty("id")) {
+                            return oObj.aData.addonName;
+                        } else {
+                            return oObj.aData.addonName.replace(/&/g,'&amp;')
+                                    .replace(/</g,'&lt;')
+                                    .replace(/>/g,'&gt;');
+                        }
+                    }
+                },
+                {
+                    "sType": "text",
+                    "mDataProp": "quantity",
+                    "fnRender": function (oObj) {
+                        return parseInt(oObj.aData.quantity);
+                    }
+                },
+                {
+                    "sType": "text",
+                    "mDataProp": "paidInFull",
+                    "fnRender": function (oObj) {
+                        if (!oObj.aData.hasOwnProperty("id")) {
+                            return oObj.aData.paidInFull;
+                        }
+                        if (parseInt(oObj.aData.paidInFull) == 1) {
+                            return '<?= addslashes($this->translate('Yes')) ?>';
+                        } 
+                        return '<?= addslashes($this->translate('No')) ?>';
+                    }
+                },
+                { 
+                    "bSortable": false,
+                    "bSearchable": false,
+                    "mDataProp": "_actions",
+                    "sClass": "right",
+                    "fnRender": function (oObj) {
+                        if (!oObj.aData.hasOwnProperty("id")) {
+                            return oObj.aData._actions;
+                        }
+                        var menu = '<ul class="dropdown-container">' +
+                            '<li class="dropdown btn-group">' +
+                            '<a href="/admin/customers/addon?id=' + parseInt(oObj.aData.id) + '" ' +
+                            'title="<?= addslashes($this->translate('View purchased product')) ?>" class="btn"> ' +
+                            '<?= addslashes($this->translate('View')) ?></a>' +
+                            '<button type="button" class="btn dropdown-toggle" data-toggle="dropdown">' +
+                            '<span class="caret"></span></button>' +
+                            '<ul class="dropdown-menu">';
+                        
+                        if (oObj.aData.customerEmail || oObj.aData.customerSecondaryEmail) {
+                            menu += '<li><a href="/admin/customers/email?id=' + parseInt(oObj.aData.customerId) + '"><?= addslashes($this->translate('Email')) ?></a></li>'
+                        }
+
+                        menu += '<li class="divider"></li>' +
+                            '<li><a class="delete" title="<?= addslashes($this->translate('Delete purchased product')) ?>" ' +
+                            'href="/admin/customers/addon?a=delete&id=' + parseInt(oObj.aData.id) + '"><?= addslashes($this->translate('Delete')) ?></a></li>' +
+                            '</ul></li></ul>';
+                        
+                        return menu;
+                    }
+                }
+            ],
+            "bSortClasses": false,
+            "sAjaxSource": "<?= addslashes($this->Url()) ?>",
+            "bServerSide": true,
+            "sDom": '<"H"yaf<"clear">r<"right"ip>>t<"F"<"right"ip>>'
+        })
+        .delegate("tbody tr", "mouseover mouseout", function(e) {
+            if (e.type == "mouseover") {
+                $(e.currentTarget).addClass('hover');
+            } else {
+                $(e.currentTarget).removeClass('hover');
+            }
+        })
+        .delegate(".delete", "click", function(){
+            return window.confirm("<?= $this->translate('Are you sure you want to delete this purchased product?  No turning back after a purchased product delete.'); ?>");
+        });
+        
+        new FixedHeader(table);
+        
+        $(".dataTables_year select").change(function(){
+            window.location = '/admin/customers/addons/year/' + $(this).val();
+        });
+        
+        $('.dropdown-toggle').dropdown();
+    });
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<h2>
+    <span class="icon-menu icon-menu-members" style="float: left; margin: -10px 7px 0 0;"></span>
+    <?= $this->translate('Customer Purchased Products') ?>
+</h2>
+
+<section class="container_12">
+    <article class="grid_9">
+
+        <?php if (!empty($this->messages)) { ?>
+            <section class="info ui-widget ui-state-highlight ui-corner-all">
+                <div>
+                    <i class="fa fa-info-circle"></i>
+                    <strong><?= $this->translate('Hey!'); ?></strong>
+                    <?= $this->escape(implode('; ', $this->messages)); ?>
+                </div>
+            </section>
+        <?php } ?>
+
+        <?php if (count($this->addons)) { ?>
+        
+            <table id="addons" class="display">
+                <thead>
+                    <tr>
+                        <th
+                            width="17%"
+                            title="<?= $this->translate('Delivery week purchased') ?>">
+                                <?= $this->translate('Week'); ?>
+                        </th>
+                        <th
+                            width="25%"
+                            title="<?= $this->translate('Customer') ?>">
+                                <?= $this->translate('Customer'); ?>
+                        </th>
+                        <th
+                            width="23%"
+                            title="<?= $this->translate('Product') ?>">
+                                <?= $this->translate('Product') ?>
+                        </th>
+                        <th
+                            width="8%"
+                            title="<?= $this->translate('Purchased Quantity') ?>">
+                                <?= $this->translate('Qty') ?>
+                        </th>
+                        <th
+                            width="9%"
+                            title="<?= $this->translate('Paid In Full') ?>">
+                                <?= $this->translate('Paid') ?>
+                        </th>
+                        <th
+                            width="16%"
+                            title="<?= $this->translate('Product Actions') ?>">
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($this->addons as $addon) { ?>
+                        <tr>
+                            <td>
+                                <?php
+                                    list($year , $week) = explode('W', $addon->week);
+                                
+                                    $date = new Zend_Date();
+                                    $date->setYear($year);
+                                    $date->setWeek($week);
+                                    $date->set(1, Zend_Date::WEEKDAY_8601);
+                                    
+                                    $range = $date->toString('yyyy-MM-dd') . ' - ';
+                                    $date->set(7, Zend_Date::WEEKDAY_8601);
+                                    $range .= $date->toString('yyyy-MM-dd');
+                                ?>
+                                <?= $this->escape($range); ?>
+                            </td>
+                            <td>
+                                <?php 
+                                    echo $this->escape(
+                                        $addon->customerLastName . ', ' 
+                                        . $addon->customerFirstName
+                                    );
+                                ?>
+                            </td>
+                            <td>
+                                <?= $this->escape($addon->addonName); ?>
+                            </td>
+                            <td>
+                                <?= (int) $addon->quantity ?>
+                            </td>
+                            <td>
+                                <?php if ($addon->paidInFull) { ?>
+                                    <?= $this->translate('Yes') ?>
+                                <?php } else { ?>
+                                    <?= $this->translate('No') ?>
+                                <?php } ?>
+                            </td>
+                            <td class="right">
+                                <ul class="dropdown-container">
+                                    <li class="dropdown btn-group">
+                                        <a href="/admin/customers/addon?id=<?= (int) $addon->id ?>"
+                                           title="<?= $this->translate('Edit product purchased') ?>"
+                                           class="btn">
+                                            <?= $this->translate('View') ?>
+                                        </a>
+                                        <button type="button"
+                                                class="btn dropdown-toggle"
+                                                data-toggle="dropdown">
+                                            <span class="caret"></span>
+                                        </button>
+
+                                        <ul class="dropdown-menu">
+                                            <?php if (!empty($addon->customerEmail) || !empty($addon->customerSecondaryEmail)) { ?>
+                                            <li><a href="/admin/customers/email?id=<?= (int) $addon->customerId ?>"><?= $this->translate('Email Customer') ?></a></li>
+                                            <?php } ?>
+                                            <li class="divider"></li>
+                                            <li><a class="delete" 
+                                                   title="<?= $this->translate('Delete product purchased') ?>"
+                                                   href="/admin/customers/addon?a=delete&id=<?= (int) $addon->id ?>"><?= $this->translate('Delete') ?></a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                                
+                            </td>
+                        </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+
+        <?php } else { ?>
+
+            <p><?=
+                $this->translate(
+                    'You haven\'t added any purchased products yet.  <a href="%s">Let\'s add one now.</a>',
+                    '/admin/customers/addon'
+                ); ?></p>
+
+        <?php } ?>
+    </article>
+
+    <?= $this->render('admin-sub-nav.phtml'); ?>
+</section>

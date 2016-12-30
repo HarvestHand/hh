@@ -1,0 +1,44 @@
+<?php $this->headTitle($this->translate('Online Account Payment')); ?>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $(".paypal").button({
+                    icons : {
+                        primary:'ui-icon-locked'
+                    }
+                });
+        });
+    </script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<h2><?= $this->translate('Online Account Payment') ?></h2>
+
+<section class="info ui-widget ui-state-highlight ui-corner-all">
+    <div>
+        <i class="fa fa-info-circle"></i>
+        <strong><?= $this->translate('Payment Confirmation'); ?></strong>
+        <?= $this->translate('Please confirm your payment!'); ?>
+    </div>
+</section>
+
+<p>
+    <?= $this->translate(
+        'To complete your payment of <strong>%s</strong>, please click the below button:',
+        $this->currency($this->total)
+    ); ?>
+</p>
+
+<div align="center">
+    <?php echo $this->paypalButton(
+        $this->farm,
+        $this->translate(
+            '%s Payment',
+            $this->farm->name
+        ),
+        $this->transactionId,
+        $this->total
+    ); ?>
+</div>
+
+<br />

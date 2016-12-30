@@ -1,0 +1,85 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-09-08 07:39-0400\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Michael Caplan <michael@harvesthand.com>\n"
+"Language-Team: \n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: English\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: translate\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SearchPath-0: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/newsletter\n"
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/newsletter/controllers/AdminController.php:35
+msgid "Administration"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/newsletter/controllers/AdminController.php:61
+#, php-format
+msgid "Newsletter options updated!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/newsletter/views/scripts/public/index.phtml:1
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/newsletter/views/scripts/public/index.phtml:3
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/newsletter/views/scripts/admin/index.phtml:1
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/newsletter/views/scripts/admin/index.phtml:5
+msgid "Newsletter"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/newsletter/views/scripts/admin/options.phtml:1
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/newsletter/views/scripts/admin/options.phtml:5
+msgid "Newsletter Options"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/newsletter/views/scripts/admin/options.phtml:14
+msgid "Oh No!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/newsletter/views/scripts/admin/options.phtml:15
+msgid "Something is not right with what you entered.  Check below for hints on how to fix things up."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/newsletter/views/scripts/admin/options.phtml:20
+msgid "General"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/newsletter/views/scripts/admin/options.phtml:23
+msgid "Should your HarvestHand website be disabled?"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/newsletter/views/scripts/admin/options.phtml:24
+msgid "Enable?"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/newsletter/views/scripts/admin/options.phtml:25
+msgid "This field is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/newsletter/views/scripts/admin/options.phtml:34
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/newsletter/views/scripts/admin/options.phtml:36
+msgid "Don't enabled your HarvestHand website"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/newsletter/views/scripts/admin/options.phtml:37
+msgid "Disable"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/newsletter/views/scripts/admin/options.phtml:44
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/newsletter/views/scripts/admin/options.phtml:53
+msgid "HarvestHand website should be enabled"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/newsletter/views/scripts/admin/options.phtml:54
+msgid "Enable"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/modules/newsletter/views/scripts/admin/options.phtml:70
+msgid "Save!"
+msgstr ""
+

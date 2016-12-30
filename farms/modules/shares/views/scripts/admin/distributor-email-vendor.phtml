@@ -1,0 +1,172 @@
+<p><?= $this->translate(
+        'Hi %s',
+        $this->escape($this->farmer->firstName)
+    ) ?></p>
+
+<p>
+    <?= $this->translate(
+        'We are checking in to make sure all the products we have listed are correct. Please review and once everything is ok, please <a href="%s">Click Here</a> to indicate everything looks great.',
+        $this->escape($this->vendor->getBaseUri() . 'admin/shares/addons?a=ping&distributorId=' . $this->distributor->id)
+    ) ?>
+</p>
+
+<p>
+    <?= $this->translate('You are being asked to do this weekly to help assure us that everything for all vendors is up to date on a weekly basis. While here, now would be a great time to add a photo or a product description to your product!') ?>
+</p>
+
+<p>
+    <?= $this->translate('Thanks!') ?>
+</p>
+
+<p>
+    <?= $this->escape($this->distributor->name) ?>
+</p>
+
+<hr />
+
+<p>
+    <?= $this->translate('Does everything look a-okay?  If so, click below so we know you have checked through your products:') ?>
+</p>
+
+<h1>
+    <a href="<?= $this->escape($this->vendor->getBaseUri() . 'admin/shares/addons?a=ping&distributorId=' . $this->distributor->id) ?>">
+        <?= $this->translate('Everything Looks Great!') ?>
+    </a>
+</h1>
+
+
+<?php if ($this->purchaseable->count()) { ?>
+
+    <p><strong><?= $this->translate('Products Currently Listed as Active And Available For Purchase') ?></strong></p>
+
+    <table width="100%" cellpadding="2" border="1">
+        <thead>
+            <tr>
+                <th><?= $this->translate('Name') ?></th>
+                <th><?= $this->translate('Available Until') ?></th>
+                <th><?= $this->translate('Category') ?></th>
+                <th><?= $this->translate('Locations') ?></th>
+                <th><?= $this->translate('Extended Info.') ?></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($this->purchaseable as $addon) { ?>
+                <tr>
+                    <td><?= $this->escape($addon->name) ?></td>
+                    <td><?= $this->escape(substr($addon->expirationDate, 0, 10)) ?></td>
+                    <td><?= $this->escape((!empty($this->categories[$addon->categoryId]) ? $this->categories[$addon->categoryId] : null)) ?></td>
+                    <td><?php
+                        $locations = $addon->getLocations();
+
+                        if ($locations->count()) {
+                            $locationNames = array();
+                            foreach ($locations as $location) {
+                                $locationNames[] = $location->getLocation()->name;
+                            }
+
+                            echo $this->escape(implode(', ', $locationNames));
+                        }
+
+                    ?></td>
+                    <td>
+                        <?php if (!empty($addon->details)) { ?>
+                            <?= $this->translate('Has detailed description.') ?>
+                        <?php } else { ?>
+                            <?= $this->translate('Missing detailed description.') ?>
+                        <?php } ?>
+
+                        <?php if (!empty($addon->image)) { ?>
+                            <?= $this->translate('Has image.') ?>
+                        <?php } else { ?>
+                            <?= $this->translate('Missing image.') ?>
+                        <?php } ?>
+                    </td>
+                    <td>
+                        <a href="<?= $this->escape($this->vendor->getBaseUri() . 'admin/shares/addon?id=' . $addon['id']) ?>">
+                            <?= $this->translate('Change') ?>
+                        </a>
+                    </td>
+                </tr>
+            <?php } ?>
+        </tbody>
+    </table>
+
+    <p>&nbsp;</p>
+
+<?php } ?>
+
+<?php if ($this->notPurchaseable->count()) { ?>
+
+    <p><strong><?= $this->translate('Products Currently Listed as NOT Active NOT Available For Purchase') ?></strong></p>
+
+    <p>
+        <?= $this->translate('TIP: To make a product active, toggle the product to "enabled" and make sure the "Available Until" date is a date in the future.') ?>
+    </p>
+
+    <table width="100%" cellpadding="2" border="1">
+        <thead>
+        <tr>
+            <th><?= $this->translate('Name') ?></th>
+            <th><?= $this->translate('Enabled') ?></th>
+            <th><?= $this->translate('Available Until') ?></th>
+            <th><?= $this->translate('Category') ?></th>
+            <th><?= $this->translate('Locations') ?></th>
+            <th><?= $this->translate('Extended Info.') ?></th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($this->notPurchaseable as $addon) { ?>
+            <tr>
+                <td><?= $this->escape($addon->name) ?></td>
+                <td><?= $addon->enabled == '0' ? $this->translate('No') : $this->translate('Yes') ?></td>
+                <td><?= $this->escape(substr($addon->expirationDate, 0, 10)) ?></td>
+                <td><?= $this->escape((!empty($this->categories[$addon->categoryId]) ? $this->categories[$addon->categoryId] : null)) ?></td>
+                <td><?php
+                    $locations = $addon->getLocations();
+
+                    if ($locations->count()) {
+                        $locationNames = array();
+                        foreach ($locations as $location) {
+                            $locationNames[] = $location->getLocation()->name;
+                        }
+
+                        echo $this->escape(implode(', ', $locationNames));
+                    }
+
+                    ?></td>
+                <td>
+                    <?php if (!empty($addon->details)) { ?>
+                        <?= $this->translate('Has detailed description.') ?>
+                    <?php } else { ?>
+                        <?= $this->translate('Missing detailed description.') ?>
+                    <?php } ?>
+                    <br />
+                    <?php if (!empty($addon->image)) { ?>
+                        <?= $this->translate('Has image.') ?>
+                    <?php } else { ?>
+                        <?= $this->translate('Missing image.') ?>
+                    <?php } ?>
+                </td>
+                <td>
+                    <a href="<?= $this->escape($this->vendor->getBaseUri() . 'admin/shares/addon?id=' . $addon['id']) ?>">
+                        <?= $this->translate('Change') ?>
+                    </a>
+                </td>
+            </tr>
+        <?php } ?>
+        </tbody>
+    </table>
+
+<?php } ?>
+
+<p>
+    <?= $this->translate('Does everything look a-okay?  If so, click below so we know you have checked through your products:') ?>
+</p>
+
+<h1>
+    <a href="<?= $this->escape($this->vendor->getBaseUri() . 'admin/shares/addons?a=ping&distributorId=' . $this->distributor->id) ?>">
+        <?= $this->translate('Everything Looks Great!') ?>
+    </a>
+</h1>

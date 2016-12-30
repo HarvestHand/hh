@@ -1,0 +1,255 @@
+<?php
+    $title = $this->translate('Customer Payment');
+
+    $this->loader()->append('jquery_dropdown')
+        ->append('jquery_ui_multiselect');
+
+    $this->headTitle($title);
+
+    $this->loader(true, true)
+        ->append('transactionView')
+        ->init(
+            array(
+                'lang' => array(
+                    'delete' => $this->translate('Are you sure you want to delete this payment?  No turning back after a payment delete.'),
+                    'unapply' => $this->translate('Are you sure you want to un-apply this payment from the invoices it has been applied to?'),
+                    'applyNew' => $this->translate('Are you sure you want to apply this transaction to a misc. invoice?')
+                ),
+                'invoices' => $this->invoicesData
+            )
+        );
+
+?>
+
+<h2 style="display: inline-block; vertical-align: middle; margin-right: 15px; margin-bottom: 11px;">
+    <span class="icon-menu icon-menu-members" style="float: left; margin: -10px 7px 0 0;"></span>
+    <?= $title ?>
+</h2>
+
+<ul class="dropdown-container" style="display: inline-block; vertical-align: top;">
+    <li class="dropdown btn-group">
+        <a href="#"
+            title="<?= $this->translate('Actions') ?>"
+            class="btn dropdown-toggle"
+            data-toggle="dropdown">
+            <?= $this->translate('Actions') ?>
+            <span class="caret"></span>
+        </a>
+
+        <ul class="dropdown-menu">
+            <?php if ($this->object['remainingToApply'] > 0) { ?>
+                <li>
+                    <a href="/admin/customers/transaction?a=applyexisting&id=<?= (int) $this->object->id ?>"
+                       class="apply-existing"
+                       title="<?= $this->translate('Apply Payment #%d to Existing Invoices', $this->object['id']) ?>">
+                        <?= $this->translate('Apply to Existing Invoices') ?>
+                    </a>
+                </li>
+                <?php if (!empty($this->object['customerId'])) { ?>
+                <li>
+                    <a href="/admin/customers/transaction?a=applynew&id=<?= (int) $this->object->id ?>" class="apply-new">
+                        <?= $this->translate('Apply to New Invoice') ?>
+                    </a>
+                </li>
+                <?php } ?>
+            <?php } ?>
+
+            <?php if (!empty($this->customer->email) || !empty($this->customer->secondaryEmail)) { ?>
+                <li><a href="/admin/customers/email?id=<?= (int) $this->object->customerId ?>"><?= $this->translate('Email Customer') ?></a></li>
+            <?php } ?>
+            <li class="divider"></li>
+            <li>
+                <a class="delete" href="/admin/customers/transaction?a=delete&id=<?= (int) $this->object->id ?>">
+                    <?= $this->translate('Delete') ?>
+                </a>
+            </li>
+            <?php if (!empty($this->object['appliedToInvoices'])) { ?>
+            <li>
+                <a class="unapply" href="/admin/customers/transaction?a=unapply&id=<?= (int) $this->object->id ?>">
+                    <?= $this->translate('Un-Apply from Invoices') ?>
+                </a>
+            </li>
+            <?php } ?>
+        </ul>
+    </li>
+</ul>
+
+<?php if (!empty($this->messages)) { ?>
+    <section class="info ui-widget ui-state-highlight ui-corner-all">
+        <div>
+            <i class="fa fa-info-circle"></i>
+            <strong><?= $this->translate('Hey!'); ?></strong>
+            <?= $this->escape(implode('; ', $this->messages)); ?>
+        </div>
+    </section>
+<?php } ?>
+
+<dl class="cmxlist">
+    <dt>
+        <?= $this->translate('Customer') ?>:
+    </dt>
+    <dd>
+        <a href="/admin/customers/customer?id=<?= $this->customer->id ?>">
+            <?php if (!empty($this->customer->firstName)) { ?>
+                <?= $this->escape($this->customer->firstName) ?>,
+            <?php } ?>
+            <?= $this->escape($this->customer->lastName) ?>
+        </a>
+    </dd>
+    
+    <dt>
+        <?= $this->translate('Payment Date') ?>:
+    </dt>
+    <dd>
+        <time datetime="<?= $this->escape($this->object->transactionDate->get('yyyy-MM-dd')) ?>"
+              title="<?= $this->escape($this->object->transactionDate->get('yyyy-MM-dd')) ?>">
+            <?= $this->escape($this->object->transactionDate->get('yyyy-MM-dd')) ?>
+        </time>
+    </dd>
+    
+    <dt>
+        <?= $this->translate('Type') ?>:
+    </dt>
+    <dd>
+        <?php
+            switch ($this->object['type']) {
+                case HHF_Domain_Transaction::TYPE_CASH :
+                    echo $this->translate('Cash');
+                    break;
+                case HHF_Domain_Transaction::TYPE_CHEQUE :
+                    echo $this->translate('Cheque');
+                    break;
+                case HHF_Domain_Transaction::TYPE_PAYPAL :
+                    echo $this->translate('PayPal');
+                    break;
+            }
+        ?>
+    </dd>
+    
+    <?php if (!empty($this->object['reference'])) { ?>
+    <dt>
+        <?= $this->translate('Reference') ?>:
+    </dt>
+    <dd>
+        <?= $this->escape($this->object['reference']) ?>
+    </dd>
+    <?php } ?>
+    
+    <dt>
+        <?= $this->translate('Total') ?>:
+    </dt>
+    <dd>
+        <?= $this->currency($this->object['total']) ?>
+    </dd>
+    
+    <dt>
+        <?= $this->translate('Remaining to Apply') ?>:
+    </dt>
+    <dd>
+        <?= $this->currency($this->object['remainingToApply']) ?>
+    </dd>
+    
+    <?php if (!empty($this->object['appliedToInvoices'])) { ?>
+    <dt>
+        <?= $this->translate('Applied to Invoices') ?>:
+    </dt>
+    <dd>
+        <?php
+            if (strpos($this->object['appliedToInvoices'], ',') !== false) {
+                $invoices = explode(',', $this->object['appliedToInvoices']);
+            } else {
+                $invoices = array($this->object['appliedToInvoices']);
+            }
+        ?>
+        <?php for ($count = count($invoices), $c = 0; $c < $count; ++$c) { ?>
+            <a href="/admin/customers/invoice?id=<?= (int) $invoices[$c] ?>"><?= (int) $invoices[$c] ?></a><?= ($c + 1 != $count) ? '; ' : '' ?>
+        <?php } ?>
+    </dd>
+    <?php } ?>
+
+    <dt>
+        <?= $this->translate('Added') ?>:
+    </dt>
+    <dd>
+        <time datetime="<?= $this->escape($this->object->addedDatetime->get(Zend_Date::ISO_8601)) ?>"
+              title="<?= $this->escape($this->object->addedDatetime->get(Zend_Date::ISO_8601)) ?>" pubdate="pubdate">
+            <?= $this->escape($this->object->addedDatetime->get('yyyy-MM-dd')) ?>
+        </time>
+    </dd>
+    
+    <dt>
+        <?= $this->translate('Updated') ?>:
+    </dt>
+    <dd>
+        <time datetime="<?= $this->escape($this->object->updatedDatetime->get(Zend_Date::ISO_8601)) ?>"
+              title="<?= $this->escape($this->object->updatedDatetime->get(Zend_Date::ISO_8601)) ?>">
+            <?= $this->escape($this->object->updatedDatetime->get('yyyy-MM-dd')) ?>
+        </time>
+    </dd>
+
+    <?php if (!empty($this->object['note'])) { ?>
+    <dt><?= $this->translate('Note'); ?>:</dt>
+    <dd>
+    	<?= $this->escape($this->object['note']); ?>
+    </dd>
+    <?php } ?>
+</dl>
+
+<div id="apply-invoices" title="<?= $this->translate('Apply to Existing Invoices') ?>" style="display:none;">
+    <form>
+        h1
+    </form>
+</div>
+
+<form id="transaction-apply"
+      action="/admin/customers/transaction?id=<?= (int) $this->object['id'] ?>&a=applyexisting"
+      method="post"
+      accept-charset="utf-8"
+      class="cmxform large"
+      style="display: none;">
+
+    <fieldset>
+        <legend><?= $this->translate('Choose Invoice(s)') ?></legend>
+
+        <p>
+            <?= $this->translate('Apply %s To The Following Invoices', $this->currency($this->object['remainingToApply'])) ?>
+        </p>
+
+        <p>
+            <label for="invoices-total">
+                <?= $this->translate('Remaining to Apply'); ?>:
+            </label>
+            <span id="invoices-total"
+                  data-remainingtoapply="<?= $this->object['remainingToApply'] ?>">0</span>
+        </p>
+
+        <p>
+            <label for="invoices" class="required" title="<?= $this->translate('Please choose an existing invoice to apply this amount to'); ?>">
+                <?= $this->translate('Invoices'); ?>:
+                <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+            </label>
+
+            <?=
+            $this->formSelect(
+                'invoices[]',
+                (!empty($_POST['invoices']) ? $_POST['invoices'] : null),
+                array(
+                    'id' => 'invoices'
+                ),
+                $this->invoices
+            );
+            ?>
+        </p>
+
+    </fieldset>
+
+
+    <p>
+        <button type="submit" class="submit fieldset-align ui-button ui-widget ui-corner-all ui-button-text-only ui-state-default">
+            <span class="ui-button-text">
+                <i class="fa fa-check"></i>
+                <?= $this->translate('Save!'); ?>
+            </span>
+        </button>
+    </p>
+</form>

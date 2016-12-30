@@ -1,0 +1,217 @@
+<?php
+    $this->headTitle($this->translate('Customer Invoices'));
+
+    $this->loader()->append('jquery_dataTables');
+    
+    $this->loadDatejs(Bootstrap::$locale);
+?>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+    $(document).ready(function(){
+		  
+		$.fn.dataTableExt.aoFeatures.push({
+            "fnInit": function(oSettings) {  	
+                return $('<ul class="dataTables_add dropdown-container"><li class="dropdown btn-group">' +
+                    '<a href="#" title="<?= $this->translate('Actions') ?>" class="btn">' +
+                    '<?= addslashes($this->translate('Actions')) ?></a>' +
+                    '<button type="button" class="btn dropdown-toggle" data-toggle="dropdown">' +
+                    '<span class="caret"></span></button>' +
+                    '<ul class="dropdown-menu"><li><a href="/admin/customers/invoices-history?cid=<?=$this->customerId; ?>&format=csv" title="<?= $this->translate('Export to a spreadsheet program') ?>">' +
+                    '<?= $this->translate('Export to CSV') ?></a></li></ul></li></ul>')[0];
+            },
+            "cFeature": "a",
+            "sFeature": "Add"
+        });
+        
+        var table = $("#invoices").dataTable({
+            "bJQueryUI": true,
+            "bAutoWidth": false,
+            "bDeferRender": true,
+            "bLengthChange": false,
+            "bProcessing": true,
+            "iDisplayLength": 50,
+            "iDeferLoading": <?= $this->foundRows ?>,
+            "aaSorting": [[1, "desc"]],
+            "aoColumns": [ 
+                {
+                    "sType": "string",
+                    "mDataProp": "id"
+                },
+                {
+                    "sType": "text",
+                    "mDataProp": "dueDate",
+                    "fnRender": function (oObj) {
+                        if (!oObj.aData.hasOwnProperty("DT_RowId")) {
+                            return oObj.aData.dueDate;
+                        } else {
+                            return oObj.aData.dueDate.replace(/&/g,'&amp;')
+                                    .replace(/</g,'&lt;')
+                                    .replace(/>/g,'&gt;');
+                        }
+                    }
+                },
+                {
+                    "sType": "text",
+                    "mDataProp": "total"
+                },
+                {
+                    "sType": "text",
+                    "mDataProp": "outstandingAmount"
+                },
+                { 
+                    "bSortable": false,
+                    "bSearchable": false,
+                    "mDataProp": "_actions",
+                    "sClass": "right",
+                    "fnRender": function (oObj) {
+                        if (!oObj.aData.hasOwnProperty("DT_RowId")) {
+                            return oObj.aData._actions;
+                        }
+
+                        var menu = '<ul class="dropdown-container">' +
+                            '<li class="dropdown btn-group">' +
+                            '<a href="/admin/customers/invoice?id=' + parseInt(oObj.aData.id) +
+                            'title="<?= $this->translate('View invoice') ?>" class="btn">' +
+                            '<?= addslashes($this->translate('View')) ?></a>';
+
+                        if (!parseInt(oObj.aData.paid) && !parseInt(oObj.aData.pending)) {
+
+                            menu += '<button type="button" class="btn dropdown-toggle" data-toggle="dropdown">' +
+                                '<span class="caret"></span></button>' +
+                                '<ul class="dropdown-menu">' +
+                                '<li><a href="/admin/customers/invoice?a=payment&id=' + parseInt(oObj.aData.id) + '&type=<?= HHF_Domain_Transaction::TYPE_CASH ?>">' +
+                                '<?= addslashes($this->translate('Mark Invoice as Paid by Cash')) ?>' +
+                                '</a></li><li>' +
+                                '<a href="/admin/customers/invoice?a=payment&id=' + parseInt(oObj.aData.id) + '&type=<?= HHF_Domain_Transaction::TYPE_CHEQUE ?>">' +
+                                '<?= addslashes($this->translate('Mark Invoice as Paid by Cheque')) ?>' +
+                                '</a></li></ul>';
+                        }
+
+                        menu += '</li></ul>';
+
+                        return menu;
+                    }
+                }
+            ],
+            "bSortClasses": false,
+            "sAjaxSource": "<?= addslashes($this->Url()) ?>/d/1/cid/<?= $this->customerId ?>",
+            "bServerSide": true,
+            "sDom": '<"H"a<"clear">r<"right"ip>>t<"F"<"right"ip>>'
+        })
+        .delegate("tbody tr", "mouseover mouseout", function(e) {
+            if (e.type == "mouseover") {
+                $(e.currentTarget).addClass('hover');
+            } else {
+                $(e.currentTarget).removeClass('hover');
+            }
+        });
+    });
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<h2><?= $this->translate('Invoices History') ?></h2>
+
+<?php if (count($this->invoices)) { ?>
+        
+    <table id="invoices" class="display">
+        <thead>
+            <tr>
+                <th
+                    width="9%"
+                    title="<?= $this->translate('Invoice ID') ?>">
+                        <?= $this->translate('ID'); ?>
+                </th>
+                <th
+                    width="30%"
+                    title="<?= $this->translate('Due Date') ?>">
+                        <?= $this->translate('Due Date') ?>
+                </th>
+                <th
+                    width="22%"
+                    title="<?= $this->translate('Invoice Total') ?>">
+                        <?= $this->translate('Total') ?>
+                </th>
+                <th
+                    width="22%"
+                    title="<?= $this->translate('Outstanding Amount') ?>">
+                        <?= $this->translate('Due') ?>
+                </th>
+                <th
+                    width="17%"
+                    title="<?= $this->translate('Invoice Actions') ?>">
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($this->invoices as $invoice) { ?>
+                <tr>
+                    <td>
+                        <?= $this->escape($invoice['id']); ?>
+                    </td>
+                    <td>
+                        <?= $this->escape($invoice['dueDate']->toString('yyyy-MM-dd')); ?>
+                    </td>
+                    <td>
+                        <?= $this->currency($invoice['total']) ?>
+                    </td>
+                    <td>
+                        <?= $this->currency($invoice['outstandingAmount']) ?>
+                    </td>
+                    <td class="right">
+                        <ul class="dropdown-container">
+                            <li class="dropdown btn-group">
+                                <a href="/admin/customers/invoice?id=<?= (int) $invoice->id ?>"
+                                   title="<?= $this->translate('View invoice') ?>"
+                                   class="btn">
+                                    <?= $this->translate('View') ?>
+                                </a>
+
+                                <?php if (!$invoice['paid'] && !$invoice['pending']) { ?>
+
+                                <button type="button"
+                                        class="btn dropdown-toggle"
+                                        data-toggle="dropdown">
+                                    <span class="caret"></span>
+                                </button>
+
+                                <ul class="dropdown-menu">
+
+                                    <li>
+                                        <a href="/admin/customers/invoice?a=payment&id=<?= (int) $invoice['id'] ?>&type=<?= HHF_Domain_Transaction::TYPE_CASH ?>">
+                                            <?= $this->translate('Mark Invoice as Paid by Cash') ?>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="/admin/customers/invoice?a=payment&id=<?= (int) $invoice['id'] ?>&type=<?= HHF_Domain_Transaction::TYPE_CHEQUE ?>">
+                                            <?= $this->translate('Mark Invoice as Paid by Cheque') ?>
+                                        </a>
+                                    </li>
+
+                                </ul>
+
+                                <?php } ?>
+
+                            </li>
+                        </ul>
+
+                    </td>
+                </tr>
+            <?php } ?>
+        </tbody>
+    </table>
+
+    <?php 
+        if ($this->embedded) { 
+            echo $this->placeholder('foot');
+        }
+    ?>
+
+<?php } else { ?>
+
+    <p><?=
+        $this->translate(
+            'Customer doesn\'t have any invoices yet.'
+        ); ?></p>
+
+<?php } ?>

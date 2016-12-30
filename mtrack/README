@@ -1,0 +1,8 @@
+mtrack
+
+This is a tracking, planning and collaboration tool based around agile
+principles.
+
+It integrates with subversion and mercurial repositories and provides a means
+for planning projects, tracking issues and recording documentation.
+

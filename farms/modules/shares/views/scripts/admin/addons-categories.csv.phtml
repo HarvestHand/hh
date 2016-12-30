@@ -1,0 +1,54 @@
+<?php
+while (ob_get_level()) {
+    ob_end_clean();
+}
+
+header('Content-Type: application/vnd.ms-excel');
+header('Content-Disposition: attachment; filename="addons-categories.csv"');
+
+$displayedHeader = false;
+
+function filter (&$data) {
+    str_replace(
+        array(
+            "\t",
+            "\r\n",
+            "\r",
+            "\n",
+            '"'
+        ),
+        array(
+            '\t',
+            '\n',
+            '\n',
+            '\n',
+            '""'
+        ),
+        $data
+    );
+
+    $data = '"' . $data . '"';
+};
+
+foreach ($this->collection as $item) {
+
+    $row = array(
+        'id' => $item->id,
+        'name' => $item->name,
+        'addedDatetime' => $item->addedDatetime,
+        'updatedDatetime' => $item->updatedDatetime
+    );
+
+    if ($displayedHeader == false) {
+        $rowHeaderArray = array_keys($row);
+        array_walk($rowHeaderArray, 'filter');
+        echo implode(',', $rowHeaderArray) . "\r\n";
+        $displayedHeader = true;
+    }
+
+    array_walk($row, 'filter');
+
+    echo implode(',', $row) . "\r\n";
+}
+
+exit();

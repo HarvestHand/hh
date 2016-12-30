@@ -1,0 +1,274 @@
+<?php
+$facebookPageLink = $this->farm->getPreferences()->get('pageLink', 'facebook');
+$twitterScreenName = $this->farm->getPreferences()->get('screenName', 'twitter');
+$blogEnabled = $this->farm->getPreferences()->get('blogEnabled', 'website', true);
+
+$this->headLink()->headLink(
+    array(
+        'rel' => 'alternate',
+        'href' => '/shares?format=rss',
+        'type' => 'application/rss+xml',
+        'title' => $this->translate(
+                '%s Shares RSS Feed',
+                $this->farm->name
+            )
+    )
+);
+$this->headLink()->headLink(
+    array(
+        'rel' => 'alternate',
+        'href' => '/shares?format=atom',
+        'type' => 'application/atom+xml',
+        'title' => $this->translate(
+                '%s Shares Atom Feed',
+                $this->farm->name
+            )
+    )
+);
+
+if ($blogEnabled) {
+
+    $this->headLink()->headLink(
+        array(
+            'rel' => 'alternate',
+            'href' => '/blog?format=rss',
+            'type' => 'application/rss+xml',
+            'title' => $this->translate('%s Blog', $this->farm->name)
+        )
+    );
+    $this->headLink()->headLink(
+        array(
+            'rel' => 'alternate',
+            'href' => '/blog?format=atom',
+            'type' => 'application/atom+xml',
+            'title' => $this->translate('%s Blog', $this->farm->name)
+        )
+    );
+}
+?>
+<!doctype html>
+<!--[if lt IE 7 ]> <html class="no-js ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]>    <html class="no-js ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]>    <html class="no-js ie8" lang="en"> <![endif]-->
+<!--[if IE 9 ]>    <html class="no-js ie9" lang="en"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+    <head>
+        <!--Harvest--->
+        <meta http-equiv="X-UA-Compatible" content="chrome=1">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <?php echo $this->headTitle() ?>
+
+        <link rel="shortcut icon" href="/_images/favicon.png">
+
+        <?php echo $this->headStyle() ?>
+
+        <script src="/_js/modernizr.js"></script>
+        <?php echo $this->headLink() ?>
+        <?php echo $this->placeholder('head'); ?>
+    </head>
+<body class="standard">
+<div id="pageBin">
+	<div id="headerBin">
+		<div id="logoBin">
+		   	<img src="/_farms/images/themes/harvest/logo.png" id="hhlogo" />
+		    <h2><?= $this->translate('HarvestHand') ?></h2>
+		    <h4><?= $this->translate('Building Local Food Communities') ?></h4>
+		</div>
+		<div id="header">
+			<div class="navbar" id="header-nav">
+				<div class="container">
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-nav">
+					      <span class="sr-only"><?= $this->translate('Toggle navigation') ?></span>
+					      <i class="fa fa-bars"></i>
+					    </button>
+					</div>
+					<div class="collapse navbar-collapse" id="main-nav">
+                        <?php
+
+                            $nav = Bootstrap::get('Zend_Navigation');
+                            $nav->addPage(
+                                array(
+                                    'label' => $this->translate('Contact'),
+                                    'id'    => 'webpage-contact',
+                                    'title' => $this->translate('Contact'),
+                                    'uri'   => '/contact',
+                                    'token' => 'contact',
+                                    'active' => false,
+                                    'pages' => array()
+                                )
+                            );
+                            $nav->addPage(
+                                array(
+                                    'label' => $this->translate('Login'),
+                                    'id'    => 'webpage-login',
+                                    'title' => $this->translate('Login'),
+                                    'uri'   => 'http://www.' . Bootstrap::$rootDomain . '/login',
+                                    'token' => 'login',
+                                    'active' => false,
+                                    'pages' => array()
+                                )
+                            );
+
+                            $pages = Bootstrap::get('Zend_Navigation')->getPages();
+
+                            $pages = array_chunk(
+                                $pages,
+                                ceil(count($pages) / 2)
+                            );
+
+                            foreach ($pages as $key => $pagesGroup) {
+                                if ($key == 0) {
+                                    echo '<ul class="nav navbar-nav">';
+                                } else {
+                                    echo '<ul class="nav navbar-nav navbar-right">';
+                                }
+
+                                foreach ($pagesGroup as $page) {
+                                    /* @var $page Zend_Navigation_Page_Uri  */
+
+                                    if ($page->hasChildren()) {
+                                        echo '<li class="dropdown">';
+
+                                        echo '<a href="#" class="dropdown-toggle" data-toggle="dropdown">' . $this->escape($page->getLabel()) . ' <b class="caret"></b></a>';
+
+                                        echo '<ul class="dropdown-menu">';
+
+                                        echo '<li class="' . ($page->isActive() ? 'active' : null) . '">';
+                                        echo '<a href="'. $this->escape($page->getHref()) . '">' . $this->escape($page->getLabel()) . '</a>';
+                                        echo '</li>';
+
+                                        foreach ($page->getPages() as $child) {
+                                            echo '<li class="' . ($child->isActive() ? 'active' : null) . '">';
+                                            echo '<a href="'. $this->escape($child->getHref()) . '">' . $this->escape($child->getLabel()) . '</a>';
+                                            echo '</li>';
+                                        }
+
+                                        echo '</ul>';
+
+                                        echo '</li>';
+
+
+                                    } else {
+                                        echo '<li class="' . ($page->isActive() ? 'active' : null) . '">';
+                                        echo '<a href="'. $this->escape($page->getHref()) . '">' . $this->escape($page->getLabel()) . '</a>';
+                                        echo '</li>';
+                                    }
+                                }
+
+                                echo '</ul>';
+                            }
+
+                        ?>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="body-content" class="container">
+		<div class="row">
+            <div class="col-md-12 main-content" id="<?= $this->contentId ?>">
+                <?php echo $this->layout()->content ?>
+            </div>
+		</div>
+
+		<div class="row">
+			<div id="socials" class="">
+				<em class=""><?= $this->translate('Stay Connected:') ?></em>
+				<ul>
+                    <?php if (!empty($facebookPageLink)) { ?>
+					    <li><a href="<?= $this->escape($facebookPageLink) ?>"><i class="fa fa-facebook"></i></a>
+                    <?php } ?>
+                    <?php if (!empty($twitterScreenName)) { ?>
+                        <li><a href="http://twitter.com/<?= $this->escape($twitterScreenName) ?>" title="<?= $this->translate('Twitter'); ?>"><i class="fa fa-twitter"></i></a></li>
+                    <?php } ?>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="footerBin" >
+	<div id="footer" class="container">
+		<div id="footerNav" class="row">
+			<div>
+				<ul class="nav">
+
+                    <?php
+                    $pages = Bootstrap::get('Zend_Navigation')->getPages();
+
+                    $pages = array_chunk(
+                        $pages,
+                        ceil(count($pages) / 2)
+                    );
+
+                    foreach ($pages as $key => $pagesGroup) {
+                        foreach ($pagesGroup as $page) {
+                            /* @var $page Zend_Navigation_Page_Uri  */
+
+                            echo '<li><a href="'. $this->escape($page->getHref()) . '">' . $this->escape($page->getLabel()) . '</a></li>';
+                            echo '<li><span>|</span>';
+                        }
+                    }
+
+                    ?>
+				</ul>
+			</div>
+		</div>
+		<div id="footerCredits" class="row">
+			<div class="copy-line"><?= $this->translate('&copy; %s HarvestHand', date('Y')) ?></div>
+			<div class="designed-by">Designed by: <a href="http://www.windrosewebdesign.com/">Windrose Web Design</a></div>
+		</div>
+	</div>
+</div>
+
+<?php
+echo $this->loader()->prepend(
+    array(
+        'jquery1111',
+        'jquery_ui',
+        'jquery_bootstrap',
+        'jquery_backstretch',
+        'jquery_cookie',
+        'hh'
+    )
+)->toString(HH_View_Helper_Loader::JS);
+?>
+<?php echo $this->headScript() ?>
+<?php echo $this->placeholder('foot'); ?>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $('#pageBin').backstretch(
+            "/_farms/images/themes/harvest/bg_index.jpg",
+            {
+                centeredX:true,
+                centeredY:true
+            }
+        );
+
+        if (!$.cookie("geo")) {
+            $.getScript("http://j.maxmind.com/app/geoip.js", function(){
+                var geo = geoip_country_code() + "|" +
+                    geoip_region() + "|" +
+                    geoip_city() + "|" +
+                    geoip_latitude() + "|" +
+                    geoip_longitude();
+
+                $.cookie(
+                    "geo",
+                    geo,
+                    {
+                        expires: 15,
+                        path: '/',
+                        domain: '.<?= Bootstrap::$rootDomain ?>'
+                    }
+                );
+            });
+        }
+    });
+</script>
+</body>
+</html>

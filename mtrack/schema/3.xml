@@ -1,0 +1,422 @@
+<schema version='3'>
+	<table name='projects'>
+		<field name='projid' type='autoinc'/>
+		<field name='ordinal' type='integer' nullable='0' default='5'>
+			<comment>
+				used to order the project names
+			</comment>
+		</field>
+		<field name='name' type='text' nullable='0'>
+			<comment>
+				readable version of the name
+			</comment>
+		</field>
+		<field name='shortname' type='varchar(16)' nullable='0'>
+			<comment>
+				shorter name
+			</comment>
+		</field>
+		<field name='notifyemail' type='varchar(320)'>
+			<comment>
+				where email notifications are sent
+			</comment>
+		</field>
+		<key>
+			<field>projid</field>
+		</key>
+	</table>
+
+	<table name='repos'>
+		<field name='repoid' type='autoinc'/>
+		<field name='shortname' type='varchar(16)' nullable='0'/>
+		<field name='scmtype' type='varchar(32)' nullable='0'/>
+		<field name='repopath' type='text' nullable='0'/>
+		<field name='browserurl' type='text'>
+			<comment>
+			if defined, mtrack will use this as the base for links
+			to changesets and repo browsing, otherwise it will
+			handle it locally
+			</comment>
+		</field>
+		<field name='browsertype' type='text'/>
+		<field name='description' type='text'/>
+		<field name='serverurl' type='text'>
+			<comment>
+				The URL that SCM tools will use to checkout,
+				clone, push, pull or otherwise interact with
+				the repo.
+			</comment>
+		</field>
+		<field name='parent' type='text' nullable='0' default=''>
+			<comment>
+			If NULL, this is a global repo.  Otherwise, parent is
+			a string like 'user:wez' to indicate that it is owned
+			by 'wez', or 'project:name' to indicate that it is owned
+			by the 'name' project.
+			</comment>
+		</field>
+		<field name='clonedfrom' type='integer'
+			reftable='repos' refcol='repoid'>
+			<comment>
+				If this was forked from another repo in the system,
+				then this field is set to its repoid
+			</comment>
+		</field>
+		<key>
+			<field>repoid</field>
+		</key>
+		<key type='unique'>
+			<field>shortname</field>
+			<field>parent</field>
+		</key>
+	</table>
+
+	<table name='project_repo_link'>
+		<comment>
+Links a location within a repo to its "parent" project.
+This allows multiple projects to exist within a repository
+and also allows pre/post commit rules to determine whether
+the location is a personal branch or scratch space, versus
+a formal project branch.
+		</comment>
+		<field name='linkid' type='autoinc'/>
+		<field name='projid' type='integer' reftable='projects' refcol='projid'
+			nullable='0'/>
+		<field name='repoid' type='integer' reftable='repos' refcol='repoid'
+			nullable='0'/>
+		<field name='repopathregex' type='text'/>
+		<field name='is_scratch_space' type='integer' nullable='0' default='0'>
+			<comment>
+			May replace this with a reference to a workflow or other kind
+			of ruleset to affect pre/post commit
+			</comment>
+		</field>
+		<key>
+			<field>linkid</field>
+		</key>
+	</table>
+
+	<table name='components'>
+		<field name='compid' type='autoinc'/>
+		<field name='deleted' type='integer' nullable='0' default='0'/>
+		<field name='name' type='text'/>
+		<key>
+			<field>compid</field>
+		</key>
+	</table>
+
+	<table name='components_by_project'>
+		<field name='projid' type='integer'/>
+		<field name='compid' type='integer'
+			reftable='components' refcol='compid' nullable='0'/>
+		<key><field>projid</field><field>compid</field></key>
+	</table>
+
+	<table name='priorities'>
+		<field name='priorityname' type='varchar(32)' nullable='0'/>
+		<field name='deleted' type='integer' nullable='0' default='0'/>
+		<field name='value' type='integer' nullable='0' default='5'/>
+		<key><field>priorityname</field></key>
+	</table>
+
+	<table name='severities'>
+		<field name='sevname' type='varchar(32)' nullable='0'/>
+		<key><field>sevname</field></key>
+		<field name='deleted' type='integer' nullable='0' default='0'/>
+		<field name='ordinal' type='integer' nullable='0' default='5'/>
+	</table>
+
+	<table name='resolutions'>
+		<field name='resname' type='varchar(32)' nullable='0'/>
+		<key><field>resname</field></key>
+		<field name='deleted' type='integer' nullable='0' default='0'/>
+		<field name='ordinal' type='integer' nullable='0' default='5'/>
+	</table>
+	<table name='classifications'>
+		<field name='classname' type='varchar(32)' nullable='0'/>
+		<key><field>classname</field></key>
+		<field name='deleted' type='integer' nullable='0' default='0'/>
+		<field name='ordinal' type='integer' nullable='0' default='5'/>
+	</table>
+	<table name='ticketstates'>
+		<field name='statename' type='varchar(32)' nullable='0'/>
+		<key><field>statename</field></key>
+		<field name='deleted' type='integer' nullable='0' default='0'/>
+		<field name='ordinal' type='integer' nullable='0' default='5'/>
+	</table>
+	<table name='keywords'>
+		<field name='kid' type='autoinc'/>
+		<key><field>kid</field></key>
+		<key type='unique'><field>keyword</field></key>
+		<field name='keyword' type='text' nullable='0'/>
+	</table>
+	<table name='changes'>
+		<field name='cid' type='autoinc'/>
+		<field name='who' type='text'/>
+		<field name='object' type='text'>
+			<comment>
+			usually tablename:id
+			where id is a comma separated list of the primary key fields
+			of the object that was edited
+			</comment>
+		</field>
+		<field name='changedate' type='timestamp' nullable='0'
+			default='CURRENT_TIMESTAMP'/>
+		<field name='reason' type='text'>
+			<comment>
+				commit/changelog message
+			</comment>
+		</field>
+		<key><field>cid</field></key>
+		<key type='multiple' name='idx_changes_object'><field>object</field></key>
+		<key type='multiple' name='idx_changes_date'><field>changedate</field></key>
+	</table>
+
+	<table name='change_audit'>
+		<field name='cid' type='integer' nullable='0'
+			reftable='changes' refcol='cid'/>
+		<field name='fieldname' type='text'/>
+		<field name='action' type='varchar(16)'>
+			<comment>
+	set, changed, deleted, added, removed.
+	set: filled in from a blank value
+	changed: changed existing value. value field has old value.
+	deleted: set value to blank, value field has old value
+	added: used for associated values (like keywords); the value field
+	       lists out the primary keys of the added items, comma separated.
+	removed: used for associated values (like keywords); the value field
+	         lists out the primary keys of the removed items, comma separated
+			 </comment>
+		</field>
+		<field name='action' type='varchar(16)'/>
+		<field name='oldvalue' type='text'/>
+		<field name='value' type='text'/>
+	</table>
+
+	<table name='milestones'>
+		<field name='mid' type='autoinc'/>
+		<key><field>mid</field></key>
+		<field name='name' type='text'/>
+		<field name='description' type='text'/>
+		<field name='startdate' type='timestamp'/>
+		<field name='duedate' type='timestamp'/>
+		<field name='completed' type='timestamp'/>
+		<field name='deleted' type='integer' nullable='0' default='0'/>
+		<field name='created' type='integer' nullable='0'
+				reftable='changes' refcol='cid'/>
+		<field name='updated' type='integer' nullable='0'
+				reftable='changes' refcol='cid'/>
+		<field name='pmid' type='integer' reftable='milestones' refcol='mid'>
+			<comment>
+				parent milestone (for sprint support)
+			</comment>
+		</field>
+	</table>
+
+	<table name='tickets'>
+		<field name='tid' type='char(32)' nullable='0'>
+			<comment>unique identifier (short form UUID)</comment>
+		</field>
+		<field name='nsident' type='text' nullable='0'>
+			<comment>
+	identifier assigned within a particular namespace
+	eg: when a ticket is accepted as a bug, will be assigned
+	a bug number for that project
+			</comment>
+		</field>
+	
+		<field name='summary' type='text' nullable='0'>
+			<comment>
+	-- one line summary
+	-- problem description in detail
+			</comment>
+		</field>
+		<field name='description' type='text'/>
+
+		<field name='changelog' type='text'>
+			<comment>
+	-- end-user (or customer) facing summary, suitable for use in
+	-- a release notes or ChangeLog format
+			</comment>
+		</field>
+
+		<field name='created' type='integer'
+			nullable='0' reftable='changes' refcol='cid'/>
+		<field name='updated' type='integer'
+			nullable='0' reftable='changes' refcol='cid'/>
+
+		<field name='owner' type='text'/>
+		<field name='priority' type='text'/>
+		<field name='severity' type='text'/>
+		<field name='classification' type='text'/>
+		<field name='resolution' type='text'/>
+		<field name='cc' type='text'/>
+
+		<field name='status' type='text' nullable='0'/>
+		<field name='estimated' type='real'/>
+		<field name='spent' type='real'/>
+
+		<key><field>tid</field></key>
+		<key type='unique'><field>nsident</field></key>
+	</table>
+
+	<table name='ticket_components'>
+		<field name='tid' type='char(32)' nullable='0'
+			reftable='tickets' refcol='tid'/>
+		<field name='compid' type='integer' nullable='0'
+			reftable='components' refcol='cid'/>
+	</table>
+
+	<table name='ticket_milestones'>
+		<field name='tid' type='char(32)' nullable='0'
+			reftable='tickets' refcol='tid'/>
+		<field name='mid' type='integer' nullable='0'
+			reftable='milestones' refcol='mid'/>
+	</table>
+
+	<table name='ticket_keywords'>
+		<field name='tid' type='char(32)' nullable='0'
+			reftable='tickets' refcol='tid'/>
+		<field name='kid' type='integer' nullable='0'
+			reftable='keywords' refcol='kid'/>
+	</table>
+		
+	<table name='reports'>
+		<field name='rid' type='autoinc'/>
+		<field name='summary' type='text' nullable='0'/>
+		<field name='description' type='text' nullable='0'/>
+		<field name='query' type='text' nullable='0'/>
+		<field name='changed' type='integer'
+			nullable='0' reftable='changes' refcol='cid'/>
+		<key><field>rid</field></key>
+	</table>
+
+	<table name='effort'>
+		<field name='eid' type='autoinc'/>
+		<key><field>eid</field></key>
+		<field name='tid' type='char(32)' nullable='0'/>
+		<field name='cid' type='integer'
+			nullable='0' reftable='changes' refcol='cid'/>
+		<field name='expended' type='real'/>
+		<field name='remaining' type='real'>
+			<comment>revised estimate</comment>
+		</field>
+		<key type='multiple' name='idx_effort_ticket'><field>tid</field></key>
+	</table>
+
+	<table name='acl'>
+		<comment>access control list</comment>
+		<field name='objectid' type='text'/>
+		<field name='cascade' type='integer' nullable='0'>
+			<comment>
+	indicates whether the entry applies to this item or its children
+	sequence number allows explicit ordering for fine grained
+	permissions (exclude all members of a group, except a particular user)
+			</comment>
+		</field>
+		<field name='seq' type='integer' nullable='0'/>
+		<field name='role' type='text' nullable='0'>
+			<comment>user or group name</comment>
+		</field>
+		<field name='action' type='text' nullable='0'>
+			<comment>
+		-- activity or action name ("read", "write")
+		-- whether access is allowed
+			</comment>
+		</field>
+		<field name='allow' type='integer' nullable='0'/>
+		<key>
+			<field>objectid</field>
+			<field>seq</field>
+			<field>cascade</field>
+		</key>
+		<key type='multiple' name='idx_acl_role'>
+			<field>role</field>
+		</key>
+	</table>
+
+	<table name='userinfo'>
+		<field name='userid' type='text' nullable='0'>
+			<comment>canonical user id</comment>
+		</field>
+		<key><field>userid</field></key>
+		<field name='fullname' type='text'/>
+		<field name='email' type='text'/>
+		<field name='timezone' type='text'/>
+		<field name='active' type='integer' nullable='0' default='1'/>
+		<field name='sshkeys' type='text'/>
+	</table>
+
+	<table name='useraliases'>
+		<field name='alias' type='text' nullable='0'/>
+		<key><field>alias</field></key>
+		<field name='userid' type='text' reftable='userinfo' refcol='userid'/>
+	</table>
+
+	<table name='attachments'>
+		<field name='object' type='text' nullable='0'>
+			<comment>
+				the object to which this is attached
+				sha1 hash of the contents of the attachment
+			</comment>
+		</field>
+		<field name='hash' type='text' nullable='0'/>
+		<field name='filename' type='text' nullable='0'/>
+		<field name='size' type='integer' nullable='0'/>
+		<field name='cid' type='integer'
+			nullable='0' reftable='changes' refcol='cid'/>
+		<field name='payload' type='blob'/>
+	</table>
+
+	<table name='last_notification'>
+		<comment>last time that we procesed change notifications</comment>
+		<field name='last_run' type='timestamp' nullable='0'/>
+		<key><field>last_run</field></key>
+	</table>
+	<table name='search_engine_state'>
+		<field name='last_run' type='timestamp' nullable='0'/>
+		<key><field>last_run</field></key>
+	</table>
+
+	<table name='snippets'>
+		<field name='snid' type='text' nullable='0'>
+			<comment>snippet id</comment>
+		</field>
+		<field name='created' type='integer'
+			nullable='0' reftable='changes' refcol='cid'/>
+		<field name='updated' type='integer'
+			nullable='0' reftable='changes' refcol='cid'/>
+		<field name='description' type='text' nullable='0'>
+			<comment>summary/blurb in wiki markup</comment>
+		</field>
+		<field name='lang' type='text' nullable='0'>
+			<comment>what language?</comment>
+		</field>
+		<field name='snippet' type='text' nullable='0'>
+			<comment>and the snippet itself</comment>
+		</field>
+		<key><field>snid</field></key>
+	</table>
+
+	<post driver="pgsql">
+CREATE OR REPLACE FUNCTION _mtrack_group_concat(text, text)
+	RETURNS text as $$
+SELECT CASE
+	WHEN $2 IS NULL THEN $1
+	WHEN $1 IS NULL THEN $2
+ELSE
+	$1 operator(pg_catalog.||) ',' operator(pg_catalog.||) $2
+END
+$$ IMMUTABLE LANGUAGE SQL;
+
+-- requires postgres 8.2 and higher
+DROP AGGREGATE IF EXISTS mtrack_group_concat(text);
+
+CREATE AGGREGATE mtrack_group_concat(
+	BASETYPE = text,
+	SFUNC = _mtrack_group_concat,
+	STYPE = text
+);
+	</post>
+
+</schema>

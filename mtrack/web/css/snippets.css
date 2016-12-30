@@ -1,0 +1,25 @@
+#snippetmug {
+  float: right;
+}
+
+#recentsnippets {
+  font-size: smaller;
+  width: 10em;
+  vertical-align: top;
+}
+
+form.snippetform,
+div.snippetview {
+}
+
+div.snippetsummary {
+  margin-top: 1em;
+  width: 15em;
+  overflow: hidden;
+}
+
+#newsnippet {
+  margin-bottom: 1em;
+}
+
+

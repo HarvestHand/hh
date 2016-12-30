@@ -1,0 +1,186 @@
+<?php 
+    $this->headTitle($this->translate('Dashboard'));
+?>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#hh-updates a").qtip({
+            position: {
+              my: 'top center',
+              at: 'bottom center',
+              method: 'flip'
+           },
+           style: {
+               classes: 'ui-tooltip-shadow ui-tooltip-rounded',
+               widget: true
+           },
+           content: {
+              title: {
+                 text: function() {
+                    var $this = $(this);
+                    if ($this.hasClass('defect')) {
+                        return '<i class="fa fa-wrench" title="<?= $this->translate('Defect Repaired') ?>"></i>' + $this.text();
+                    } else {
+                        return '<i class="fa fa-lightbulb-o" title="<?= $this->translate('Feature Added') ?>"></i>' + $this.text();
+                    }
+                 }
+              }
+           }
+        });
+        $("#hh-posts a").qtip({
+            position: {
+              my: 'top center',
+              at: 'bottom center',
+              method: 'flip'
+           },
+           style: {
+               classes: 'ui-tooltip-shadow ui-tooltip-rounded',
+               widget: true
+           }
+        });
+        $("#hh-stream time").qtip({
+            position: {
+              my: 'top center',
+              at: 'bottom center',
+              method: 'flip'
+           },
+           style: {
+               classes: 'ui-tooltip-shadow ui-tooltip-rounded',
+               widget: true
+           }
+        });
+    });
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<h2>
+    <span class="icon-menu icon-menu-dashboard" style="float: left; margin: -10px 7px 0 0;"></span>
+    <?= $this->translate('Dashboard') ?>
+</h2>
+
+<section class="container_12">
+    <article class="grid_10" style="padding-bottom: 20px;">
+
+
+        <div class="ui-widget-content ui-corner-all" style="padding: 0.4em; position: relative;">
+            <div>
+                <h3 class="ui-widget-header ui-corner-all" style="margin: 0 0 0.8em 0; padding: 0.4em; text-align: center;">
+                    <?= $this->translate('Activity Stream') ?>
+                </h3>
+                <!-- <div style="position: absolute; right: 10px; top: 10px;">
+                    <a class="button ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only"
+                       href="/shares?format=rss" id="stream-rss" 
+                       role="button" 
+                       aria-disabled="false"
+                       title="<?= $this->translate('Activity Stream RSS Feed') ?>">
+                        <span class="ui-button-icon-primary ui-icon ui-icon-signal-diag"></span>
+                        <span class="ui-button-text">
+                            <?= $this->translate('Activity Stream RSS Feed') ?>
+                        </span>
+                    </a>
+                </div> -->
+            </div>
+            
+            
+            <div style="height: 300px;">
+                <dl id="hh-stream" style="margin: 7px; height: 300px; overflow-y: auto;">
+                    <?php if (count($this->stream)) { ?>
+                    <?php foreach ($this->stream as $item) { ?>
+                        <dt>
+                            <?php
+                                switch ($item['category']) {
+                                    case HHF_Domain_Log::CATEGORY_SHARES :
+                                        echo $this->translate('New Share Purchased');
+                                        break;
+                                    case HHF_Domain_Log::CATEGORY_ADDONS :
+                                        echo $this->translate('New Addon Purchased');
+                                        break;
+                                }
+                            ?>
+                            - 
+                            <time datetime="<?= $this->escape($item->addedDatetime->get(Zend_Date::ISO_8601)) ?>" 
+                                    pubdate 
+                                    title="Event time <?= $this->escape($item->addedDatetime->get(Zend_Date::RFC_850)) ?>">
+                                <?= $item->addedDatetime->toString('yyyy-MM-dd') ?>
+                            </time>
+                        </dt>
+                        <dd><?= $item['description'] ?></dd>
+                    <?php } ?>
+                    <?php } else { ?>
+                    <p>
+                        <?= $this->translate('You don\'t have anything in your activity stream yet.') ?>
+                    </p>
+                    <?php } ?>
+                </dl>
+                <!-- <div style="height: 50px;">
+                    <div class="ui-buttonset" style="float: left;">
+                        <button type="button" class="submit ui-button ui-widget ui-corner-left ui-button-text-icon-primary ui-state-default">
+                            <span class="ui-button-icon-primary ui-icon ui-icon-triangle-1-w"></span>
+                            <span class="ui-button-text">
+                                Older                            
+                            </span>
+                        </button>
+                        <button type="button" class="submit ui-button ui-widget ui-corner-right ui-button-text-icon-secondary ui-state-default">
+                            <span class="ui-button-icon-secondary ui-icon ui-icon-triangle-1-e"></span>
+                            <span class="ui-button-text">
+                                Newer                          
+                            </span>
+                        </button>
+                    </div>
+                    
+                </div> -->
+            </div>
+        </div>
+    </article>
+
+    <article class="grid_5">
+
+
+        <div class="ui-widget-content ui-corner-all" style="padding: 0.4em; position: relative;">
+            <h3 class="ui-widget-header ui-corner-all" style="margin: 0 0 0.8em 0; padding: 0.4em; text-align: center;">
+                <?= $this->translate('HavestHand Blog') ?>
+            </h3>
+            <div style="height: 300px; overflow-y: auto">
+                <ol id="hh-posts" style="margin: 7px; ">
+                    <?php foreach ($this->hhPosts as $post) { ?>
+                    <li style="padding-bottom: 10px; list-style: disc inside">
+                        <a href="<?= $this->hhFarm->getBaseUri() ?>blog/post/<?= $this->escape($post->token) ?>"
+                           title="<?= $this->escape($this->translate(
+                                    'Posted on %s',
+                                    $post->publishedDatetime->toString('yyyy-MM-dd')
+                                )); ?>">
+                            <?= $this->escape($post->title) ?>
+                        </a>
+                    </li>
+                    <?php } ?>
+                </ol>
+            </div>
+        </div>
+    </article>
+    <article class="grid_5">
+
+        <div class="ui-widget-content ui-corner-all" style="padding: 0.4em; position: relative;">
+            <h3 class="ui-widget-header ui-corner-all" style="margin: 0 0 0.8em 0; padding: 0.4em; text-align: center;">
+                <?= $this->translate('HavestHand Change Log') ?>
+            </h3>
+            <div style="height: 300px; overflow-y: auto">
+                <ol id="hh-updates" style="margin: 7px;">
+                    <?php foreach (HH_Mtrack_Report::fetchReportData() as $ticket) { ?>
+                    <li style="padding-bottom: 10px; list-style: decimal inside;"
+                        value="<?= $this->escape($ticket->id); ?>">
+
+                        <a href="javascript:void(0);" 
+                        title="<?= $this->escape($ticket->changelog); ?>"
+                        class="<?= $this->escape($ticket->type) ?>">
+
+                            <?= $this->escape($ticket->summary) ?>
+                        </a>
+                    </li>
+                    <?php } ?>
+                </ol>
+            </div>
+        </div>
+        
+    </article>
+</section>

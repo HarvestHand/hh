@@ -1,0 +1,67 @@
+<?php echo $this->doctype() ?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <!--Taproot--->
+        <meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1" />
+        <?php echo $this->headTitle() ?>
+        <link rel="stylesheet" type="text/css" href="/_farms/css/themes/taproot/style.css?v=1" media="all" />
+        <?php echo $this->headLink() ?>
+        <?php echo $this->headStyle() ?>
+        <?php
+            echo $this->loader()->prepend(
+                array(
+                    'jquery',
+                    'jquery_ui',
+                    'hh'
+                )
+            )->toString(HH_View_Helper_Loader::JS);
+        ?>
+        <?php echo $this->headScript() ?>
+        <?php echo $this->placeholder('head'); ?>
+        <link href="/csa/shares?format=atom" type="application/atom+xml" rel="alternate" title="TapRoot Farms CSA Shares" />
+        <link rel="alternate" type="application/rss+xml" title="Taproot Farms Blog Feed" href="/blog/feed/" />
+        <link rel="shortcut icon" type="image/x-icon" href="/_farms/images/themes/taproot/favicon.ico" />
+    </head>
+    <body>
+        <div id="custom-doc" class="yui-t5">
+            <div id="hd" role="banner">
+                <a href="/">
+                    <img src="/_farms/images/themes/taproot/taproot_header.jpg" alt="TapRoot Farms" width="800" height="139" border="0" />
+                </a>
+            </div>
+            <div id="bd" role="application">
+                <div id="nav" role="navigation">
+                    <?= $this->navigation(Bootstrap::get('Zend_Navigation'))->menu()->render() ?>
+                </div>
+                <div id="yui-main" class="body">
+                    <div class="yui-b">
+                        <div role="main" class="yui-g">
+                            <?php echo $this->layout()->content ?>
+                        </div>
+                    </div>
+                </div>
+                <div role="complementary" class="yui-b sidebar">
+                    <?php
+//                        if (!Zend_Auth::getInstance()->hasIdentity()) {
+//                            echo $this->partial('share.phtml');
+//                        }
+                    ?>
+                    <?php //echo $this->layout()->sidebar ?>
+                </div>
+            </div>
+            <div id="ft" role="contentinfo">
+                <div class="vcard">
+                    <div class="org">TapRoot Farms</div>
+                    <a class="email" href="/index/contact">patricia canbefoundat taprootfarms dot ca</a>
+                    <div class="adr">
+                        <div class="street-address">1736 Church Street</div>
+                        <span class="locality">Port Williams</span>,
+                        <span class="region">Nova Scotia</span>,
+                        <span class="postal-code">B0P 1T0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?= $this->placeholder('foot'); ?>
+    </body>
+</html>

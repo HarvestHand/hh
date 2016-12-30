@@ -1,0 +1,325 @@
+<?php
+    /* @var $share HHF_Domain_Share */
+    $share = $this->subscription->getShare();
+    
+    /* @var $location HHF_Domain_Location */
+    $location = $this->subscription->getLocation();
+    
+    $this->headTitle(
+        $this->translate(
+            '%s Purchased: %s',
+            ucfirst($this->farm->getPreferences()->get('share', 'shares', 'share')),
+            $share->name
+        )
+    );
+    
+    $appId = Bootstrap::getZendConfig()->resources->yahoo->applicationId;
+
+    $this->headScript()
+		->appendFile('http://js.api.here.com/se/2.5.4/jsl.js');
+        //->appendFile('http://api.maps.yahoo.com/ajaxymap?v=3.8&appid=' . $appId);
+?>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+	
+	// hhint.com (added by GW)
+	//var appID = "MeamKyl1McRnC6BiTRpJ";
+	//var appCode = "rO1NJeVJJUr4Q86wteZMMw"; 
+	
+	// harvesthand.com 
+	var appID = "S1jRX4Odksnnqq9fQ1Qs";
+	var appCode = "xeEwrEC0xeYFClKL8rIv5g"; 
+	
+	nokia.Settings.set("app_id", appID);
+      nokia.Settings.set("app_code", appCode);
+
+
+    $(document).ready(function(){
+        $(".locationWindow").dialog({
+            modal: true,
+            autoOpen: false,
+            width: 430
+        });
+
+        $(".location").click(locationDetails);
+    });
+    
+    function locationDetails (event) {
+        event.preventDefault();
+
+        var locationId = $(this).data('id');
+
+        if (locationId) {
+            $(".locationWindow").each(function(){
+                var $this = $(this);
+
+                if ($this.data('id') == locationId) {
+
+                    var mapBox = $this.find('.map').first();
+
+                    if (mapBox.hasOwnProperty(0)) {
+                    	
+                    	 $(mapBox).css({height: 400,width:400});
+                    
+	                    var mapEl = document.getElementById($(mapBox).attr('id'));
+	                    
+	                    var location = '',
+	                            zoom = 13,
+	                            lat = $this.data('latitudedegrees'),
+	                            long = $this.data('longitudedegrees'),
+	                            address = $this.data('address'),
+	                            city = $this.data('city'),
+	                            state = $this.data('state'),
+	                            country = $this.data('country'),
+	                            zipCode = $this.data('zipcode'),
+	                            coords,
+	                            map;
+	                   
+	                    var sm = nokia.places.search.manager,
+	                   		resultSet,
+	                   		search;
+	                   
+	                   
+	                  //console.log($.fn.jquery);
+	                    //var geoUrl = "http://geocoder.api.here.com/6.2/geocode.json?gen=5&app_id="+appID+"&app_code="+appCode;
+								        
+	                   if (jQuery.type(lat) == 'number' && jQuery.type(long) == 'number') {
+	                   		coords = [ lat , long];
+	                   } else {
+	                    	if (address && address.length) {
+								search = address + ', ' + 
+	                                    (city || '<?= addslashes($this->farm->city) ?>') + ', ' + state + ', ' + country;
+	                    	} else if (city && city.length) {
+	                    		search = city + ', ' + state + ', ' + country;
+	                    	} else {
+	                    		search = '<?= addslashes($this->farm->city) ?>, ' + state + ', ' + country;
+	                    	}
+	                    	coords = [0,0];
+	                   }
+	                   
+	                    map = new nokia.maps.map.Display(mapEl, {
+	                   		zoomLevel: 13, 
+	                   		center: coords,
+	                    	components: [
+	                    		new nokia.maps.map.component.Behavior(),
+	                    		new nokia.maps.map.component.ZoomBar(),
+	                    		new nokia.maps.map.component.ScaleBar()
+	                    	]
+	                   });
+	                   
+	                   map.addListener('displayready', function () {
+	                   		sm.geoCode({
+	                   			searchTerm: search,
+	                   			onComplete: processResults
+	                   		});
+	                   });
+	                   
+	                  var customMarker = 'http://www.<?= Bootstrap::$rootDomain ?>/_images/mapMarker.png';
+	                   function processResults(data, status, rID) {
+	                   		
+	                   		if (status == 'OK') {
+	                   			location = data.location;
+	                   			
+	                   			if (resultSet) map.objects.remove(resultSet);
+	                   			resultSet = new nokia.maps.map.Container();
+	                   			
+	                   			var marker = new nokia.maps.map.Marker(location.position, {
+	                   					icon: customMarker,
+	                   					anchor: new nokia.maps.util.Point(0, 26)
+	                   					});
+	                   			resultSet.objects.add(marker);
+	                   			
+	                   			map.objects.add(resultSet);
+	                   			map.setCenter(location.position);
+	                   			map.setZoomLevel(zoom);
+	                   		}
+	                   }
+
+                    }
+
+                    $this.dialog("open");
+                    return false;
+                }
+            });
+        }
+    }
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<h2><?= $this->translate(
+    '%s Purchased: %s',
+    ucfirst($this->farm->getPreferences()->get('share', 'shares', 'share')),
+    $this->escape($share->name)
+) ?></h2>
+
+<?php if ($share->image) { ?>
+    <img 
+        src="<?= $this->farm->getBaseUri() ?>default/file/id/<?= $this->escape($share->image) ?>/s/<?= HHF_Domain_File::IMAGE_THUMBNAIL ?>" 
+        alt="<?= $this->escape($share->name) ?>"
+        align="right"
+        class="thumbnail" />
+<?php } ?>
+
+<dl>
+    <dt><?= $this->translate(
+        '%s Size',
+        ucfirst($this->farm->getPreferences()->get('share', 'shares', 'share'))
+    ) ?>:</dt>
+    <dd>
+        <?= $this->escape($share->getSizeById($this->subscription->shareSizeId)->name); ?>
+    </dd>
+    
+    <dt><?= $this->translate(
+        '%s Deliveries',
+        ucfirst($this->farm->getPreferences()->get('share', 'shares', 'share'))
+    ) ?>:</dt>
+    <dd>
+        <?php
+            $duration = $share->getDurationById($this->subscription->shareDurationId);
+            
+            $dateStart = $duration->getStartDate(
+                null, 
+                $share->year
+            );
+            $dateEnd = $duration->getEndDate(
+                $share['deliverySchedule'],
+                null,
+                $share->year
+            );
+
+            switch($share['deliverySchedule']) {
+                case HHF_Domain_Share::DELIVERY_SCHEDULE_WEEKLY :
+                    $deliverySchedule = $this->translate('weekly');
+                    break;
+                case HHF_Domain_Share::DELIVERY_SCHEDULE_SEMI_MONTHLY :
+                    $deliverySchedule = $this->translate('semi-monthly');
+                    break;
+                case HHF_Domain_Share::DELIVERY_SCHEDULE_MONTHLY :
+                    $deliverySchedule = $this->translate('monthly');
+                    break;
+            }
+
+            echo $this->translate(
+                '%s %s deliveries, running %s to %s',
+                $duration['iterations'],
+                $deliverySchedule,
+                $dateStart->get(Zend_Date::DATE_LONG),
+                $dateEnd->get(Zend_Date::DATE_LONG)
+            );
+        ?>
+    </dd>
+    
+    <dt><?= $this->translate('Pickup Location') ?>:</dt>
+    <dd>
+        <a href="javascript:void(0);" data-id="<?= $location->id ?>" class="location">
+            <?= $this->escape($location->name); ?>
+        </a>
+    </dd>
+
+    <?php if (!empty($location->details)) { ?>
+        <dt><?= $this->translate('Pickup Location Details'); ?>:</dt>
+        <dd><?= $location->details ?></dd>
+    <?php } ?>
+        
+    <dt><?= $this->translate('Purchase Date') ?>:</dt>
+    <dd>
+        <?= $this->escape($this->subscription->addedDatetime->toString('yyyy-MM-dd')); ?>
+    </dd>
+    
+    <dt><?= $this->translate('Purchased Quantity') ?>:</dt>
+    <dd>
+        <?= $this->escape($this->subscription->quantity); ?>
+    </dd>
+    <dt><?= $this->translate('Invoices') ?>:</dt>
+    <dd>
+    	<?php 
+    	
+    	foreach ($this->invoices as $invoice) {
+    	?>
+			  <a href="../shares/purchase-history-invoice?id=<?= $invoice['id'];?>"><?= $this->translate(
+                        'Invoice %d for %s',
+                        $invoice['id'],
+                        $this->currency($invoice['outstandingAmount'])
+                    ) ?></a><br/>
+			
+		<?php
+    	}
+    	
+    	?>
+    </dd>
+</dl>
+
+<a href="/shares/purchase-history">
+    <button type="button"
+            class="submit fieldset-align btn btn-default"
+            title="<?= $this->translate('Back to purchase history') ?>">
+        <i class="fa fa-angle-left"></i>
+    </button>
+</a>
+    
+<div 
+    class="locationWindow" 
+    title="<?= $this->escape($location['name']); ?>" 
+    style="display: none"
+    data-id="<?= $location['id'] ?>"
+    data-longitudeDegrees="<?= $location['longitudeDegrees'] ?>"
+    data-latitudeDegrees="<?= $location['latitudeDegrees'] ?>"
+    data-address="<?= $this->escape($location['address']) ?>"
+    data-city="<?= $this->escape($location['city']) ?>"
+    data-state="<?= $this->escape($location['state']) ?>"
+    data-country="<?= $this->escape($location['country']) ?>"
+    data-zipCode="<?= $this->escape($location['zipCode']) ?>">
+
+    <dl>
+        <dt><?= $this->translate('Location') ?></dt>
+        <dd>
+            <?php if (!empty($location['address'])) { ?>
+                <?= $this->escape($location['address']); ?><br />
+            <?php } ?>    
+            <?php if (!empty($location['address2'])) { ?>
+                <?= $this->escape($location['address2']); ?><br />
+            <?php } ?>
+            <?php if (!empty($location['city'])) { ?>
+                <?= $this->escape($location['city']); ?>
+                <?php if (!empty($location['state'])) { ?>
+                    , <?= $this->escape($location['state']); ?>
+                <?php } ?>
+                <?php if (!empty($location['zipCode'])) { ?>
+                    <?= $this->escape($location['zipCode']); ?>
+                <?php } ?>
+            <?php } ?>
+        </dd>
+
+        <dt><?= $this->translate('Delivery Day') ?></dt>
+        <dd>
+            <?php
+                $date = Zend_Date::now();
+                $date->setWeekday($location['dayOfWeek']);
+
+                echo $this->escape(
+                    sprintf(
+                        '%s, %s - %s',
+                        $date->get(Zend_Date::WEEKDAY),
+                        $location['timeStart'],
+                        $location['timeEnd']
+                    )
+                );
+            ?>
+        </dd>
+
+        <?php if (!empty($location['pricePerDelivery'])) { ?>
+            <dt><?= $this->translate('Delivery Fee'); ?></dt>
+            <dd><?= 
+                    $this->translate(
+                        '%s per delivery',
+                        $this->currency($location['pricePerDelivery'])
+                    ); 
+                ?></dd>
+        <?php } ?>
+    </dl>
+
+    <?= $location['details'] ?>
+
+    <div class="map" id="map-<?= $this->escape($location->id) ?>"></div>
+</div>

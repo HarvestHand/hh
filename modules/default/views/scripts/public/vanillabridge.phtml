@@ -1,0 +1,13 @@
+<?php if (!empty($this->farmer)) { ?>
+UniqueID=<?= $this->farmer->id ?>
+
+Name=<?= $this->farmer->firstName ?> <?= $this->farmer->lastName ?>
+
+Email=<?= (empty($this->farmer->email)) ? 
+            $this->farmer->userName . '@' . Bootstrap::$rootDomain : 
+            $this->farmer->email ?>
+
+TransientKey=
+DateOfBirth=
+Gender=
+<?php } ?>

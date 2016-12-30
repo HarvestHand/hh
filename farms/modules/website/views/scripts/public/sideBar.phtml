@@ -1,0 +1,18 @@
+<?php
+
+if ($this->isAuthenticated() 
+    && ($this->farmer instanceof HH_Domain_Farmer) 
+    && $this->farmer->role == HH_Domain_Farmer::ROLE_MEMBER) {
+    
+    echo $this->render('public/sideBar-loggedin.phtml');
+
+} else { 
+    echo $this->render('public/sideBar-login.phtml');
+}
+
+switch ($this->action) {
+    case 'blog';
+        echo $this->render('public/blog-sideBar-categories.phtml');
+        echo $this->render('public/links-sideBar.phtml');
+        break;
+}

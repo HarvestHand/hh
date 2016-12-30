@@ -1,0 +1,6 @@
+<?= $this->loader()->toString(HH_View_Helper_Loader::CSS); ?>
+<?php echo $this->layout()->content ?>
+
+<?php echo $this->loader()->toString(HH_View_Helper_Loader::JS); ?>
+<?php echo $this->headScript() ?>
+<?php echo $this->placeholder('foot'); ?>

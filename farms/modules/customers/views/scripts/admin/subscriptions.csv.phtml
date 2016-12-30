@@ -1,0 +1,78 @@
+<?php
+    while (ob_get_level()) {
+        ob_end_clean();
+    }
+
+    header('Content-Type: application/vnd.ms-excel');
+    header('Content-Disposition: attachment; filename="subscriptions.csv"');
+
+    $displayedHeader = false;
+    
+    function filter (&$data) {
+        str_replace(
+            array(
+                "\t",
+                "\r\n",
+                "\r",
+                "\n",
+                '"'
+            ),
+            array(
+                '\t',
+                '\n',
+                '\n',
+                '\n',
+                '""'
+            ),
+            $data
+        );
+
+        $data = '"' . $data . '"';
+    };
+    
+    foreach ($this->subscriptions as $subscription) {
+        
+        $row = array(
+            'id' => $subscription->id,
+            'customerId' => $subscription->customerId,
+            'customerFirstName' => $subscription->customerFirstName,
+            'customerLastName' => $subscription->customerLastName,
+            'customerAddress' => $subscription->customerAddress,
+            'customerAddress2' => $subscription->customerAddress2,
+            'customerCity' => $subscription->customerCity,
+            'customerTelephone' => $subscription->customerTelephone,
+            'customerEmail' => $subscription->customerEmail,
+            'customerSecondaryEmail' => $subscription->customerSecondaryEmail,
+            'shareId' => $subscription->shareId,
+            'shareName' => $subscription->shareName,
+            'shareDuration' => $this->translate(
+                'Starts week %s with %s deliveries a year', 
+                $subscription->shareDurationStartWeek,
+                $subscription->shareDurationIterations
+            ),
+            'shareSize' => $subscription->shareSizeName,
+            'locationId' => $subscription->locationId,
+            'locationName' => $subscription->locationName,
+            'year' => $subscription->year,
+            'quantity' => $subscription->quantity,
+            'payment' => $subscription->payment,
+            'paymentPlan' => $subscription->paymentPlan,
+            'paidInFull' => $subscription->paidInFull,
+            'addedDatetime' => $subscription->addedDatetime,
+            'updatedDatetime' => $subscription->updatedDatetime
+        );
+        
+        if ($displayedHeader == false) {
+            $rowHeaderArray = array_keys($row);
+            array_walk($rowHeaderArray, 'filter');
+            echo implode(',', $rowHeaderArray) . "\r\n";
+            $displayedHeader = true;
+        }
+        
+        array_walk($row, 'filter');
+        
+        echo implode(',', $row) . "\r\n";
+    }
+
+    exit();
+?>

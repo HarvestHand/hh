@@ -1,0 +1,157 @@
+<?php
+    $this->headTitle($this->translate('Add On Products Purchase History'));
+
+    $this->loader()->append('jquery_dataTables');
+?>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+    $(document).ready(function(){
+
+        var table = $("#addons").dataTable({
+            "bJQueryUI": true,
+            "bAutoWidth": false,
+            "bDeferRender": true,
+            "bLengthChange": false,
+            "bProcessing": true,
+            "iDisplayLength": 50,
+            "iDeferLoading": <?= $this->foundRows ?>,
+            "aaSorting": [[0, "asc"]],
+            "aoColumns": [ 
+                {
+                    "sType": "string",
+                    "mDataProp": "addedDatetime"
+                },
+                {
+                    "sType": "text",
+                    "mDataProp": "addonName",
+                    "fnRender": function (oObj) {
+                        if (!oObj.aData.hasOwnProperty("id")) {
+                            return oObj.aData.addonName;
+                        } else {
+                            return '<a href="/shares/purchased-addon?id=' + parseInt(oObj.aData.id) + '">' +
+                                oObj.aData.addonName
+                                    .replace(/&/g,'&amp;')
+                                    .replace(/</g,'&lt;')
+                                    .replace(/>/g,'&gt;') + '</a>';
+                        }
+                    }
+                },
+                {
+                    "sType": "text",
+                    "mDataProp": "quantity",
+                    "fnRender": function (oObj) {
+                        return parseInt(oObj.aData.quantity);
+                    }
+                },
+                { 
+                    "bSortable": false,
+                    "bSearchable": false,
+                    "mDataProp": "_actions",
+                    "sClass": "right",
+                    "fnRender": function (oObj) {
+                        if (!oObj.aData.hasOwnProperty("id")) {
+                            return oObj.aData._actions;
+                        }
+                        return '<form action="/shares/purchased-addon" method="get">' +
+                            '<input type="hidden" name="id" value="' + parseInt(oObj.aData.id) + '" />' +
+                            '<button title="<?= $this->translate('Details') ?>"' +
+                            'type="submit"' +
+                            'class="btn btn-default">' +
+                            '<i class="fa fa-info-circle"></i>' +
+                            '</button></form>';
+                    }
+                }
+            ],
+            "bSortClasses": false,
+            "sAjaxSource": "<?= addslashes($this->Url()) ?>/d/1",
+            "bServerSide": true,
+            "sDom": '<"H"<"clear">r<"right"ip>>t<"F"<"right"ip>>'
+        })
+        .delegate("tbody tr", "mouseover mouseout", function(e) {
+            if (e.type == "mouseover") {
+                $(e.currentTarget).addClass('hover');
+            } else {
+                $(e.currentTarget).removeClass('hover');
+            }
+        });
+    });
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<h2><?= $this->translate('Add On Products Purchase History') ?></h2>
+
+<?php if (count($this->addons)) { ?>
+
+    <table id="addons" class="display" width="100%">
+        <thead>
+            <tr>
+                <th
+                    width="20%"
+                    title="<?= $this->translate('Date Purchased') ?>">
+                        <?= $this->translate('Date'); ?>
+                </th>
+                <th
+                    width="55%"
+                    title="<?= $this->translate('Add On') ?>">
+                        <?= $this->translate('Add On') ?>
+                </th>
+                <th
+                    width="20%"
+                    title="<?= $this->translate('Add On Quantity') ?>">
+                        <?= $this->translate('Qty') ?>
+                </th>
+                <th
+                    width="%5"
+                    title="<?= $this->translate('Add On Actions') ?>">
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($this->addons as $addon) { ?>
+                <tr>
+                    <td>
+                        <?= $this->escape($addon->addedDatetime->toString('yyyy-MM-dd')); ?>
+                    </td>
+                    <td>
+                        <a href="/shares/purchased-addon?id=<?= (int) $addon->id ?>">
+                            <?= $this->escape($addon->addonName); ?>
+                        </a>
+                    </td>
+                    <td>
+                        <?= (int) $addon->quantity ?>
+                    </td>
+                    <td class="right">
+                        <form action="/shares/purchased-addon" method="get">
+                            <input type="hidden" name="id" value="<?= (int) $addon->id ?>" />
+                            <button
+                                title="<?= $this->translate('Details') ?>"
+                                type="submit"
+                                class="btn btn-default">
+                                <i class="fa fa-info-circle"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            <?php } ?>
+        </tbody>
+    </table>
+
+    <?php 
+        if ($this->embedded) { 
+            echo $this->placeholder('foot');
+        }
+    ?>
+
+<?php } else { ?>
+
+    <p><?=
+        $this->translate(
+            'You haven\'t purchased any %s add ons yet.  <a href="%s">Would you like to view %s add ons available for purchase?.</a>',
+            $this->farm->getPreferences()->get('share', 'shares', 'share'),
+            '/shares',
+            $this->farm->getPreferences()->get('share', 'shares', 'share')
+        ); ?></p>
+
+<?php } ?>
+

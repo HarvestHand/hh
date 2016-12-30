@@ -1,0 +1,522 @@
+<?php
+    $this->headTitle('Web CSA Farm Management Platform');
+
+    $this->loader()->append('jquery_validate');
+    $this->loader()->append('jquery_cookie');
+    $this->loader()->append('jquery_form');
+    $this->loader()->append('jquery_ui_selectmenu');
+    $this->loader()->append('jquery_metadata');
+    $this->loader()->append('ckeditor_ckeditor.js');
+    $this->loader()->append('ckeditor_adapters_jquery.js');
+?>
+<?php $this->placeholder('head')->captureStart() ?>
+<script type="text/javascript">
+    window.CKEDITOR_BASEPATH = '<?= (!empty($_SERVER['HTTPS'])) ? 'https://static.' : 'http://static.' ?><?= Bootstrap::$rootDomain ?>/_js/ckeditor/';
+</script>
+<?php $this->placeholder('head')->captureEnd() ?>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+$(document).ready(function(){
+
+    $(".tooltip").qtip({
+        style: {
+            classes: 'ui-tooltip-shadow ui-tooltip-rounded',
+            widget: true
+        }
+    });
+
+    var editorInit = false,
+        config = {
+            customConfig: '',
+            toolbar:
+                [
+                    ['Bold', 'Italic', 'Underline', 'Strike'],
+                    [
+                        'NumberedList', 'BulletedList',
+                        '-', 'Outdent', 'Indent', 'Blockquote'
+                    ],
+                    ['Link', 'Unlink'],
+                    ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord'],
+                    ['Undo', 'Redo'],
+                    ['RemoveFormat']
+                ],
+            colorButton_enableMore: false,
+            disableNativeSpellChecker: false
+        };
+
+    $('#website-disclaimer').ckeditor(
+        function() {
+            var editor = $('#website-disclaimer').ckeditorGet();
+            editor.on('blur', function() {
+                this.updateElement();
+            });
+        },
+        config
+    );
+
+    $("#options").validate({
+        errorContainer: $("#formError"),
+        errorPlacement: function(error, element) {
+            if (element.attr("name") == "website-disclaimer") {
+                error.addClass("no-margin");
+            }
+            error.insertAfter(element);
+        },
+        submitHandler: function(form) {
+            if (editorInit) {
+                $('#website-disclaimer').ckeditorGet().updateElement();
+            }
+            form.submit();
+        }
+    });
+});
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<?php $this->headTitle($this->translate('Website Options')); ?>
+
+<h2>
+    <span class="icon-menu icon-menu-options" style="float: left; margin: -10px 7px 0 0;"></span>
+    <?= $this->translate('Website Options') ?>
+</h2>
+
+<section class="container_12">
+    <article class="grid_11">
+        <form
+            id="options"
+            action="/admin/website/options?<?= http_build_query($_GET) ?>"
+            method="post"
+            accept-charset="utf-8"
+            class="cmxform large"
+            enctype="multipart/form-data">
+
+            <section id="formError" class="error ui-widget ui-state-error ui-corner-all" style="<?= (!empty($this->errors)) ? '' : 'display:none;' ?>">
+                <div>
+                    <i class="fa fa-exclamation-triangle"></i>
+                    <strong><?= $this->translate('Oh No!'); ?></strong>
+                    <?= $this->translate('Something is not right with what you entered.  Check below for hints on how to fix things up.'); ?>
+                </div>
+            </section>
+
+            <fieldset>
+                <legend><?= $this->translate('General') ?></legend>
+
+                <p>
+                    <label for="website-enabled_1" class="required" title="<?= $this->translate('Should your HarvestHand website be disabled?'); ?>">
+                        <?= $this->translate('Enable Website?'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+
+                    <input
+                        id="website-enabled_0"
+                        type="radio"
+                        name="website-enabled"
+                        value="0"
+                        class="required"
+                        title="<?= $this->translate('Don\'t enabled your HarvestHand website'); ?>"
+                        <?php echo (($this->getFormValue('website-enabled') == '0') ? 'checked="checked"' : '') ?> />
+                        <label for="website-enabled_0" class="radio" title="<?= $this->translate('Don\'t enabled your HarvestHand website'); ?>">
+                            <?= $this->translate('Disable'); ?>
+                        </label>
+                    <input
+                        id="website-enabled_1"
+                        type="radio"
+                        name="website-enabled"
+                        value="1"
+                        title="<?= $this->translate('HarvestHand website should be enabled'); ?>"
+                        <?php
+                            $value = $this->getFormValue('website-enabled');
+                            if ($value === null) {
+                                echo 'checked="checked"';
+                            } else if ($value == 1) {
+                                echo 'checked="checked"';
+                            }
+                        ?> />
+                        <label for="website-enabled_1" class="radio" title="<?= $this->translate('HarvestHand website should be enabled'); ?>">
+                            <?= $this->translate('Enable'); ?>
+                        </label>
+
+                    <?php if (!empty($this->errors['website-enabled'])) { ?>
+                        <label for="enabled" class="error">
+                            <?= implode('; ', $this->errors['website-enabled']) ?>
+                        </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="website-blogEnabled_1" class="required" title="<?= $this->translate('Should your HarvestHand blog be disabled?'); ?>">
+                        <?= $this->translate('Enable Blog?'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+
+                    <input
+                        id="website-blogEnabled_0"
+                        type="radio"
+                        name="website-blogEnabled"
+                        value="0"
+                        class="required"
+                        title="<?= $this->translate('Don\'t enabled your HarvestHand blog'); ?>"
+                        <?php echo (($this->getFormValue('website-blogEnabled') == '0') ? 'checked="checked"' : '') ?> />
+                        <label for="website-blogEnabled_0" class="radio" title="<?= $this->translate('Don\'t enabled your HarvestHand blog'); ?>">
+                            <?= $this->translate('Disable'); ?>
+                        </label>
+                    <input
+                        id="website-blogEnabled_1"
+                        type="radio"
+                        name="website-blogEnabled"
+                        value="1"
+                        title="<?= $this->translate('HarvestHand blog should be enabled'); ?>"
+                        <?php
+                            $value = $this->getFormValue('website-blogEnabled');
+                            if ($value === null) {
+                                echo 'checked="checked"';
+                            } else if ($value == 1) {
+                                echo 'checked="checked"';
+                            }
+                        ?> />
+                        <label for="website-blogEnabled_1" class="radio" title="<?= $this->translate('HarvestHand blog should be enabled'); ?>">
+                            <?= $this->translate('Enable'); ?>
+                        </label>
+
+                    <?php if (!empty($this->errors['website-blogEnabled'])) { ?>
+                        <label for="enabled" class="error">
+                            <?= implode('; ', $this->errors['website-blogEnabled']) ?>
+                        </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="website-disclaimer" title="<?= $this->translate('Website Disclaimer'); ?>">
+                        <?= $this->translate('Disclaimer'); ?>:
+                    </label>
+
+                    <textarea
+                        id="website-disclaimer"
+                        name="website-disclaimer"
+                        class="large"
+                        rows="10"
+                        cols="10"
+                    ><?= $this->getFormValue('website-disclaimer'); ?></textarea>
+
+                    <?php if (!empty($this->errors['website-disclaimer'])) { ?>
+                        <label for="website-disclaimer" class="error">
+                            <?= implode('; ', $this->errors['website-disclaimer']) ?>
+                        </label>
+                    <?php } ?>
+                </p>
+            </fieldset>
+
+            <fieldset>
+                <legend><?= $this->translate('Theme') ?></legend>
+
+                <p>
+                    <label for="website-theme" class="" title="<?= $this->translate('What website theme should be used to make your customer facing website look great?'); ?>">
+                        <?= $this->translate('Website Theme'); ?>:
+                    </label>
+
+                    <span class="tooltip" title="<?= $this->translate('Choose a website theme to make your customer facing website look great'); ?>">[?]</span>
+
+                    <div class="box" style="width: 200px; text-align: center; float: left; margin: 10px">
+                        <img src="/_images/theme-default.png"
+                             width="200"
+                             height="129"
+                             align="center"
+                             alt="<?= $this->translate('The default HarvestHand theme') ?>" />
+                        <input
+                            id="website-theme_default"
+                            type="radio"
+                            name="website-theme"
+                            value="default"
+                            class="required"
+                            title="<?= $this->translate('The default HarvestHand theme'); ?>"
+                            <?php echo (($this->getFormValue('website-theme') == 'default') ? 'checked="checked"' : '') ?> />
+
+                        <label for="website-theme_default"
+                               class="radio"
+                               title="<?= $this->translate('The default HarvestHand theme'); ?>">
+                            <?= $this->translate('Standard'); ?>
+                        </label>
+                    </div>
+                    <?php if ($this->getFormValue('website-theme') == 'default') { $found = true; } ?>
+
+                    <div class="box" style="width: 200px; text-align: center; float: left; margin: 10px">
+                        <img src="/_images/theme-taproot.png"
+                             width="200"
+                             height="129"
+                             align="center"
+                             alt="<?= $this->translate('The HarvestHand Mantis theme') ?>" />
+                        <input
+                            id="website-theme_taproot"
+                            type="radio"
+                            name="website-theme"
+                            value="taproot"
+                            class="required"
+                            title="<?= $this->translate('The HarvestHand Mantis theme'); ?>"
+                            <?php echo (($this->getFormValue('website-theme') == 'taproot') ? 'checked="checked"' : '') ?> />
+
+                        <label for="website-theme_taproot"
+                               class="radio"
+                               title="<?= $this->translate('The Taproot HarvestHand theme'); ?>">
+                            <?= $this->translate('Mantis'); ?>
+                        </label>
+                    </div>
+                    <?php if ($this->getFormValue('website-theme') == 'taproot') { $found = true; } ?>
+
+                    <div class="box" style="width: 200px; text-align: center; float: left; margin: 10px">
+                        <img src="/_images/theme-localmotive.png"
+                             width="200"
+                             height="129"
+                             align="center"
+                             alt="<?= $this->translate('The HarvestHand Citrus theme') ?>" />
+                        <input
+                            id="website-theme_localmotive"
+                            type="radio"
+                            name="website-theme"
+                            value="localmotive"
+                            class="required"
+                            title="<?= $this->translate('The HarvestHand Citrus theme'); ?>"
+                            <?php echo (($this->getFormValue('website-theme') == 'localmotive') ? 'checked="checked"' : '') ?> />
+
+                        <label for="website-theme_localmotive"
+                               class="radio"
+                               title="<?= $this->translate('The HarvestHand Citrus theme'); ?>">
+                            <?= $this->translate('Citrus'); ?>
+                        </label>
+                    </div>
+                    <?php if ($this->getFormValue('website-theme') == 'localmotive') { $found = true; } ?>
+
+                    <div class="box" style="width: 200px; text-align: center; float: left; margin: 10px">
+                        <img src="/_images/theme-whippletree.png"
+                             width="200"
+                             height="129"
+                             align="center"
+                             alt="<?= $this->translate('The HarvestHand Antique Brass theme') ?>" />
+                        <input
+                            id="website-theme_whippletree"
+                            type="radio"
+                            name="website-theme"
+                            value="whippletree"
+                            class="required"
+                            title="<?= $this->translate('The HarvestHand Antique Brass theme'); ?>"
+                            <?php echo (($this->getFormValue('website-theme') == 'whippletree') ? 'checked="checked"' : '') ?> />
+
+                        <label for="website-theme_whippletree"
+                               class="radio"
+                               title="<?= $this->translate('The HarvestHand Antique Brass theme'); ?>">
+                            <?= $this->translate('Antique Brass'); ?>
+                        </label>
+                    </div>
+                <?php if ($this->getFormValue('website-theme') == 'beetjuice') { $found = true; } ?>
+
+                <div class="box" style="width: 200px; text-align: center; float: left; margin: 10px">
+                    <img src="/_images/theme-organic.png"
+                         width="200"
+                         height="129"
+                         align="center"
+                         alt="<?= $this->translate('The HarvestHand BeetJuice theme') ?>" />
+                    <input
+                        id="website-theme_beetjuice"
+                        type="radio"
+                        name="website-theme"
+                        value="beetjuice"
+                        class="required"
+                        title="<?= $this->translate('The HarvestHand Organic theme'); ?>"
+                        <?php echo (($this->getFormValue('website-theme') == 'beetjuice') ? 'checked="checked"' : '') ?> />
+
+                    <label for="website-theme_beetjuice"
+                           class="radio"
+                           title="<?= $this->translate('The HarvestHand Organic theme'); ?>">
+                        <?= $this->translate('Organic'); ?>
+                    </label>
+                </div>
+
+                <?php if ($this->getFormValue('website-theme') == 'agro') { $found = true; } ?>
+
+                <div class="box" style="width: 200px; text-align: center; float: left; margin: 10px">
+                    <img src="/_images/theme-agro.png"
+                         width="200"
+                         height="129"
+                         align="center"
+                         alt="<?= $this->translate('The HarvestHand Agro theme') ?>" />
+                    <input
+                        id="website-theme_agro"
+                        type="radio"
+                        name="website-theme"
+                        value="agro"
+                        class="required"
+                        title="<?= $this->translate('The HarvestHand Agro theme'); ?>"
+                        <?php echo (($this->getFormValue('website-theme') == 'agro') ? 'checked="checked"' : '') ?> />
+
+                    <label for="website-theme_agro"
+                           class="radio"
+                           title="<?= $this->translate('The HarvestHand Agro theme'); ?>">
+                        <?= $this->translate('Agro'); ?>
+                    </label>
+                </div>
+
+                    <?php if ($this->getFormValue('website-theme') == 'whippletree') { $found = true; } ?>
+
+                    <?php if (!$found && !$this->isEmpty($this->getFormValue('website-theme'))) { ?>
+                    <div class="box" style="width: 200px; text-align: center; float: left; margin: 10px">
+                        <img src="/_images/theme-custom.png"
+                             width="200"
+                             height="129"
+                             align="center"
+                             alt="<?= $this->translate('The HarvestHand Antique Brass theme') ?>" />
+
+                        <input
+                            id="website-theme_<?= $this->getFormValue('website-theme') ?>"
+                            type="radio"
+                            name="website-theme"
+                            value="<?= $this->getFormValue('website-theme') ?>"
+                            class="required"
+                            checked="checked" />
+
+                        <label for="website-theme_<?= $this->getFormValue('website-theme') ?>"
+                               class="radio">
+                            <?= $this->getFormValue('website-theme') ?>
+                        </label>
+                    </div>
+                    <?php } ?>
+
+                    <?php if (!empty($this->errors['website-theme'])) { ?>
+                    <label for="website-theme" class="error">
+                        <?= implode('; ', $this->errors['website-theme']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p style="clear: left">
+                    <label for="imageUpload" class="" title="<?= $this->translate('Provide a header image for your website (900px width by 125px height)'); ?>">
+                        <?= $this->translate('Header Image'); ?>:
+                    </label>
+
+                    <?php
+                        $headerImage = $this->getFormValue('website-headerImage');
+
+                        if ($headerImage) { ?>
+                    <img
+                        src="/default/file/id/<?= $this->escape($headerImage) ?>/s/<?= HHF_Domain_File::IMAGE_THUMBNAIL ?>"
+                        alt="<?= $this->translate('Website header image (900px width by 125px height)'); ?>" />
+                        <br style="clear:left;" />
+                    <?php } ?>
+
+                    <input
+                        id="website-headerImage"
+                        name="website-headerImage"
+                        type="hidden"
+                        value="<?= $headerImage ?>" />
+
+                    <input
+                        id="imageUpload"
+                        name="imageUpload"
+                        type="file"
+                        title="<?= $this->translate('Provide a header image for your website'); ?>"
+                        value=""
+                        style="<?= ($headerImage) ? 'padding-left: 185px' : '' ?>"/>
+
+                    <span class="tooltip" title="<?= $this->translate('Website header image (900px width by 125px height)'); ?>">[?]</span>
+
+                    <?php if (!empty($this->errors['imageUpload'])) { ?>
+                    <label for="imageUpload" class="error">
+                        <?= implode('; ', $this->errors['imageUpload']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <h3>Details</h3>
+
+                <h5>Standard, Mantis, Citrus & Antique Brass</h5>
+                <ul>
+                    <li>Mobile optimized original HarvestHand themes.</li>
+                    <li>Great for large farms.</li>
+                </ul>
+
+                <h5>Organic by <a href="http://studio7designs.com/">Studio 7</a></h5>
+                <ul>
+                    <li>Non-responsive website for small farms.</li>
+                    <li>May act strange when large links are placed in the footer, or long menu item names are used.</li>
+                </ul>
+
+                <h5>Agro by <a href="https://w3layouts.com/">W3 Layouts</a></h5>
+                <ul>
+                    <li>Fully responsive, modern, and mobile optimized design.</li>
+                    <li>Features recent blog posts, recent shares, and recent add-ons on the home page.</li>
+                    <li>Currently does not support sub-pages (non-hierarchical navigation menu).</li>
+                    <li>Best for farms who blog often.</li>
+                </ul>
+
+            </fieldset>
+
+            <fieldset>
+                <legend><?= $this->translate('Analytics') ?></legend>
+
+                <p>
+                    <label for="website-stats" class="required" title="<?= $this->translate('Should you be included in the webstite statistics gathered by HarvestHand?'); ?>">
+                        <?= $this->translate('Count Me When Recoding Website Stats?'); ?>:
+                    </label>
+
+                    <iframe frameborder="no"
+                            width="600px"
+                            height="150px"
+                            src="<?= $this->farm->getBaseUri() ?>/_stats/index.php?module=CoreAdminHome&action=optOut&language=en"></iframe>
+                </p>
+            </fieldset>
+
+            <fieldset>
+                <legend><?= $this->translate('Sidebar Options') ?></legend>
+
+                <label for="website-sidebarBalanceEnabled_1" class="required" title="<?= $this->translate('Should your customer balance due be displayed in the sidebar?'); ?>">
+                        <?= $this->translate('Balance Due?'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+
+                    <input
+                        id="website-sidebarBalanceEnabled_0"
+                        type="radio"
+                        name="website-sidebarBalanceEnabled"
+                        value="0"
+                        class="required"
+                        title="<?= $this->translate('Don\'t enabled the display of your customer\'s balance due'); ?>"
+                        <?php echo (($this->getFormValue('website-sidebarBalanceEnabled') == '0') ? 'checked="checked"' : '') ?> />
+                        <label for="website-sidebarBalanceEnabled_0" class="radio" title="<?= $this->translate('Don\'t enabled the display of your customer\'s balance due'); ?>">
+                            <?= $this->translate('Disable'); ?>
+                        </label>
+                    <input
+                        id="website-sidebarBalanceEnabled_1"
+                        type="radio"
+                        name="website-sidebarBalanceEnabled"
+                        value="1"
+                        title="<?= $this->translate('Customer\'s balance due should be displayed'); ?>"
+                        <?php
+                            $value = $this->getFormValue('website-sidebarBalanceEnabled');
+                            if ($value === null) {
+                                echo 'checked="checked"';
+                            } else if ($value == 1) {
+                                echo 'checked="checked"';
+                            }
+                        ?> />
+                        <label for="website-sidebarBalanceEnabled_1" class="radio" title="<?= $this->translate('Customer\'s balance due should be displayed'); ?>">
+                            <?= $this->translate('Enable'); ?>
+                        </label>
+
+                    <?php if (!empty($this->errors['website-sidebarBalanceEnabled'])) { ?>
+                        <label for="enabled" class="error">
+                            <?= implode('; ', $this->errors['website-sidebarBalanceEnabled']) ?>
+                        </label>
+                    <?php } ?>
+
+            </fieldset>
+
+            <p>
+                <button type="submit" class="submit fieldset-align ui-button ui-widget ui-corner-all ui-button-text-only ui-state-default">
+                    <span class="ui-button-text">
+                        <i class="fa fa-check"></i>
+                        <?= $this->translate('Save!'); ?>
+                    </span>
+                </button>
+            </p>
+        </form>
+    </article>
+</section>

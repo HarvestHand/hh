@@ -1,0 +1,312 @@
+<?php 
+    $this->loadDatejs(Bootstrap::$locale);
+    
+    $this->loader()->append('jquery_validate');
+    
+    $this->headTitle($this->translate('Payment Options'));
+?>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+    jQuery.validator.addMethod("date", function(value, element) {
+        return this.optional(element) || ((Date.parse(value) != null) ? true : false);
+    }, "<?= $this->translate('Date doesn\'t look right'); ?>");
+    
+    function convertDate(val) {
+        var $this = $(this);
+        var val = $this.val();
+
+        var timestamp = Date.parse(val);
+        if (timestamp != null) {
+            $this.val(timestamp.toString("yyyy-MM-dd"));
+        }
+    }
+    
+    $(document).ready(function(){
+        $("#options").validate({
+            rules: {
+                "paypal-dateOfEstablishment" : "date",
+                "paypal-dateOfBirth" : "date"
+            },
+            messages : {
+                "paypal-dateOfEstablishment" : {
+                    "date" : "<?= $this->translate('Date doesn\'t look right'); ?>"
+                },
+                "paypal-dateOfBirth" : {
+                    "date" : "<?= $this->translate('Date doesn\'t look right'); ?>"
+                }
+            },
+            errorContainer: $("#formError")
+        });
+        
+        $("button.paypal-new").click(function(){
+            $("input#action").val("paypal-new");
+            $("#paypal-new-data").show("fast");
+        });
+        
+        $("input#paypal-dateOfEstablishment").change(convertDate);
+        $("input#paypal-dateOfBirth").change(convertDate);
+        
+        $("#paypal-agreement").click(function(e){
+            e.preventDefault();
+            var $this = $(this),
+                horizontalPadding = 30,
+                verticalPadding = 30;
+            
+            $('<iframe id="externalSite" class="externalSite" src="' + this.href + '" />').dialog({
+                title: $this.attr('title'),
+                autoOpen: true,
+                width: 800,
+                height: 500,
+                modal: true,
+                resizable: true,
+                autoResize: true
+            }).width(800 - horizontalPadding).height(500 - verticalPadding);
+        });
+    });
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<h2>
+    <span class="icon-menu icon-menu-options" style="float: left; margin: -10px 7px 0 0;"></span>
+    <?= $this->translate('Payment Options') ?>
+</h2>
+
+<section class="container_12">
+    <article class="grid_11">
+        <form id="options" action="/admin/default/options_payments?<?= http_build_query($_GET) ?>" method="post" accept-charset="utf-8" class="cmxform large">
+            
+            <section id="formError" class="error ui-widget ui-state-error ui-corner-all" style="<?= (!empty($this->errors)) ? '' : 'display:none;' ?>">
+                <div>
+                    <i class="fa fa-exclamation-triangle"></i>
+                    <strong><?= $this->translate('Oh No!'); ?></strong>
+                    <?= $this->translate('Something is not right with what you entered.  Check below for hints on how to fix things up.'); ?>
+                </div>
+            </section>
+
+            <fieldset>
+                <legend><?= $this->translate('General') ?></legend>
+                
+                <p>
+                    <label for="paypal-enabled_1" class="required" title="<?= $this->translate('Should your HarvestHand website allow you to receive money through PayPal?'); ?>">
+                        <?= $this->translate('Enable PayPal?'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+
+                    <input
+                        id="paypal-enabled_0"
+                        type="radio"
+                        name="paypal-enabled"
+                        value="0"
+                        class="required"
+                        title="<?= $this->translate('Don\'t enabled PayPal for your HarvestHand website'); ?>"
+                        <?php echo (($this->getFormValue('paypal-enabled') == '0') ? 'checked="checked"' : '') ?> />
+                        <label for="paypal-enabled_0" class="radio" title="<?= $this->translate('Don\'t enabled PayPal for your HarvestHand website'); ?>">
+                            <?= $this->translate('Disable'); ?>
+                        </label>
+                    <input
+                        id="paypal-enabled_1"
+                        type="radio"
+                        name="paypal-enabled"
+                        value="1"
+                        title="<?= $this->translate('HarvestHand website should offer PayPal'); ?>"
+                        <?php
+                            $value = $this->getFormValue('paypal-enabled');
+                            if ($value === null) {
+                                echo 'checked="checked"';
+                            } else if ($value == 1) {
+                                echo 'checked="checked"';
+                            }
+                        ?> />
+                        <label for="paypal-enabled_1" class="radio" title="<?= $this->translate('HarvestHand website should offer PayPal'); ?>">
+                            <?= $this->translate('Enable'); ?>
+                        </label>
+
+                    <?php if (!empty($this->errors['paypal-enabled'])) { ?>
+                        <label for="enabled" class="error">
+                            <?= implode('; ', $this->errors['paypal-enabled']) ?>
+                        </label>
+                    <?php } ?>
+                </p>
+                
+            <!-- </fieldset>
+            
+            <p>
+                <button type="button" class="submit fieldset-align paypal-new ui-button ui-widget ui-corner-all ui-button-text-icon-primary ui-state-default">
+                    <span class="ui-button-icon-primary ui-icon ui-icon-plus"></span>
+                    <span class="ui-button-text">
+                        <?= $this->translate('New PayPal Account'); ?>
+                    </span>
+                </button>
+
+                <button type="button" class="paypal-add ui-button ui-widget ui-corner-all ui-button-text-icon-primary ui-state-default">
+                    <span class="ui-button-icon-primary ui-icon ui-icon-plus"></span>
+                    <span class="ui-button-text">
+                        <?= $this->translate('Add PayPal Account'); ?>
+                    </span>
+                </button>
+            </p>
+            
+            <fieldset id="paypal-new-data">
+                <legend><?= $this->translate('New PayPal Account') ?></legend> -->
+            
+                <input type="hidden" name="a" value="paypal-new" />
+                
+                <p>
+                    <?= $this->translate('Tell us about your business so we can request a new PayPal account on your behalf.'); ?>
+                    <?= $this->translate('You should also read up on the <a id="paypal-agreement" title="PayPal User Agreement" href="/admin/default/paypal/a/agreement">PayPal User Agreement</a>'); ?>
+                </p>
+                
+                <p>
+                    <label for="paypal-businessType" class="required" title="<?= $this->translate('How is your business incorporated?'); ?>">
+                        <?= $this->translate('Type of Business'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+                    
+                    <?php
+                        $businessType = array(
+                            'CORPORATION' => $this->translate('Corporation'),
+                            'GOVERNMENT' => $this->translate('Government'),
+                            'INDIVIDUAL' => $this->translate('Individual'),
+                            'NONPROFIT' => $this->translate('Non Profit'),
+                            'PARTNERSHIP' => $this->translate('Partnership'),
+                            'PROPRIETORSHIP' => $this->translate('Proprietorship'),
+                        );
+
+                        echo $this->formSelect(
+                            'paypal-businessType',
+                            $this->getFormValue('paypal-businessType'),
+                            array(
+                                'id' => 'paypal-businessType',
+                                'class' => 'required',
+                                'title' => $this->translate('How is your business incorporated?')
+                            ),
+                            $businessType
+                        );
+                    ?>
+
+                    <?php if (!empty($this->errors['paypal-businessType'])) { ?>
+                    <label for="paypal-businessType" class="error">
+                        <?= implode('; ', $this->errors['paypal-businessType']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+                
+                <p>
+                    <label for="paypal-averagePrice" class="required" title="<?= $this->translate('What is the average price that you expect for an online transaction?'); ?>">
+                        <?= $this->translate('Average Sale Price'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+                    <input
+                        id="paypal-averagePrice"
+                        name="paypal-averagePrice"
+                        type="text"
+                        title="<?= $this->translate('What is the average price that you expect for an online transaction?'); ?>"
+                        value="<?= $this->getFormValue('paypal-averagePrice'); ?>"
+                        class="number required"
+                        maxlength="6" />
+
+                    <?php if (!empty($this->errors['paypal-averagePrice'])) { ?>
+                    <label for="paypal-averagePrice" class="error">
+                        <?= implode('; ', $this->errors['paypal-averagePrice']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+                
+                <p>
+                    <label for="paypal-averageMonthlyVolume" class="required" title="<?= $this->translate('What is the average number of sales that you expect for a month?'); ?>">
+                        <?= $this->translate('Average Sales Per Month'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+                    <input
+                        id="paypal-averageMonthlyVolume"
+                        name="paypal-averageMonthlyVolume"
+                        type="text"
+                        title="<?= $this->translate('What is the average number of sales that you expect for a month?'); ?>"
+                        value="<?= $this->getFormValue('paypal-averageMonthlyVolume'); ?>"
+                        class="digit required"
+                        maxlength="4" />
+
+                    <?php if (!empty($this->errors['paypal-averageMonthlyVolume'])) { ?>
+                    <label for="paypal-averageMonthlyVolume" class="error">
+                        <?= implode('; ', $this->errors['paypal-averageMonthlyVolume']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+                
+                <p>
+                    <label for="paypal-percentageRevenueFromOnline" class="required" title="<?= $this->translate('What percent of sales do you expect to be online?'); ?>">
+                        <?= $this->translate('% Online Sales Per Month'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+                    <input
+                        id="paypal-percentageRevenueFromOnline"
+                        name="paypal-percentageRevenueFromOnline"
+                        type="text"
+                        title="<?= $this->translate('What percent of sales do you expect to be online?'); ?>"
+                        value="<?= $this->getFormValue('paypal-percentageRevenueFromOnline'); ?>"
+                        class="digit required"
+                        maxlength="100" />
+
+                    <?php if (!empty($this->errors['paypal-percentageRevenueFromOnline'])) { ?>
+                    <label for="paypal-percentageRevenueFromOnline" class="error">
+                        <?= implode('; ', $this->errors['paypal-percentageRevenueFromOnline']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+                
+                <p>
+                    <label for="paypal-dateOfEstablishment" class="required" title="<?= $this->translate('What is the date that your business was established?'); ?>">
+                        <?= $this->translate('Date Established'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+                    <input
+                        id="paypal-dateOfEstablishment"
+                        name="paypal-dateOfEstablishment"
+                        type="text"
+                        title="<?= $this->translate('What is the date that your business was established?'); ?>"
+                        value="<?= $this->getFormValue('paypal-dateOfEstablishment'); ?>"
+                        class="required date"
+                        maxlength="25" />
+
+                    <?php if (!empty($this->errors['paypal-dateOfEstablishment'])) { ?>
+                    <label for="paypal-dateOfEstablishment" class="error">
+                        <?= implode('; ', $this->errors['paypal-dateOfEstablishment']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+                
+                <p>
+                    <label for="paypal-dateOfBirth" class="required" title="<?= $this->translate('When were you born?'); ?>">
+                        <?= $this->translate('Your Birthday'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+                    <input
+                        id="paypal-dateOfBirth"
+                        name="paypal-dateOfBirth"
+                        type="text"
+                        title="<?= $this->translate('When were you born?'); ?>"
+                        value="<?= $this->getFormValue('paypal-dateOfBirth'); ?>"
+                        class="required date"
+                        maxlength="25" />
+
+                    <?php if (!empty($this->errors['paypal-dateOfBirth'])) { ?>
+                    <label for="paypal-dateOfBirth" class="error">
+                        <?= implode('; ', $this->errors['paypal-dateOfBirth']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+                
+            </fieldset>
+            
+            <p>
+                <button type="submit" class="submit fieldset-align ui-button ui-widget ui-corner-all ui-button-text-only ui-state-default">
+                    <span class="ui-button-text">
+                        <i class="fa fa-check"></i>
+                        <?= $this->translate('Add Account'); ?>
+                    </span>
+                </button>
+            </p>
+        </form>
+    </article>
+</section>

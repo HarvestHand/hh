@@ -1,0 +1,7 @@
+<script type='text/javascript'>
+    window.parent.CKEDITOR.tools.callFunction(
+        <?= addslashes($this->CKEditorFuncNum) ?>,
+        '<?= addslashes($this->filePath) ?>',
+        '<?= (!empty($this->errors['upload'])) ? addslashes(implode('; ', $this->errors['upload'])) : ''  ?>'
+    );
+</script>

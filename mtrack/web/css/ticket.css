@@ -1,0 +1,332 @@
+#ticketinfo label {
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+#ticketinfo fieldset {
+  width: 57em;
+}
+
+#ticketinfo fieldset#readonly-tkt-properties {
+  float: left;
+  min-height: 6em;
+  margin-right: 1em;
+  width: 35em;
+}
+
+#ticketinfo fieldset#readonly-tkt-resources {
+  min-height: 6em;
+  width: 20em;
+}
+
+div#readonly-tkt-description {
+  clear: both;
+  border: solid 1px #ccc;
+  min-width: 57em;
+  background-color: #ffc;
+  padding: 0.25em 0.5em 0.5em 0.5em;
+}
+
+div.ticketevent {
+  margin-top: 0px;
+  margin-bottom: 0.5em;
+  border-bottom: solid 1px #bbb;
+  color: #999;
+}
+
+#issue-container {
+  padding: 0px;
+  margin: 0px;
+  margin-right: 28em;
+  margin-top: 3em;
+}
+
+#issue-props {
+  position: fixed;
+  right: 0px;
+  top: 7em;
+  width: 30.5em;
+  bottom: 0px;
+  font-size: 0.9em;
+
+  background: white;
+  overflow: auto;
+  z-index: 10;
+  padding-right: 1em;
+}
+
+#issue-buttons {
+  position: fixed;
+  left: 0px;
+  right: 0px;
+  top: 2.9em;
+  z-index: 25;
+  background-color: #fff;
+  border-top: 1px solid #eee;
+  border-bottom: solid 1px #eee;
+}
+
+#issue-props label {
+  font-weight: bold;
+  white-space: nowrap;
+  vertical-align: top;
+}
+
+#issue-props fieldset {
+  margin-top: 0.2em;
+  border-right: none;
+}
+
+#issue-props fieldset div.prediction {
+  height: 6em;
+  width: 27em;
+}
+
+#issue-controls {
+  float: right;
+}
+
+#issue-content {
+  font-size: 9pt;
+  display: inline-block;
+  margin: 0;
+}
+
+#issue-content ul {
+}
+#issue-content ul li {
+  display: inline;
+  border-right: 1px solid #d7d7d7;
+  display: inline;
+  padding: 0 0.75em;
+  white-space: nowrap;
+
+  padding: 0.25em 0px;
+  margin-left: 0.5em;
+  border: none;
+}
+#issue-content ul li a {
+  background: #eee;
+  text-decoration: none;
+}
+
+#issue-content ul :link, #issue-content ul :visited {
+  color: #000;
+  padding: 0.2em 1em;
+  border: 1px solid lightGrey;
+  border-radius: 8px;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+}
+
+#issue-content ul :link:hover, #issue-content ul :visited:hover {
+  background-color: #ccc;
+}
+
+#issue-content ul a.active:link, #issue-content ul a.active:visited {
+  border: 1px solid #777;
+  background: #333;
+  color: #eee;
+  font-weight: bold;
+}
+
+/* due to the fixed headers/footers, we need to offset the position
+ * of named anchors in the page if we want links to work correctly */
+#issue-changes a[name] {
+  position: relative;
+  top: -6em;
+}
+
+#issue-changes div.change-list {
+}
+
+#issue-changes select.filter {
+	float: right;
+	position: relative;
+	top: -3em;
+}
+
+#issue-attachments {
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+}
+
+#issue-attachments div.attachlist {
+  overflow-y: auto;
+}
+
+div.attachlist div.attachment {
+  position: relative;
+  margin: 1em 0px;
+  padding-bottom: 1em;
+  border-bottom: solid 1px #ddd;
+}
+div.attachlist div.attachment button {
+  position: static;
+  right: 0px;
+  top: -0.5em;
+}
+
+#issue-attachments button.add {
+  position: static;
+  top: 0.5em;
+  right: 1em;
+}
+
+#issue-desc {
+  width: 100%;
+  background-color: white;
+  overflow-y: auto;
+  border: solid 1px #ccc;
+  background-color: #ffc;
+  min-height: 5em;
+  padding-top: 1em;
+}
+
+#tktedit {
+  position: relative;
+}
+
+#tktedit button#edit-description {
+  position: absolute;
+  right: 0px;
+}
+
+#tktedit h1 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  margin-top: 0.2em;
+  font-size: 16pt;
+  width: 100%;
+}
+
+#issue-desc .wiki {
+  width: 55em;
+}
+
+#issue-desc button {
+  float: right;
+  position: relative;
+  bottom: 2.5em;
+  margin-bottom: -2.5em;
+}
+
+#tkt-summary-text input {
+  font-size: 16pt;
+  position: absolute;
+  left: -3px;
+  right: 30em;
+  width: 100%;
+}
+
+#tkt-summary-text button {
+  position: absolute;
+  z-index: 1;
+  right: 0px;
+}
+
+#issue-desc div.wiki-preview {
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  margin-bottom: 1em;
+}
+
+/* make the click-to-edit area for the description larger */
+#issue-desc div.wiki-preview.click-to-edit {
+	display: table-cell;
+	vertical-align: middle;
+  	height: 5em;
+	width: 50em;
+}
+#issue-desc div.wiki-preview.click-to-edit i.placeholder {
+	margin: auto;
+	display: block;
+	color: #999;
+	font-weight: bold;
+	font-size: 1.2em;
+}
+
+div.tktfield {
+  margin-bottom: 0.5em;
+}
+
+div.tktfield span#tkt-edit-changelog textarea {
+  width: 325px;
+}
+div.tktfield span#tkt-edit-changelog span.click-to-edit {
+  display: block;
+  padding-top: 0.5em;
+}
+
+#issue-buttons button {
+  font-size: 1.1em;
+  margin: 0.5em;
+}
+button.hide-until-change {
+  display: none;
+}
+
+#issue-error {
+  display: none;
+  float: left;
+  margin: 0.5em;
+  cursor: pointer;
+}
+
+a.replycomment {
+  float: right;
+  color: #999;
+}
+
+@media print {
+  /* Ticket page print styling */
+
+  #issue-buttons {
+    display: none;
+  }
+  #issue-container {
+	margin: 0;
+	float: left;
+	width: 100%;
+  }
+  #tktedit {
+    position: static;
+  }
+  #issue-content {
+    position: static;
+  }
+  #issue-content ul.ui-tabs-nav {
+    display: none;
+  }
+  #issue-content, #issue-changes {
+    border: none !important;
+    padding: 0 !important;
+  }
+  #issue-changes select {
+    display: none;
+  }
+  #issue-changes div.change-list {
+    position: static;
+  }
+  #issue-desc {
+    position: static;
+    border: none;
+    padding-bottom: 2em;
+  }
+  #issue-desc div.wiki-preview {
+    position: static;
+  }
+  #issue-props {
+	position: static;
+  	width: 100%;
+    overflow: visible;
+	clear: left;
+  }
+  #issue-props fieldset {
+	  border-right: inherit;
+  }
+}

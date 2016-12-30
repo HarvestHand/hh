@@ -1,0 +1,593 @@
+<?php
+    if (empty($this->issue)) {
+        $title = $this->translate('New Issue');
+        $published = false;
+    } else {
+        $published = (bool) $this->issue->publish;
+        
+        $title = $this->translate('Edit Issue');
+    }
+
+    $this->headTitle($title);
+    
+    $this->loadDatejs(Bootstrap::$locale);
+    
+    $this->loader()->append('jquery_validate')
+        ->append('ckeditor_ckeditor.js')
+        ->append('ckeditor_adapters_jquery.js')
+        ->append('jquery_ui_multiselect.js')
+        ->append('jquery_form.js');
+?>
+
+<?php $this->placeholder('head')->captureStart() ?>
+<script type="text/javascript">
+    window.CKEDITOR_BASEPATH = '<?= (!empty($_SERVER['HTTPS'])) ? 'https://static.' : 'http://static.' ?><?= Bootstrap::$rootDomain ?>/_js/ckeditor/';
+</script>
+<?php $this->placeholder('head')->captureEnd() ?>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+    $(document).ready(function(){
+        var config = {
+            customConfig : '',
+            toolbar:
+            [
+                ['hhDelivery', 'hhVariable'],
+                '/',
+                ['Bold','Italic','Underline','Strike'],
+                ['NumberedList','BulletedList','-','Outdent','Indent','Blockquote'],
+                ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
+                ['Link','Unlink','Anchor'],
+                ['Image','Table','HorizontalRule'],
+                ['Cut','Copy','Paste','PasteText','PasteFromWord'],
+                ['Undo','Redo'],
+                '/',
+                ['Format','Font','FontSize'],
+                ['TextColor','BGColor'],
+                ['RemoveFormat'],
+                ['Maximize'],
+                ['Source']
+            ],
+            colorButton_enableMore: false,
+            disableNativeSpellChecker: false,
+            filebrowserImageUploadUrl: '<?= $this->farm->getBaseUri(); ?>admin/default/upload/type/image/category/website',
+            filebrowserUploadUrl: '<?= $this->farm->getBaseUri(); ?>admin/default/upload/type/document/category/website',
+            extraPlugins: 'hh',
+            hh: {
+                lang: {
+                    delivery: {
+                        label: '<?= addslashes($this->translate('Insert Delivery')) ?>',
+                        title: '<?= addslashes($this->translate('Insert Share Delivery Contents for a Week')) ?>',
+                        week: '<?= addslashes($this->translate('Week %w, %y')) ?>'
+                    },
+                    variable: {
+                        title: '<?= addslashes($this->translate('Add mail merge item')) ?>',
+                        label: '<?= addslashes($this->translate('Mail Merge')) ?>',
+                        customer: { 
+                            title: '<?= addslashes($this->translate('Customer')) ?>',
+                            firstName: '<?= addslashes($this->translate('First Name')) ?>',
+                            firstNameTooltip: '<?= addslashes($this->translate('Customer First Name')) ?>',
+                            lastName: '<?= addslashes($this->translate('Last Name')) ?>',
+                            lastNameTooltip: '<?= addslashes($this->translate('Customer Last Name')) ?>',
+                            address: '<?= addslashes($this->translate('Address')) ?>',
+                            addressTooltip: '<?= addslashes($this->translate('Customer Address')) ?>',
+                            address2: '<?= addslashes($this->translate('Address 2')) ?>',
+                            address2Tooltip: '<?= addslashes($this->translate('Customer Address 2')) ?>',
+                            city: '<?= addslashes($this->translate('City')) ?>',
+                            cityTooltip: '<?= addslashes($this->translate('Customer City')) ?>',
+                            state: '<?= addslashes($this->translate('State')) ?>',
+                            stateTooltip: '<?= addslashes($this->translate('Customer State')) ?>',
+                            zipCode: '<?= addslashes($this->translate('Zip Code')) ?>',
+                            zipCodeTooltip: '<?= addslashes($this->translate('Customer Zip Code')) ?>',
+                            telephone: '<?= addslashes($this->translate('Telephone')) ?>',
+                            telephoneTooltip: '<?= addslashes($this->translate('Customer Telephone')) ?>',
+                            email: '<?= addslashes($this->translate('Email')) ?>',
+                            emailTooltip: '<?= addslashes($this->translate('Customer Email')) ?>',
+                            balance: '<?= addslashes($this->translate('Balance')) ?>',
+                            balanceTooltip: '<?= addslashes($this->translate('Customer Account Balance')) ?>',
+                            userName: '<?= addslashes($this->translate('User Name')) ?>',
+                            userNameTooltip: '<?= addslashes($this->translate('Customer User Name')) ?>'
+                        },
+                        farm: { 
+                            title: '<?= addslashes($this->translate('Farm')) ?>',
+                            name: '<?= addslashes($this->translate('Name')) ?>',
+                            nameTooltip: '<?= addslashes($this->translate('Farm Name')) ?>',
+                            address: '<?= addslashes($this->translate('Address')) ?>',
+                            addressTooltip: '<?= addslashes($this->translate('Farm Address')) ?>',
+                            address2: '<?= addslashes($this->translate('Address 2')) ?>',
+                            address2Tooltip: '<?= addslashes($this->translate('Farm Address 2')) ?>',
+                            city: '<?= addslashes($this->translate('City')) ?>',
+                            cityTooltip: '<?= addslashes($this->translate('Farm City')) ?>',
+                            state: '<?= addslashes($this->translate('State')) ?>',
+                            stateTooltip: '<?= addslashes($this->translate('Farm State')) ?>',
+                            zipCode: '<?= addslashes($this->translate('Zip Code')) ?>',
+                            zipCodeTooltip: '<?= addslashes($this->translate('Farm Zip Code')) ?>',
+                            telephone: '<?= addslashes($this->translate('Telephone')) ?>',
+                            telephoneTooltip: '<?= addslashes($this->translate('Farm Telephone')) ?>',
+                            email: '<?= addslashes($this->translate('Email')) ?>',
+                            emailTooltip: '<?= addslashes($this->translate('Farm Email')) ?>'
+                        }
+                    }
+                }
+            }
+        };
+
+        $('#recipients').multiselect({
+            header: false,
+            minWidth: 360,
+            selectedList: 3,
+            noneSelectedText: '<?= $this->translate('Select a list') ?>',
+            selectedText: '<?= $this->translate('# lists selected') ?>',
+            close: function () {
+                var $select = $(this);
+
+                if ($select.val()) {
+                    $('#previewRecipients').show();
+                } else {
+                    $('#previewRecipients').hide();
+                }
+            },
+            click: function (event, ui) {
+                if (!ui.checked) {
+                    return;
+                }
+
+                var $select = $(this);
+
+                if (ui.value == "ALL") {
+                    $select.find("option").each(function(){
+                        var $option = $(this),
+                            value = $option.attr("value");
+
+                        if (value != ui.value) {
+                            $option.removeAttr("selected");
+                        } else {
+                            $option.attr("selected", "selected");
+                        }
+                    });
+                } else {
+                    $select.find("option").each(function(){
+                        var $option = $(this),
+                            value = $option.attr("value");
+
+                        if (value == "ALL") {
+                            $option.removeAttr("selected");
+                        } else if (value == ui.value) {
+                            $option.attr("selected", "selected");
+                        }
+                    });
+                }
+
+                $select.multiselect("refresh");
+            }
+        });
+
+        CKEDITOR.timestamp = '<?= HH_View_Helper_Loader::$cacheHash ?>';
+
+        $('#content').ckeditor(
+            function(){
+                var editor = $('#content').ckeditorGet();
+                editor.on( "blur", function() {
+                    this.updateElement();
+                });
+            },
+            config
+        );
+        
+        $.validator.addMethod(
+            "ckeditorRequired",
+            function(value, element) {
+                var $element = $(element);
+                
+                $element.ckeditorGet().updateElement();
+                
+                return ($element.val().length) ? true: false;
+            },
+            '<?= addslashes($this->translate('This field is required')); ?>'
+        );
+        
+        jQuery.validator.setDefaults({
+            ignore: ''
+        });
+        
+        $("#issue").validate({
+            rules: {
+                "content" : "ckeditorRequired"
+            },
+            messages : {},
+            errorContainer: $("#formError"),
+            errorPlacement: function(error, element) {
+                if (element.attr("name") == "content") {
+                    error.addClass("no-margin");
+                }
+                
+                if (element.attr("name") == "recipients[]") {
+                    error.insertAfter(element.siblings().last());                    
+                } else {
+                    error.insertAfter(element);
+                }
+
+            },
+            submitHandler: function(form) {
+                $('#content').ckeditorGet().updateElement();
+                
+                var publish = $("[name=publish]:checked");
+                
+                if (publish.length) {
+                    if (parseInt(publish.val()) == 1) {
+                        if (!confirm('<?= addslashes($this->translate('Are you sure you want to send this issue out?  No turning back!')) ?>')) {
+                            return false;
+                        }
+                    }
+                }
+                
+                form.submit();
+            }
+        });
+        
+        $("[name=publish]").change(function(){
+            if ($(this).val() == '1') {
+                $("button.submit span")
+                    .first()
+                    .removeClass('ui-icon-mail-open')
+                    .addClass('ui-icon-mail-closed')
+                    .next()
+                    .text('<?= addslashes($this->translate('Publish!')) ?>');
+            } else {
+                $("button.submit span")
+                    .first()
+                    .removeClass('ui-icon-mail-closed')
+                    .addClass('ui-icon-mail-open')
+                    .next()
+                    .text('<?= addslashes($this->translate('Save Draft!')) ?>');
+            }
+        });
+        
+        $("#sendTest").click(function(){
+            if ($("#issue").valid()) {
+                var testEmail = $("#previewEmail").val();
+                
+                if (!testEmail || !testEmail.length) {
+                    alert('<?= addslashes($this->translate('Test email doesn\'t look right')) ?>');
+                    return;
+                }
+                
+                $("#issue").ajaxSubmit({
+                    data : {
+                        preview: true
+                    },
+                    dataType : 'json',
+                    error: function() {
+                        alert('<?= addslashes($this->translate('Well, that failed miserably.  Couldn\'t send out your preview email.')) ?>');
+                    },
+                    success : function (result) {
+                        alert(result); 
+                    }
+                });
+            }
+        });
+
+        if ($('#recipients').val()) {
+            $('#previewRecipients').show();
+        } else {
+            $('#previewRecipients').hide();
+        }
+
+        $('#previewRecipients').click(function(e){
+            e.preventDefault();
+            var recipients = $('#recipients').val();
+            if (!recipients) {
+                return;
+            }
+
+            var $this = $(this),
+                horizontalPadding = 30,
+                verticalPadding = 30;
+
+            $('<iframe id="externalSite" class="externalSite" src="/admin/newsletter/recipients?' + $.param({recipients: recipients}, false) + '" />').dialog({
+                title: $this.attr('title'),
+                autoOpen: true,
+                width: 800,
+                height: 500,
+                modal: true,
+                resizable: true,
+                autoResize: true
+            }).width(800 - horizontalPadding).height(500 - verticalPadding);
+        });
+    });
+</script>
+<style>
+    .ui-multiselect-menu {
+        width: 352px;
+    }
+</style>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<h2>
+    <span class="icon-menu icon-menu-newsletter" style="float: left; margin: -10px 7px 0 0;"></span>
+    <?= $title ?>
+</h2>
+
+<form id="issue" action="/admin/newsletter/issue?<?= http_build_query($_GET) ?>" method="post" accept-charset="utf-8" class="cmxform large">
+
+    <section id="formError" class="error ui-widget ui-state-error ui-corner-all" style="<?= (!empty($this->errors)) ? '' : 'display:none;' ?>">
+        <div>
+            <i class="fa fa-exclamation-triangle"></i>
+            <strong><?= $this->translate('Oh No!'); ?></strong>
+            <?= $this->translate('Something is not right with what you entered.  Check below for hints on how to fix things up.'); ?>
+        </div>
+    </section>
+
+    <fieldset>
+        <legend><?= $this->translate('Nameplate') ?></legend>
+        
+        <p>
+            <label for="from" class="required" title="<?= $this->translate('Please select who this issue is being sent from'); ?>">
+                <?= $this->translate('From'); ?>:
+                <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+            </label>
+            
+            <?php if (!$published) { ?>
+            
+            <?=
+                $this->formSelect(
+                    'from',
+                    $this->getFormValue('from'),
+                    array(
+                        'id' => 'from',
+                        'class' => 'required',
+                        'title' => $this->translate('Please select who this issue is being sent from')
+                    ),
+                    $this->from
+                );
+            ?>
+            
+            <?php } else { ?>
+            <span>
+                <?= $this->getFormValue('from') ?>
+            </span>
+            <?php } ?>
+
+            <?php if (!empty($this->errors['from'])) { ?>
+            <label for="from" class="error">
+                <?= implode('; ', $this->errors['from']) ?>
+            </label>
+            <?php } ?>
+        </p>
+        
+        <?php if (!$published) { ?>
+        
+        <p>
+            <label for="recipients" class="required" title="<?= $this->translate('Please select the recipient list'); ?>">
+                <?= $this->translate('To'); ?>:
+                <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+            </label>
+            <?=
+                $this->fromRecipients();
+            ?>
+
+            <button type="button"
+                    id="previewRecipients"
+                    class="ui-button ui-widget ui-corner-all ui-button-icon-only ui-state-default"
+                    title="<?= $this->translate('Preview Emails'); ?>"
+                    style="display: none;">
+                <span class="ui-button-icon-primary ui-icon ui-icon-newwin"></span>
+                <span class="ui-button-text"><?= $this->translate('Preview Emails'); ?></span>
+            </button>
+
+            <?php if (!empty($this->errors['recipients'])) { ?>
+            <label for="recipients" class="error">
+                <?= implode('; ', $this->errors['recipients']) ?>
+            </label>
+            <?php } ?>
+        </p>
+        <?php } ?>
+        
+        <p>
+            <label for="title" class="required" title="<?= $this->translate('Please enter the title of your newsletter issue'); ?>">
+                <?= $this->translate('Title'); ?>:
+                <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+            </label>
+            
+            <?php if (!$published) { ?>
+            <input
+                id="title"
+                name="title"
+                type="text"
+                title="<?= $this->translate('Please enter the title of your newsletter issue'); ?>"
+                value="<?= $this->getFormValue('title'); ?>"
+                class="required large"
+                maxlength="100" />
+
+            <?php } else { ?>
+            <span>
+                <?= $this->getFormValue('title'); ?>
+            </span>
+            <?php } ?>
+            
+            <?php if (!empty($this->errors['title'])) { ?>
+            <label for="title" class="error">
+                <?= implode('; ', $this->errors['title']) ?>
+            </label>
+            <?php } ?>
+        </p>
+        
+    </fieldset>
+    
+    <fieldset>
+        <legend><?= $this->translate('Body') ?></legend>
+        
+        <p>
+            <?php if (!$published) { ?>
+            
+            <textarea
+                id="content"
+                name="content"
+                title="<?= $this->translate('Enter the newsletter issue content'); ?>"
+                class="large"
+                cols="10"
+                rows="10"><?= $this->getFormValue('content'); ?></textarea>
+            <?php if (!empty($this->errors['contents'])) { ?>
+            <label for="content" class="error">
+                <?= implode('; ', $this->errors['content']) ?>
+            </label>
+            <?php } ?>
+            
+            <?php } else { ?>
+            <div style="width: 91%; max-height: 300px; overflow: auto; margin: 2%; border: 1px solid #502A00; -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px; padding: 2%;">
+                <?= $this->getFormValue('content'); ?>
+            </div>
+            <?php } ?>
+        </p>
+    </fieldset>
+    
+    <fieldset>
+        <legend><?= $this->translate('Publish Settings') ?></legend>
+        
+        <?php if (!$published) { ?>
+        <p>
+            <label for="previewEmail" title="<?= $this->translate('Enter an email address to send a test to'); ?>">
+                <?= $this->translate('Send Test Email'); ?>:
+            </label>
+            
+            <input
+                id="previewEmail"
+                name="previewEmail"
+                type="text"
+                title="<?= $this->translate('Enter an email address to send a test to'); ?>"
+                value="<?= $this->getFormValue('previewEmail'); ?>"
+                placeholder="<?= $this->translate('test@email.com') ?>"
+                class="large email"
+                maxlength="100" />
+            
+            <button type="button"
+                    id="sendTest"
+                    class="ui-button ui-widget ui-corner-all ui-button-text-icon-primary ui-state-default">
+                <span class="ui-button-icon-primary ui-icon ui-icon-mail-closed"></span>
+                <span class="ui-button-text">
+                    <?= $this->translate('Send Test!'); ?>
+                </span>
+            </button>
+            
+            <?php if (!empty($this->errors['previewEmail'])) { ?>
+            <label for="previewEmail" class="error">
+                <?= implode('; ', $this->errors['previewEmail']) ?>
+            </label>
+            <?php } ?>
+        </p>
+        <?php } ?>
+        
+        <p>
+            <label for="publish_1" class="required" title="<?= $this->translate('Are you ready to send out this issue?'); ?>">
+                <?= $this->translate('Publish'); ?>:
+                <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+            </label>
+
+            <?php if (!$published) { ?>
+            
+            <input
+                id="publish_0"
+                type="radio"
+                name="publish"
+                value="0"
+                class="required"
+                title="<?= $this->translate('Don\'t send this out yet'); ?>"
+                <?php
+                    $value = $this->getFormValue('publish');
+                    if ($value === null) {
+                        echo 'checked="checked"';
+                    } else if ($value == '0') {
+                        echo 'checked="checked"';
+                    }
+                ?> />
+                <label for="publish_0" class="radio" title="<?= $this->translate('Don\'t send this out yet'); ?>">
+                    <?= $this->translate('Draft'); ?>
+                </label>
+            <input
+                id="publish_1"
+                type="radio"
+                name="publish"
+                value="1"
+                title="<?= $this->translate('Send out newsletter'); ?>"
+                <?php echo (($this->getFormValue('publish') == '1') ? 'checked="checked"' : '') ?> />
+                <label for="publish_1" class="radio" title="<?= $this->translate('Send out newsletter'); ?>">
+                    <?= $this->translate('Send Now'); ?>
+                </label>
+
+            <?php } else { ?>
+            <span>
+                <?= $this->translate(
+                    'Sent on %s',
+                    $this->issue->publishedDatetime->toString('yyyy-MM-dd')
+                ) ?>
+            </span>
+            <?php } ?>
+            
+            <?php if (!empty($this->errors['publish'])) { ?>
+                <label for="publish" class="error">
+                    <?= implode('; ', $this->errors['publish']) ?>
+                </label>
+            <?php } ?>
+        </p>
+        
+        <p>
+            <label for="archive_1" class="required" title="<?= $this->translate('Do you want to publish this issue to your website and social media outlets?'); ?>">
+                <?= $this->translate('Post to Website'); ?>:
+                <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+            </label>
+
+            <input
+                id="archive_0"
+                type="radio"
+                name="archive"
+                value="0"
+                class="required"
+                title="<?= $this->translate('Keep this newsletter issue private'); ?>"
+                <?php
+                    $value = $this->getFormValue('archive');
+                    if ($value === null) {
+                        echo 'checked="checked"';
+                    } else if ($value == '0') {
+                        echo 'checked="checked"';
+                    }
+                ?> />
+                <label for="archive_0" class="radio" title="<?= $this->translate('Keep this newsletter issue private'); ?>">
+                    <?= $this->translate('No'); ?>
+                </label>
+            <input
+                id="archive_1"
+                type="radio"
+                name="archive"
+                value="1"
+                title="<?= $this->translate('Post this newsletter issue to your website and social media outlets'); ?>"
+                <?php echo (($this->getFormValue('archive') == '1') ? 'checked="checked"' : '') ?> />
+                <label for="archive_1" class="radio" title="<?= $this->translate('Post this newsletter issue to your website and social media outlets'); ?>">
+                    <?= $this->translate('Yes'); ?>
+                </label>
+
+
+            <?php if (!empty($this->errors['archive'])) { ?>
+                <label for="publish" class="error">
+                    <?= implode('; ', $this->errors['archive']) ?>
+                </label>
+            <?php } ?>
+        </p>
+    </fieldset>
+    <p>
+        <?php if (!$published) { ?>
+        <button type="submit" class="submit fieldset-align ui-button ui-widget ui-corner-all ui-button-text-icon-primary ui-state-default">
+            <span class="ui-button-icon-primary ui-icon ui-icon-mail-open"></span>
+            <span class="ui-button-text">
+                <?= $this->translate('Save Draft!'); ?>
+            </span>
+        </button>
+        <?php } else { ?>
+        <button type="submit" class="submit fieldset-align ui-button ui-widget ui-corner-all ui-button-text-only ui-state-default">
+            <span class="ui-button-text">
+                <i class="fa fa-check"></i>
+                <?= $this->translate('Update!'); ?>
+            </span>
+        </button>
+        <?php } ?>
+    </p>
+</form>

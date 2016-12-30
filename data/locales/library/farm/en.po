@@ -1,0 +1,294 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-09-08 07:36-0400\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Michael Caplan <michael@harvesthand.com>\n"
+"Language-Team: \n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: English\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: translate\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SearchPath-0: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF\n"
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Navigation.php:88
+msgid "Shares"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Navigation.php:95
+msgid "Share Sign Up"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Navigation.php:104
+msgid "My Shares"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Navigation.php:109
+msgid "Previous Shares"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Navigation.php:129
+msgid "Blog"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Customer.php:90
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Customer.php:186
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Customer.php:228
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Customer.php:237
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Customer.php:352
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Location.php:116
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Share.php:421
+msgid "A valid name is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Customer.php:157
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Customer.php:158
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Customer.php:169
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Customer.php:170
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Customer.php:323
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Customer.php:324
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Customer.php:335
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Customer.php:336
+msgid "Email is invalid"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Customer.php:199
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Location.php:304
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Share.php:455
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Delivery.php:366
+msgid "Enabled status is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Customer.php:206
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Customer.php:208
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Customer.php:359
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Customer.php:361
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Redirect.php:230
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Redirect.php:232
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Post.php:276
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Post.php:278
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Page.php:376
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Page.php:378
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Location.php:311
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Location.php:313
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Share.php:462
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Share.php:464
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Delivery.php:373
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Delivery.php:375
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/File.php:513
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/File.php:515
+msgid "'%field%' is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Customer.php:246
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Customer.php:256
+msgid "A valid address is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Customer.php:265
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Location.php:139
+msgid "A valid city is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Customer.php:274
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Location.php:148
+msgid "A valid state is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Customer.php:284
+msgid "A valid zip code is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Customer.php:293
+msgid "A valid country is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Customer.php:303
+msgid "A valid telephone is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Customer.php:313
+msgid "A valid fax is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Redirect.php:202
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Redirect.php:211
+msgid "A URL path is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Redirect.php:223
+msgid "Redirect code is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Post.php:207
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Page.php:317
+msgid "A valid title is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Post.php:218
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Page.php:328
+msgid "A token is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Post.php:237
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Page.php:347
+msgid "Published status is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Post.php:247
+msgid "Post published date is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Post.php:257
+msgid "A valid category is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Post.php:269
+msgid "A valid category token is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Post.php:357
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Post.php:364
+msgid "Uncategorized"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Page.php:357
+msgid "Page placement is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Page.php:368
+msgid "Page order should be specified as a number"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Location.php:164
+msgid "A country is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Location.php:174
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Location.php:184
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Location.php:194
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Location.php:204
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Location.php:214
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Location.php:224
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Location.php:234
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Location.php:244
+msgid "A valid longitude / latitude is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Location.php:257
+msgid "Day of week is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Location.php:266
+msgid "Start time is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Location.php:275
+msgid "End time is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Location.php:285
+msgid "A valid price is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Share.php:430
+msgid "A valid delivery schedule is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Share.php:556
+msgid "Unable to receive uploaded file."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Delivery.php:332
+msgid "A valid share is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Delivery.php:352
+msgid "A valid delivery week is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Delivery.php:353
+msgid "You've already added a delivery for this share week"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/File.php:459
+msgid "A valid file name is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Customer/Share.php:149
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Customer/Share.php:265
+msgid "A valid share size is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Customer/Share.php:166
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Customer/Share.php:282
+msgid "A valid share pickup location is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Customer/Share.php:174
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Customer/Share.php:290
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Customer/Addon.php:107
+msgid "A valid share quantity is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Customer/Share.php:214
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Customer/Addon.php:82
+msgid "A valid customer is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Customer/Share.php:303
+msgid "A valid payment plan is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Customer/Share.php:311
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Customer/Addon.php:119
+msgid "A payment method is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Share/Duration.php:374
+msgid "A valid start week is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Share/Duration.php:383
+msgid "Number of deliveries is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Share/Duration.php:404
+msgid "The total number of shares is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Share/Size.php:179
+msgid "A valid size is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Share/Size.php:188
+msgid "A valid size name is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Share/Duration/Location.php:170
+msgid "A valid location is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Delivery/Item.php:202
+msgid "Item looks too long"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Delivery/Item.php:212
+msgid "Source look too long"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Delivery/Item.php:225
+msgid "I don't know about this certification"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Delivery/Item.php:234
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Delivery/Item.php:244
+#: /home/michael/NetBeansProjects/farmnik/trunk/farms/library/HHF/Domain/Delivery/Item.php:254
+msgid "Quantity is to big"
+msgstr ""
+

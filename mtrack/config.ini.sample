@@ -1,0 +1,151 @@
+; vim:ts=2:sw=2:et:ft=dosini:
+; This file is parsed subject to the following rules:
+;
+; Unquoted tokens on the right hand side of an equals sign that correspond to
+; constants defined in PHP are replaced by the value of that constant.
+;
+; Values for the form ${name} are substituted with the value of the
+; corresponding PHP configuration directive, or if none is found, the
+; corresponding environmental variable value.
+;
+; Values of the form @{section:myname} are substituted with the value of the
+; option defined in this configuration file (for example, the "myname" value
+; in the "section" section).
+
+; Core configuration options
+[core]
+vardir = @VARDIR@
+dblocation = "@{core:vardir}/mtrac.db"
+dsn = @DSN@
+searchdb = "@{core:vardir}/search.db"
+projectname = @PROJECT@
+timezone = EST
+; startpage = a wiki page (default Today), or /wiki.php which induces a redirect
+; mimetype_detect = fileinfo or mimemagic or file - if empty will attempt to detect which one to use or bails
+; projectlogo = image url to show in nav bar
+; default.repo = name of default repo when constructing changeset links
+; weburl = URL (including trailing slash) of canonical home of this instance.  used when sending notification email.
+; default_email_domain = domain name to use for notification mail when the user is not present in the userinfo table
+; includes = comma separated list of files to include; supports plugins
+;debug.footer = 1
+; Use .wiki to indicate a wiki filename as distinct from a wiki dir
+wikifilenamesuffix=.md
+wikisyntax=markdown
+; Fresh installs start in "admin party" mode, which means that any user
+; accessing the system from the loopback (127.0.0.1 or ::1) is treated as admin.
+admin_party = true
+admin_party_remote_address = 127.0.0.1,::1
+; Which search engine to use. Lucene works out of the box, but Solr has
+; better performance and higher quality results.
+; MTrackSearchEngineLucene or MTrackSearchEngineSolr
+;search_engine = MTrackSearchEngineLucene
+
+; Whether the search engine is triggered via cron.
+; if set to true, search index is updated as part of the modifying
+; action, increasing overall latency for writes/updates.
+; It is STRONGLY recommended that you leave this at false and use the
+; cron job.
+update_search_immediate = false
+
+[repos]
+; If true, permit the creation and forking of per-user repositories
+allow_user_repo_creation = true
+; Where per-user repositories should be created (both git and hg)
+basedir = "@{core:vardir}/repos"
+
+; The SSH user@host which can be used to access repos. You must have configured
+; SSH access as described in the mtrack SSH installation documentation
+;serverurl = "code@example.com"
+
+; if the serverpathprefix is specified, the URLs will be advertised
+; prefixed with ~@PROJECT@/ making multi-tenancy scm management with
+; the same ssh user possible.
+;serverpathprefix = "@PROJECT@"
+
+; The URL over which users can clone, push, pull via HG.
+; You need to configure this URL yourself using your choice of Mercurial server.
+; This is ignored if you have set serverurl.
+;hg.serverurl = "http://example.com/hg"
+;
+; The URL over which users can clone, push, pull via GIT.
+; You need to configure this URL yourself using your choice of Git server.
+; This is ignored if you have set serverurl.
+;git.serverurl = "http://example.com/git"
+
+[solr]
+; How to find your Solr instance if you're using the Apache Solr search
+; engine implementation (search_engine = MTrackSearchEngineLucene)
+;url = "http://localhost:8983/solr"
+; For multi-tenant support, specify a unique namespace string that will
+; be prepended to all object identifiers in the Solr index for this instance.
+; It will also be stored as a property on all indexed data.  This allows the
+; same single Solr instance to serve multiple instances without bleeding
+; data between them.  If you are not deploying multi-tenant, then you do not
+; need to set this.
+; If you set it, it must be a UUID specific to this instance.
+;namespace = ""
+
+[ticket]
+default.classification = defect
+default.severity = normal
+default.priority = normal
+
+[notify]
+; Should we use SMTP directly?
+; Requires PHP with getmxrr functionality (not Windows on PHP < 5.3)
+use_smtp = false
+; If using SMTP, identifies a smart host via which mail will be routed.
+; Otherwise, we'll try to lookup the MX records via DNS.
+smtp_relay = "127.0.0.1"
+; If using SMTP, sets the envelope from
+smtp_from = "noreply@example.com"
+
+[gravatar]
+; default icon set to return if there is no gravatar for the user.
+; possible values are:
+; wavatar - generated faces with differing features and backgrounds
+; retro - awesome generated, 8-bit arcade-style pixelated faces
+; monsterid - a generated 'monster' with different colors, faces, etc
+; identicon - a geometric pattern based on an email hash
+default = "retro"
+
+; Defines some basic, reasonable, permission sets for 3 classes of user.
+; These are used in addition to whatever is selected by auth plugins
+[user_class_roles]
+anonymous = ReportViewer,BrowserViewer,WikiViewer,TimelineViewer,RoadmapViewer,TicketViewer
+authenticated = ReportViewer,BrowserViewer,WikiCreator,TimelineViewer,RoadmapViewer,TicketCreator,UserViewer,SnippetCreator,BrowserForker
+admin = ReportCreator,BrowserCreator,WikiCreator,TimelineViewer,RoadmapCreator,TicketCreator,EnumerationCreator,ComponentCreator,ProjectCreator,UserCreator,SnippetCreator,BrowserForker
+
+; Explicitly place certain users in certain user classes.  This is used mainly
+; to provide a means to indicate that particular users are classed as admins.
+; The auth module group assignments are the recommended way to go for more
+; powerful/flexible group/role assignment
+[user_classes]
+
+; use the tools section to override the location of certain
+; tools, in case you have multiples or in case they live outside
+; of the standard locations
+[tools]
+@TOOLS@
+; hg = /usr/local/bin/hg
+; svn = /opt/msys/3rdParty/bin/svn
+; svnlook = /opt/msys/3rdParty/bin/svnlook
+; php = /opt/msys/3rdParty/bin/php
+; diff3 = /opt/msys/3rdParty/bin/diff3
+; diff = /opt/msys/3rdParty/bin/diff
+
+[nav:mainnav]
+; If you want to turn off the wiki navigation link (does not disable the wiki,
+; just hides the link), uncomment the following line (the empty right hand 
+; side deletes the link keyed by the left hand side)
+; /wiki.php =
+; If you want to add in other links, you can do so by adding the link on the
+; left hand side of the equals and the label on the right hand side
+
+[plugins]
+; MTrackAuth_HTTP = /Users/wez/Sites/svn.htgroup, /Users/wez/Sites/svn.htpasswd
+; MTrackCommitCheck_NoEmptyLogMessage =
+; MTrackCommitCheck_RequiresTimeReference =
+; MTrackCaptcha_Recaptcha = public, private, userclasses
+; MTrackAuth_OpenID =
+; MTrackAuth_MTrack =

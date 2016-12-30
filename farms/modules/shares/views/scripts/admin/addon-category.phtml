@@ -1,0 +1,130 @@
+<?php
+
+if (empty($this->item)) {
+    $title = $this->translate('New Product Category');
+
+} else {
+    $title = $this->translate('Edit Product Category');
+}
+
+$this->headTitle($title);
+
+$this->loader()->append('jquery_validate')
+    ->append('hhf_modules_shares_admin_addon_category');
+?>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+    hhf.modules.shares.admin.addon.category.init();
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<h2>
+    <span class="icon-menu icon-menu-shares" style="float: left; margin: -10px 7px 0 0;"></span>
+    <?= $title ?>
+</h2>
+
+<section class="container_12">
+    <article class="grid_11">
+
+        <form id="item"
+              action="<?= $this->Url() ?>?<?= http_build_query($_GET) ?>"
+              method="post"
+              accept-charset="utf-8"
+              class="cmxform large"
+              enctype="multipart/form-data">
+
+            <section id="formError" class="error ui-widget ui-state-error ui-corner-all" style="<?= (!empty($this->errors)) ? '' : 'display:none;' ?>">
+                <div>
+                    <i class="fa fa-exclamation-triangle"></i>
+                    <strong><?= $this->translate('Oh No!'); ?></strong>
+                    <?= $this->translate('Something is not right with what you entered.  Check below for hints on how to fix things up.'); ?>
+                </div>
+            </section>
+
+            <fieldset>
+                <legend><?= $this->translate('Description') ?></legend>
+
+                <p>
+                    <label for="name" class="required">
+                        <?= $this->translate('Name'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+                    <input
+                        id="name"
+                        name="name"
+                        type="text"
+                        value="<?= $this->getFormValue('name'); ?>"
+                        class="required large"
+                        placeholder="<?= $this->translate('Product category name') ?>"
+                        <?= ($this->getFormValue('id') == 'Other-Goodies') ? 'readonly' : '' ?>
+                        maxlength="255" />
+
+                        <span class="tooltip"
+                              title="<?= $this->translate('Enter the name of your product category'); ?>">
+                            [?]
+                        </span>
+
+                    <?php if (!empty($this->errors['name'])) { ?>
+                        <label for="name" class="error">
+                            <?= implode('; ', $this->errors['name']) ?>
+                        </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="imageUpload">
+                        <?= $this->translate('Image'); ?>:</label>
+
+                    <?php if ($this->item != false && !empty($this->item->image)) { ?>
+                        <?php if (is_numeric($this->item->image)) { ?>
+                            <img
+                                src="/default/file/id/<?= $this->escape($this->item->image) ?>/s/<?= HHF_Domain_File::IMAGE_THUMBNAIL ?>"
+                                alt="<?= $this->getFormValue('name') ?>" />
+                        <?php } else { ?>
+                            <img
+                                src="<?= $this->escape($this->item->image) ?>"
+                                alt="<?= $this->getFormValue('name') ?>" />
+                        <?php } ?>
+
+                        <br style="clear:left;" />
+                    <?php } ?>
+
+                    <input
+                        id="image"
+                        name="image"
+                        type="hidden"
+                        value="<?= $this->getFormValue('image'); ?>" />
+
+                    <input
+                        id="imageUpload"
+                        name="imageUpload"
+                        type="file"
+                        value=""
+                        style="<?= ($this->item != false && !empty($this->item->image)) ? 'padding-left: 185px' : '' ?>"/>
+
+                        <span class="tooltip"
+                              title="<?= $this->translate('Optionally provide an image of your product category'); ?>">
+                            [?]
+                        </span>
+
+                    <?php if (!empty($this->errors['imageUpload'])) { ?>
+                        <label for="imageUpload" class="error">
+                            <?= implode('; ', $this->errors['imageUpload']) ?>
+                        </label>
+                    <?php } ?>
+                </p>
+
+            </fieldset>
+
+            <p>
+                <button type="submit" class="submit fieldset-align ui-button ui-widget ui-corner-all ui-button-text-only ui-state-default">
+                                <span class="ui-button-text">
+                                    <i class="fa fa-check"></i>
+                                    <?= $this->translate('Save!'); ?>
+                                </span>
+                </button>
+            </p>
+        </form>
+    </article>
+</section>

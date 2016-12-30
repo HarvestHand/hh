@@ -1,0 +1,134 @@
+<?php
+    $date = new DateTime($this->week . '1');
+    $startDate = (int) $date->format('U');
+    $date = new DateTime($this->week . '7');
+    $endDate = (int) $date->format('U');
+
+    $dayFormatter = new IntlDateFormatter(
+        Bootstrap::$locale,
+        IntlDateFormatter::FULL,
+        IntlDateFormatter::NONE
+    );
+
+    $title = $this->translate(
+        '%s Deliveries: %s - %s',
+        ucfirst($this->farm->getPreferences()->get('shares', 'shares', 'shares')),
+        $dayFormatter->format($startDate),
+        $dayFormatter->format($endDate)
+    );
+?>
+
+<h3><?= $this->escape($title) ?></h3>
+
+<?php if ($this->deliveries->count()) { ?>
+    <blockquote>
+    <?php foreach ($this->deliveries as $delivery) { ?>
+
+        <h4 class="delivery-share">
+            <?= $this->escape($delivery->getShare()->name); ?>
+        </h4>
+
+        <ul>
+        <?php foreach ($delivery->getItems() as $item) { ?>
+            <li>
+                <strong>
+                <?= $this->escape($item->item); ?> -
+                <?php 
+                    $sizes = array();
+
+                    if (!empty($item->quantity_0_5)) {
+                        foreach ($delivery->getShare()->sizes as $size) {
+                            if ($size->size == 0.5) {
+
+                                $sizes[] = array(
+                                    'name' => $size->name,
+                                    'qty' => $item->quantity_0_5
+                                );
+
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!empty($item->quantity_1)) {
+                        foreach ($delivery->getShare()->sizes as $size) {
+                            if ($size->size == 1) {
+
+                                $sizes[] = array(
+                                    'name' => $size->name,
+                                    'qty' => $item->quantity_1
+                                );
+
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!empty($item->quantity_2)) {
+                        foreach ($delivery->getShare()->sizes as $size) {
+                            if ($size->size == 2) {
+
+                                $sizes[] = array(
+                                    'name' => $size->name,
+                                    'qty' => $item->quantity_2
+                                );
+
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!empty($sizes)) {
+//                                    if (count($sizes) == 1) {
+//                                        echo $sizes[0]['qty'];
+//                                    } else {
+                            for ($x = 0, $c = count($sizes); $x < $c; ++$x) {
+                                echo $sizes[$x]['qty'] . ' (' . $sizes[$x]['name'] . ')';
+                                if ($x + 1 != $c) {
+                                    echo '; ';
+                                }
+                            }
+//                                    }
+                    }
+                ?>
+                </strong>
+
+                <br />
+                <?php if (!empty($item->source)) { ?>
+                    <?= $this->escape($item->source) ?> -
+                <?php } ?>
+                <?php 
+                    switch ($item->certification) {
+                        case HHF_Domain_Certification::ORGANIC:
+                            echo $this->translate('Certified Organic');
+                            break;
+                        case HHF_Domain_Certification::BIODYNAMIC:
+                            echo $this->translate('Biodynamic');
+                            break;
+                        case HHF_Domain_Certification::CERTIFIED_NATURAL:
+                            echo $this->translate('Certified Naturally Grown');
+                            break;
+                        case HHF_Domain_Certification::NATURAL:
+                            echo $this->translate('Naturally Grown');
+                            break;
+                        case HHF_Domain_Certification::GRASS:
+                            echo $this->translate('Pastured');
+                            break;
+                        case HHF_Domain_Certification::TRANSITIONAL:
+                            echo $this->translate('Transition to Organic');
+                            break;
+                        case HHF_Domain_Certification::CONVENTIONAL:
+                            echo $this->translate('Non Organic');
+                            break;
+                        case HHF_Domain_Certification::SPRAY_FREE:
+                            echo $this->translate('Spray Free');
+                            break;
+                    }
+                ?>
+            </li>
+        <?php } ?>
+        </ul>
+        
+    <?php } ?>
+    </blockquote>        
+<?php } ?>

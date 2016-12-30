@@ -1,0 +1,46 @@
+#!/bin/sh
+# vim:ts=2:sw=2:et:
+# Given the path to a solr tarball, extracts the bits needed to run a solr
+# instance for incub
+set -x
+solrpath=$1
+solrver=apache-solr-3.4.0
+if test -z "$solrpath" -o ! -f "$solrpath" ; then
+  echo "Must provide path to $solrver.tgz"
+  echo "Download it from http://lucene.apache.org/solr/"
+  exit 1
+fi
+
+# rm -rf solr
+
+RUNDIR=build/solr/run
+
+if test ! -d $RUNDIR ; then
+  mkdir $RUNDIR
+fi
+
+tar xzf $solrpath -C $RUNDIR $solrver/dist $solrver/contrib $solrver/example/etc $solrver/example/lib $solrver/example/solr $solrver/example/start.jar
+
+# Don't want the source
+find $RUNDIR/$solrver/contrib -type d -name src | xargs rm -rf
+
+# Re-arrange to avoid redundancy
+mkdir $RUNDIR/lib
+mv $RUNDIR/$solrver/dist $RUNDIR
+mv $RUNDIR/$solrver/contrib $RUNDIR
+mv $RUNDIR/$solrver/example/etc $RUNDIR
+mv $RUNDIR/$solrver/example/lib/* $RUNDIR/lib
+mv $RUNDIR/$solrver/example/solr/* $RUNDIR
+mv $RUNDIR/$solrver/example/start.jar $RUNDIR
+rm -rf $RUNDIR/$solrver
+
+# "alias" the webapp to a version number independent path
+mv $RUNDIR/dist/$solrver.war $RUNDIR/dist/solr.war
+
+# These configs are adjusted to match our re-arranged paths
+cp build/solr/solrconfig.xml $RUNDIR/conf
+cp build/solr/jetty.xml $RUNDIR/etc
+cp bin/solr-schema.xml $RUNDIR/conf/schema.xml
+
+mkdir $RUNDIR/logs $RUNDIR/data
+

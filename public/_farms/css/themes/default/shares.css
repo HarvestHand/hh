@@ -1,0 +1,115 @@
+#progress ol {
+padding: 0;
+margin: 0;
+}
+#progress .current {
+background-color: #754e25;
+font-weight: bold;
+color: #fff;
+}
+#progress li {
+margin: 0 0 0 0;
+padding: 0 15px;
+float: left;
+line-height: 40px;
+list-style-position: inside;
+list-style-type: decimal;
+color: #666;
+}
+.share {
+width: 96%;
+margin: 2%;
+border: 1px solid #502A00;
+-moz-border-radius: 4px;
+-webkit-border-radius: 4px;
+border-radius: 4px;
+}
+.share td{
+border-width: 0px;
+}
+.share .name {
+font-size: 110%;
+font-weight: bold;
+}
+.share .thumbnail {
+padding: 0 7px 7px 0;
+vertical-align:top;
+}
+.share .quantity {
+width: 40px !important;
+}
+.share select {
+
+}
+.share .more-details {
+padding-left: 10px;
+font-size: 70%;
+}
+.more-info.hover {
+    text-decoration: underline;
+}
+#register-summary {
+width: 100%;
+}
+#register-summary caption {
+font-size:21px;
+font-weight: bold;
+padding-bottom: 7px;
+}
+#register-summary th {
+font-weight: bold;
+}
+#register-summary td, #register-summary th {
+margin-bottom: 10px;
+border: 1px solid #502A00;
+padding: 10px;
+}
+
+#farm-address {
+padding-bottom: 10px;
+padding-left: 60px;
+}
+.delivery-share {
+font-weight: bold;
+padding: 7px 0 5px 0;
+}
+.delivery-share-items dt {
+font-weight: bold;
+}
+
+.ui-spinner{
+    height: 45px;
+    width: 80px !important;
+}
+
+.quantity,
+#inner-editor {
+    height: 45px !important;
+}
+.ui-spinner-button {
+    left: 40px;
+    width: 40px !important;
+}
+.ui-button-text > .ui-icon {
+    left: 10px;
+}
+
+select,
+.location,
+.size{
+    width: 230px !important;
+}
+
+section.error,
+section.info{
+    width: inherit !important;
+}
+
+form.large label.error {
+    margin: 0 !important;
+}
+
+input[type=text], input[type=password], form.large textarea {
+    width: 230px !important;
+}
+

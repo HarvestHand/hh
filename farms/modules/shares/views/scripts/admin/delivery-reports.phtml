@@ -1,0 +1,346 @@
+<?php
+    $this->headTitle($this->translate('Delivery Reports'));
+
+    $this->loader()->append('jquery_dataTables')
+        ->append('jquery_dropdown')
+		->append('jquery_ui_multiselect.js');
+    $this->loadDatejs(Bootstrap::$locale);
+?>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+    
+    Date.setWeek = function(s) {
+        var yw = s.split('W'),
+            weeks = 7 * yw[1] - 7,
+            date1 = new Date(yw[0], 0, 1),
+            day1 = date1.getDay(),
+            incr = (day1 > 0 && day1 < 5)? -1: 1;
+            
+        if (yw[2]) {
+            weeks += (+yw[2]) - 1;
+        }
+
+        while(date1.getDay() != 1) {
+            date1.setDate(date1.getDate() + incr);
+        }
+        
+        date1.setDate(date1.getDate() + weeks);
+        return date1;
+    }
+    
+    $(document).ready(function(){
+
+        $.fn.dataTableExt.aoFeatures.push({
+            "fnInit": function(oSettings) {
+                return $('<ul class="dataTables_add dropdown-container"><li class="dropdown btn-group">' +
+                    '<a href="#" title="<?= $this->translate('Actions') ?>" class="btn">' +
+                    '<?= addslashes($this->translate('Actions')) ?></a>' +
+                    '<button type="button" class="btn dropdown-toggle" data-toggle="dropdown">' +
+                    '<span class="caret"></span></button>' +
+                    '<ul class="dropdown-menu">' +
+                    '<li><a href="/admin/shares/delivery-reports/format/csv/year/<?= (int) $this->year ?>" title="<?= $this->translate('Export to a spreadsheet program') ?>">' +
+                    '<?= $this->translate('Export to CSV') ?></a></li></ul></li></ul>')[0];
+            },
+            "cFeature": "a",
+            "sFeature": "Add"
+        });
+
+        $.fn.dataTableExt.aoFeatures.push({
+            "fnInit": function(oSettings) {
+                return $(
+                    '<form class="dataTables_year" action="/admin/shares/deliveries" method="get" style="float: left; padding-right: 10px">' +
+                        <?php if (count($this->years) > 1) { ?>
+                        '<label for="year"><?= addslashes($this->translate('Year')); ?>: </label>' +
+                        '<?=
+                            addslashes(str_replace("\n", '', $this->formSelect(
+                                'year',
+                                $this->year,
+                                array(),
+                                $this->years
+                            )));
+                        ?>' +
+                        <?php } ?>
+                        '</form> '
+                )[0];
+            },
+            "cFeature": "y",
+            "sFeature": "Year"
+        });
+
+        var table = $("#deliveries").dataTable({
+            "bJQueryUI": true,
+            "bAutoWidth": false,
+            "bDeferRender": true,
+            "bLengthChange": false,
+            "bProcessing": true,
+            "iDisplayLength": 50,
+            "iDeferLoading": <?= $this->foundRows ?>,
+            "aaSorting": [[1, "desc"]],
+            "aoColumns": [ 
+                {
+                    "sType": "string",
+                    "mDataProp": "weekNumber",
+                    "fnRender": function (oObj) {
+                        if (!oObj.aData.hasOwnProperty("DT_RowId")) {
+                            return oObj.aData.weekNumber;
+                        } else {
+                            var weekArray = oObj.aData.week.split("W");
+                            return weekArray[1];
+                        }
+                    }
+                },
+                {
+                    "sType": "html",
+                    "mDataProp": "week",
+                    "fnRender": function (oObj) {
+                        if (!oObj.aData.hasOwnProperty("DT_RowId")) {
+                            return oObj.aData.week;
+                        } else {
+                            var weekArray = oObj.aData.week.split("W");
+                            var week = weekArray[1],
+                                year = weekArray[0],
+                                date = new Date(),
+                                range = "";
+                                
+                                date.setYear(year);
+                                date.setWeek(week);
+                                
+                                if (date.getDay() > 1) {
+                                    date.setDate(date.getDate() - (date.getDay() - 1));
+                                } else if (date.getDay() < 1) {
+                                    date.setDate(date.getDate() + 1);
+                                }
+                                
+                                range = "Week of " + date.toString("yyyy-MM-dd") + " to ";
+                                
+                                date.setDate(date.getDate() + 6);
+                                
+                                range += date.toString("yyyy-MM-dd");
+                            
+                            return '<a href="/admin/shares/delivery-report?week=' + 
+                                oObj.aData.week + '">' + range + '</a>';
+                        }
+                    }
+                },
+                { 
+                    "bSortable": false,
+                    "bSearchable": false,
+                    "mDataProp": "_actions",
+                    "sClass": "right",
+                    "fnRender": function (oObj) {
+                        if (!oObj.aData.hasOwnProperty("DT_RowId")) {
+                            return oObj.aData._actions;
+                        }
+                        var $return = '<ul class="dropdown-container">' +
+                            '<li class="dropdown btn-group">' +
+                            '<a href="/admin/shares/delivery-report?week=' + oObj.aData.weekNumber + '" title="<?= $this->translate('View report') ?>" class="btn"><?= $this->translate('View') ?></a><button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>';
+
+                        $return += '<ul class="dropdown-menu">' +
+                            '<li><a class="locations" href="/admin/shares/delivery-report?week=' + oObj.aData.weekNumber + '" title="<?= $this->translate('Limit the report to select locations') ?>"><?= $this->translate('View by Locations') ?></a></li></ul></li></ul>';
+
+                        return $return;
+                    }
+                }
+            ],
+            "bSortClasses": false,
+            "sAjaxSource": "<?= addslashes($this->Url()) ?>",
+            "bServerSide": true,
+            "sDom": '<"H"ya<"clear">r<"right"ip>>t<"F"<"right"ip>>'
+        })
+        .delegate("tbody tr", "mouseover mouseout", function(e) {
+            if (e.type == "mouseover") {
+                $(e.currentTarget).addClass('hover');
+            } else {
+                $(e.currentTarget).removeClass('hover');
+            }
+        });
+		
+        $(".dataTables_year select").change(function(){
+            window.location = '/admin/shares/delivery-reports/year/' + $(this).val();
+        });
+
+        $('.dropdown-toggle').dropdown();
+
+        $("#deliveries").on('click', '.locations', function(event) {
+            event.preventDefault();
+
+            var $this = $(this),
+                horizontalPadding = 30,
+                verticalPadding = 30;
+
+            $('#locationDialog').dialog({
+                modal: true,
+                autoOpen: true,
+                width: 650,
+                height: 400,
+                resizable: true,
+                autoResize: true,
+                open: function() {
+                    $(this).find('form')
+                        .attr('action', $this.attr('href'))
+                        .find('[name=week]')
+                        .val($this[0].search.substr(6,7));
+
+                    $('#locations').multiselect({
+                        header: false,
+                        noneSelectedText: '<?= $this->translate('Select Report Locations') ?>'
+                    }).multiselect('uncheckAll');
+                }
+            });
+
+        });
+		
+	    new FixedHeader(table);
+    });
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<h2>
+    <span class="icon-menu icon-menu-shares" style="float: left; margin: -10px 7px 0 0;"></span>
+    <?= $this->translate('Delivery Reports') ?>
+</h2>
+
+<section class="container_12">
+    <article class="grid_9">
+
+        <?php if (!empty($this->messages)) { ?>
+            <section class="info ui-widget ui-state-highlight ui-corner-all">
+                <div>
+                    <i class="fa fa-info-circle"></i>
+                    <strong><?= $this->translate('Hey!'); ?></strong>
+                    <?= $this->escape(implode('; ', $this->messages)); ?>
+                </div>
+            </section>
+        <?php } ?>
+
+        <?php if (count($this->deliveryReports) || !empty($this->years)) { ?>
+
+            <table id="deliveries" class="display">
+                <thead>
+                    <tr>
+                        <th
+                            width="15%"
+                            title="<?= $this->translate('Delivery Week') ?>">
+                                <?= $this->translate('Week') ?>
+                        </th>
+                        <th
+                            width="55%"
+                            title="<?= $this->translate('Delivery Date') ?>">
+                                <?= $this->translate('Date') ?>
+                        </th>
+                        <th
+                            width="15%"
+                            title="<?= $this->translate('Delivery Actions') ?>">
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($this->deliveryReports as $delivery) { ?>
+                        <?php
+                            list($year, $week) = explode('W', $delivery['week']);
+                            $date = new DateTime();
+                            $date->setISODate($year, $week, 1);
+                            $startTimestamp = (int) $date->format('U');
+                            $date->setISODate($year, $week, 7);
+                            $endTimestamp = (int) $date->format('U');
+                        ?>
+                        <tr>
+                            <td>
+                                <?= (int) $week ?>
+                            </td>
+                            <td>
+                                <a class="view_report_link" href="/admin/shares/delivery-report?<?= 
+                                    http_build_query(array('week' => $delivery['week'])); 
+                                ?>">
+                                <?php
+                                    echo $this->translate(
+                                        'Week of %s to %s',
+                                        date('Y-m-d', $startTimestamp),
+                                        date('Y-m-d', $endTimestamp)
+                                    );
+                                ?>
+                                </a>
+                            </td>
+                            <td class="right">
+                                <ul class="dropdown-container">
+                                    <li class="dropdown btn-group">
+                                        <a href="/admin/shares/delivery-report?week=<?= $this->escape($delivery['week']) ?>"
+                                           title="<?= $this->translate('View report') ?>"
+                                           class="btn">
+                                            <?= $this->translate('View') ?>
+                                        </a>
+                                        <button type="button"
+                                                class="btn dropdown-toggle"
+                                                data-toggle="dropdown">
+                                            <span class="caret"></span>
+                                        </button>
+
+                                        <ul class="dropdown-menu">
+                                            <li><a class="locations" href="/admin/shares/delivery-report?week=<?= $this->escape($delivery['week']) ?>"
+                                                   title="<?= $this->translate('Limit the report to select locations') ?>">
+                                                    <?= $this->translate('View by Locations') ?>
+                                                </a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+
+        <?php } else { ?>
+
+            <p><?=
+                $this->translate(
+                    'You haven\'t added a delivery yet, so there is nothing to report on yet.  <a href="%s">Add a delivery.</a>',
+                    '/admin/shares/delivery'
+                ); ?></p>
+        <?php } ?>
+    </article>
+
+    <?= $this->render('admin-sub-nav.phtml'); ?>
+</section>
+
+<div id="locationDialog" title="<?= $this->translate('Locations Filter') ?>" style="display: none">
+    <form action=""
+          method="get"
+          accept-charset="utf-8"
+          class="cmxform large">
+
+        <input type="hidden" name="week" value="">
+
+        <fieldset>
+            <legend><?= $this->translate('Limit to Selected Locations') ?></legend>
+
+            <p>
+                <label for="locations">
+                    <?= $this->translate('Locations') ?>
+                </label>
+                <?php
+                echo $this->formSelect(
+                    'locations[]',
+                    false,
+                    array(
+                        'id' => 'locations',
+                        'title' => $this->translate('Specify which pickup or delivery locations the report should be limited to'),
+                        'multiple' => true
+                    ),
+                    $this->locations
+                );
+                ?>
+            </p>
+        </fieldset>
+
+        <p>
+            <button type="submit" class="submit fieldset-align ui-button ui-widget ui-corner-all ui-button-text-only ui-state-default">
+                <span class="ui-button-text">
+                    <i class="fa fa-check"></i>
+                    <?= $this->translate('Run the Report!'); ?>
+                </span>
+            </button>
+        </p>
+    </form>
+
+</div>

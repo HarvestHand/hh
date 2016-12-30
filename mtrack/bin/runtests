@@ -1,0 +1,367 @@
+#!/usr/bin/env perl
+# vim:ts=2:sw=2:et:ft=perl:
+# For copyright and licensing terms, see the file named LICENSE
+#
+# This is still in early development; makes assumptions about wez's dev env.
+# if you're truly interested in this aspect of mtrack, discuss it with wez!
+use strict;
+use Cwd qw(abs_path getcwd);
+use Getopt::Long;
+use Data::Dumper;
+use Sys::Hostname;
+use File::Basename;
+use IO::File;
+eval "use LWP::UserAgent;";
+
+my $root = abs_path(getcwd());
+my $http_port = 8081;
+my $ssh_port = 8082;
+my $solr_port = 8083;
+my $use_solr = 0;
+my $use_selenium = 0;
+my $use_sshd = 0;
+my $use_pg = 0;
+
+# System detection
+my $apache_server_root;
+my $httpd;
+my $coverage = 0;
+my $nocrap = '/Users/wez/src/nocrap/nocrap';
+
+GetOptions(
+  "coverage" => \$coverage,
+  "nocrap=s" => \$nocrap,
+  "solr" => \$use_solr,
+  "selenium" => \$use_selenium,
+  "pg|postgres" => \$use_pg,
+  "sshd" => \$use_sshd,
+);
+
+$ENV{INCUB_MIME_TYPES_FILE} = "";
+if ($^O eq 'darwin') {
+  $apache_server_root = '/usr/libexec/apache2';
+  $httpd = '/usr/sbin/httpd';
+} elsif ($^O eq 'solaris') {
+  $httpd = '/opt/apache22/bin/i386/httpd';
+  $apache_server_root = "/opt/apache22/libexec/i386";
+  $ENV{INCUB_MIME_TYPES_FILE} = "TypesConfig /opt/apache22/conf/mime.types";
+  $ENV{PATH} = "/opt/php5/bin/i386:" . $ENV{PATH};
+  $ENV{INCUB_PHP_RUNNER} = "/opt/msys/3rdParty/bin/php53";
+} else {
+  die("Don't know how to find required test bits for $^O\n");
+}
+
+my $selenium_url = 'http://selenium.googlecode.com/files/selenium-server-standalone-2.13.0.jar';
+my $solr_url = 'http://www.gtlib.gatech.edu/pub/apache//lucene/solr/3.4.0/apache-solr-3.4.0.tgz';
+
+
+$ENV{INCUB_HOSTNAME} = hostname();
+$ENV{INCUB_ROOT} = $root;
+$ENV{INCUB_APACHE_SERVER_ROOT} = $apache_server_root;
+$ENV{INCUB_APACHE_PORT} = $http_port;
+$ENV{INCUB_SSH_PORT} = $ssh_port;
+
+if ($use_selenium =~ m/^http/) {
+  $ENV{INCUB_WEBDRIVER} = $use_selenium;
+} elsif ($use_selenium) {
+  $ENV{INCUB_WEBDRIVER} = "http://$ENV{INCUB_HOSTNAME}:4444/wd/hub";
+}
+
+if ($coverage) {
+  # you need "nocrap" for coverage data
+  # https://bitbucket.org/wez/nocrap/
+  $ENV{INCUB_COVERAGE} = $nocrap;
+
+  system($nocrap, 'init');
+}
+
+my $selenium_pid;
+sub stop_selenium {
+  if ($selenium_pid) {
+    print("# Stopping selenium $selenium_pid\n");
+    kill 'TERM', $selenium_pid;
+  }
+}
+
+sub start_selenium {
+  if (! -f "build/" . basename($selenium_url)) {
+    chdir("build");
+    system('wget', $selenium_url);
+    chdir('..');
+  }
+  $selenium_pid = fork();
+  if ($selenium_pid == 0) {
+    open STDOUT, ">build/selenium.log";
+    open STDERR, ">&STDOUT";
+    exec('java', '-jar', "build/" . basename($selenium_url),
+      '-host', $ENV{INCUB_HOSTNAME});
+    exit(0);
+  }
+}
+END {
+  stop_selenium();
+}
+
+my $solr_pid;
+sub stop_solr {
+  if ($solr_pid) {
+    print("# Stopping solr $solr_pid\n");
+    kill 'TERM', $solr_pid;
+  }
+}
+
+sub start_solr {
+  $ENV{INCUB_SOLR_PORT} = $solr_port;
+  if (! -f "build/" . basename($solr_url)) {
+    chdir("build");
+    system('wget', $solr_url);
+    chdir('..');
+  }
+  if (! -d "build/solr/run") {
+    system("build/solr/extract-solr", "build/" . basename($solr_url));
+  }
+  $solr_pid = fork();
+  if ($solr_pid == 0) {
+    open STDOUT, ">build/solr.log";
+    open STDERR, ">&STDOUT";
+    system("rm", "-rf", "$root/build/solr/run/data");
+    mkdir("$root/build/solr/run/data");
+    exec('java',
+      "-Dsolr.solr.home=$root/build/solr/run",
+      "-Djetty.port=$solr_port",
+      "-Djetty.home=$root/build/solr/run",
+      "-Djetty.logs=$root/build/solr/run/logs",
+      "-Dsolr.data.dir=$root/build/solr/run/data",
+      "-jar", "$root/build/solr/run/start.jar");
+    exit(1);
+  }
+}
+END {
+  stop_solr();
+}
+
+sub start_apache {
+  if (-f "build/httpd/apache.pid") {
+    print("# Stopping lingering apache\n");
+    system($httpd, '-f', "$root/build/httpd/apache.conf", '-k', 'stop');
+    sleep(5);
+  }
+  print("# Starting apache\n");
+  system($httpd, '-f', "$root/build/httpd/apache.conf", '-k', 'start');
+}
+
+sub stop_apache {
+  print("# Stopping apache\n");
+  system($httpd, '-f', "$root/build/httpd/apache.conf", '-k', 'stop');
+}
+
+my $sshd_pid;
+sub start_sshd {
+  print("# Starting sshd\n");
+  $sshd_pid = fork();
+  if ($sshd_pid eq 0) {
+    mkdir("$root/build/ssh");
+    open STDOUT, ">build/ssh/sshd.log";
+    open STDERR, ">&STDOUT";
+    if (! -f "$root/build/ssh/host_key") {
+      system("ssh-keygen", "-f", "$root/build/ssh/host_key",
+        "-q", "-t", "rsa", "-C", "", '-N', '');
+    }
+    exec('/usr/sbin/sshd', '-D', '-e', '-h', "$root/build/ssh/host_key",
+      "-p", $ssh_port, "-o", "AuthorizedKeysFile=$root/build/ssh/keys",
+      "-o", "PidFile=$root/build/ssh/pid"
+    );
+    exit(1);
+  }
+}
+
+sub stop_sshd {
+  if ($sshd_pid) {
+    print("# Stopping sshd\n");
+    kill 'TERM', $sshd_pid;
+  }
+}
+END {
+  stop_sshd();
+}
+
+my $pg_started = 0;
+sub start_pg {
+  $ENV{INCUB_PG_PORT} = 8084;
+  $ENV{INCUB_DSN} = "pgsql:dbname=mtrack;host=127.0.0.1";
+  $ENV{PGPORT} = 8084;
+
+  if (-d "$root/build/pgdata") {
+    system("rm -rf $root/build/pgdata");
+  }
+  $pg_started = 1;
+  system("pg_ctl initdb -D $root/build/pgdata >$root/build/pg.log 2>&1");
+  my $fh = IO::File->new(">>$root/build/pgdata/postgresql.conf");
+  print $fh "\nport = 8084\n";
+  $fh->close();
+  system("pg_ctl start -D $root/build/pgdata -l $root/build/pg.log");
+
+  wait_for_port($ENV{INCUB_PG_PORT}, "Waiting for postgres to come up");
+
+  system("createdb -p $ENV{INCUB_PG_PORT} -E=UTF-8 mtrack");
+}
+
+sub stop_pg {
+  if ($pg_started) {
+    system("pg_ctl stop -D $root/build/pgdata -m immediate");
+  }
+}
+END {
+  stop_pg();
+}
+
+
+sub cleanup {
+  # remove server side coverage data from prior run
+  foreach my $cov (<build/.covdata/*>) {
+    unlink($cov);
+  }
+}
+
+start_selenium() if $use_selenium;
+start_solr() if $use_solr;
+start_sshd() if $use_sshd;
+start_pg() if $use_pg;
+cleanup();
+
+sub init_instance {
+  my $vardir = "$root/build/var";
+  system("rm -rf $vardir");
+  mkdir($vardir);
+  $ENV{MTRACK_CONFIG_FILE} = "$vardir/config.ini";
+  my $dsn = '';
+  if ($ENV{INCUB_DSN}) {
+    $dsn = " --dsn '$ENV{INCUB_DSN}'";
+  }
+  system("./bin/setup $dsn --vardir $vardir --config-file $vardir/config.ini --http-user-pass admin admin >$vardir/init.log 2>&1");
+  if ($?) {
+    print STDERR "Failed to init\n";
+    system("cat $vardir/init.log");
+    exit(1);
+  }
+
+  my $search_engine = $use_solr ?
+    'MTrackSearchEngineSolr' : 'MTrackSearchEngineLucene';
+
+  # we have to put this in runtime.config because php's parse_ini_file
+  # routine will clobber prior values when it encounters a second [section]
+  # in an ini file...
+  my $fh = IO::File->new(">>$vardir/runtime.config");
+  print $fh <<INI;
+
+[core]
+weburl="http://$ENV{INCUB_HOSTNAME}:$http_port/"
+search_engine = $search_engine
+admin_party = false
+
+[repos]
+serverurl="$ENV{INCUB_HOSTNAME}:$ssh_port"
+authorized_keys2="$root/build/ssh/keys"
+
+[solr]
+url = "http://$ENV{INCUB_HOSTNAME}:$solr_port/solr"
+
+INI
+  $fh->close();
+  undef($fh);
+}
+
+init_instance();
+start_apache();
+
+sub wait_for_port {
+  my ($port, $msg) = @_;
+  use IO::Socket::INET;
+  for my $i (1..15) {
+    my $sock = IO::Socket::INET->new(
+      PeerAddr => '127.0.0.1',
+      PeerPort => $port,
+      Proto => 'tcp');
+    return if $sock;
+    if ($i eq 1) {
+      print("# $msg\n");
+    }
+    sleep(2);
+  }
+  die("Timed out waiting for port $port");
+}
+
+sub wait_for_url {
+  my ($url, $msg) = @_;
+  my $ua;
+  eval {
+    $ua = LWP::UserAgent->new;
+    $ua->timeout(10);
+  };
+
+  for my $i (1..6) {
+    if (!defined($ua)) {
+      system("curl -s --retry-delay 2 --retry 6 --retry-max-time 15 $url >/dev/null");
+      if ($? == 0) {
+        return;
+      }
+    } else {
+      my $r = $ua->get($url);
+      return if $r->is_success;
+    }
+    if ($i eq 1) {
+      print("# $msg\n");
+    }
+    sleep(2);
+  }
+  die("Timed out waiting for a response from $url");
+}
+wait_for_url($ENV{INCUB_WEBDRIVER} . "/status",
+  "Waiting for Selenium to come up") if $selenium_pid;
+wait_for_url("http://$ENV{INCUB_HOSTNAME}:$http_port/mtrack.css",
+  "Waiting for Apache to be ready");
+wait_for_url("http://$ENV{INCUB_HOSTNAME}:$solr_port/solr/admin/ping",
+  "Waiting for Solr to be ready") if $solr_pid;
+
+if (@ARGV eq 0) {
+  push @ARGV, 't';
+}
+
+if ($^O eq 'solaris') {
+  use File::Find;
+  my @tests;
+
+  sub collect_tests {
+    my ($t) = @_;
+
+    if (-d $t) {
+      find({
+        wanted => sub {
+          if (-f $File::Find::name) {
+            collect_tests($File::Find::name);
+          }
+        },
+        no_chdir => 1
+      }, $t);
+    } else {
+      if ($t =~ m/\.php$/) {
+        push @tests, $t;
+      }
+    }
+  }
+  for (@ARGV) {
+    collect_tests($_);
+  }
+  for (@tests) {
+    system("bin/prove-php", $_);
+  }
+
+} else {
+  system("prove", "-e", "bin/prove-php", '--ext', '.php', '-v', '-r', @ARGV);
+}
+stop_apache();
+
+if ($coverage) {
+  system($nocrap, 'compute');
+}
+

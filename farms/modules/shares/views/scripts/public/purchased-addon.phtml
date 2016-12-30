@@ -1,0 +1,85 @@
+<?php
+    /* @var $share HHF_Domain_Addon */
+    $addon = $this->addon->getAddon();
+
+    $this->headTitle(
+        $this->translate(
+            'Add On Purchased: %s',
+            $addon->name
+        )
+    );
+?>
+
+<h2><?= $this->translate('Add On Purchased: %s', $this->escape($addon->name)) ?></h2>
+
+<?php if ($addon->image) { ?>
+    <img
+        src="<?= $this->farm->getBaseUri() ?>default/file/id/<?= $this->escape($addon->image) ?>/s/<?= HHF_Domain_File::IMAGE_THUMBNAIL ?>"
+        alt="<?= $this->escape($addon->name) ?>"
+        align="right"
+        class="thumbnail" />
+<?php } ?>
+
+<dl>
+    <?php if (!empty($this->category)) { ?>
+        <dt><?= $this->translate('Category') ?>:</dt>
+        <dd>
+            <?= $this->category; ?>
+        </dd>
+    <?php } ?>
+
+    <dt><?= $this->translate('Purchase Date') ?>:</dt>
+    <dd>
+        <?= $this->escape($this->addon->addedDatetime->toString('yyyy-MM-dd')); ?>
+    </dd>
+
+    <dt><?= $this->translate('Delivered Week') ?>:</dt>
+    <dd>
+        <?php
+            list($year, $week) = explode('W', $this->addon->week);
+
+            $date = new Zend_Date();
+            $date->setYear($year);
+            $date->setWeek($week);
+            $date->set(1, Zend_Date::WEEKDAY_8601);
+            $timestamp = $date->getTimestamp();
+
+            $range = $date->toString('yyyy-MM-dd') . ' - ';
+            $date->set(7, Zend_Date::WEEKDAY_8601);
+            $range .= $date->toString('yyyy-MM-dd');
+        ?>
+        <?= $this->escape($range); ?>
+    </dd>
+
+    <dt><?= $this->translate('Purchased Quantity') ?>:</dt>
+    <dd>
+        <?= $this->escape($this->addon->quantity); ?>
+    </dd>
+
+    <?php if (!empty($addon->details)) { ?>
+    <dt><?= $this->translate('Add On Details') ?>:</dt>
+    <dd>
+        <?= $addon->details; ?>
+    </dd>
+    <?php } ?>
+
+    <?php if ($this->invoice->count()) { ?>
+
+        <dt><?= $this->translate('Invoice') ?>:</dt>
+        <dd>
+              <a href="../shares/purchase-history-invoice?id=<?= $this->invoice['id'];?>"><?= $this->translate(
+                        'Invoice %d for %s',
+                        $this->invoice['id'],
+                        $this->currency($this->invoice['outstandingAmount'])
+                    ) ?></a><br/>
+        </dd>
+    <?php } ?>
+</dl>
+
+<a href="/shares/purchase-history#ui-tabs-2">
+    <button type="button"
+            class="submit fieldset-align btn btn-default"
+            title="<?= $this->translate('Back to purchase history') ?>">
+        <i class="fa fa-angle-left"></i>
+    </button>
+</a>

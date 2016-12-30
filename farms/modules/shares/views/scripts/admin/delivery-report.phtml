@@ -1,0 +1,757 @@
+<?php
+    $dateFormatter = new IntlDateFormatter(
+        Bootstrap::$locale,
+        IntlDateFormatter::LONG,
+        IntlDateFormatter::NONE
+    );
+
+    $date = new DateTime();
+    $date->setISODate($this->year, $this->week, 1);
+    $startDate = (int) $date->format('U');
+    $date->setISODate($this->year, $this->week, 7);
+    $endDate = (int) $date->format('U');
+
+    $title = $this->translate(
+        'Delivery Report: %s to %s',
+        $dateFormatter->format($startDate),
+        $dateFormatter->format($endDate)
+    );
+
+    $this->headTitle($title);
+
+    $this->loader()->append('jquery_tablesorter');
+
+    $dayFormatter = new IntlDateFormatter(
+        Bootstrap::$locale,
+        IntlDateFormatter::FULL,
+        IntlDateFormatter::NONE,
+        null,
+        null,
+        'EEEE'
+    );
+
+    $addonsDisplayed = array();
+
+    $daysOfWeek = null;
+    $weekDayTotals = array();
+    $weekDayAddonTotals = array();
+    $weekTotals = array();
+    $weekAddonTotals = array();
+
+?>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $(".location").each(function(){
+            var $this = $(this);
+            if ($this.find("tbody tr").length > 0) {
+                $this.tablesorter({
+                    sortList : [[0,0]],
+                    widgets: ['zebra']
+                });
+            }
+        });
+
+        $("#locations").change(function(){
+            var location = $(this).val();
+
+            if (location == '') {
+                // show all
+                $(".location, .weekDaySummary, .weekSummary").show();
+            } else {
+                // hide all, except
+                $(".location, .weekDaySummary, .weekSummary").hide();
+
+                var type = location.substr(0,1);
+                var id = location.substr(1);
+
+                if (type == 'L') {
+                    $("#location-" + id).show();
+                } else {
+                    $(".location, .weekDaySummary").each(function() {
+                        var $this = $(this);
+                        if ($this.data('dayofweek') == id) {
+                            $this.show();
+                        }
+                    });
+                }
+            }
+        });
+    });
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<h2>
+    <span class="icon-menu icon-menu-shares" style="float: left; margin: -10px 7px 0 0;"></span>
+    <?= $title ?>
+</h2>
+
+<?php if (empty($this->locations)) { ?>
+    <p>
+        <?= $this->translate('Nothing to report') ?>
+    </p>
+    <?php return; ?>
+<?php } ?>
+
+<p class="no-print">
+    <?php
+        echo $this->translate('Filter Locations: ');
+
+        $options = array('' => '');
+        $day = null;
+
+        foreach ($this->locations as $location) {
+            if ($day != $location['dayOfWeek']) {
+                $date = new DateTime();
+                $date->setISODate($this->year, $this->week, $location['dayOfWeek']);
+
+                $day = $dayFormatter->format((int) $date->format('U'));
+
+                $options['W' . $location['dayOfWeek']] = $this->translate(
+                    '** All %s Locations **',
+                    $day
+                );
+
+                $day = $location['dayOfWeek'];
+            }
+            $options['L' . $location->id] = $location->name;
+        }
+
+        echo $this->FormSelect(
+            'locations',
+            null,
+            null,
+            $options
+        );
+    ?>
+</p>
+
+<?php foreach ($this->locations as $location) { ?>
+    <?php if ($daysOfWeek != $location->dayOfWeek) { ?>
+        <?php if (!empty($weekDayTotals) || !empty($weekDayAddonTotals)) { ?>
+            <dl class="weekDaySummary"
+                data-dayofweek="<?= $daysOfWeek ?>"
+                style="margin-bottom: 80px; border: 1px solid #502A00; padding: 10px 10px 0px 10px; -moz-border-radius: 6px; -webkit-border-radius: 6px; -khtml-border-radius: 6px; border-radius: 6px; background-color: #E2E4FF;">
+                <dt style="font-weight: bold">
+                    <?php
+                        $date = new DateTime();
+                        $date->setISODate($this->year, $this->week, $daysOfWeek);
+
+                        $day = $dayFormatter->format((int) $date->format('U'));
+
+                        echo $this->translate(
+                            '%s Totals',
+                            $this->escape($day)
+                        );
+
+                        ksort($weekDayTotals, SORT_NUMERIC);
+                        ksort($weekDayAddonTotals, SORT_NUMERIC);
+                    ?>:
+                </dt>
+                <dd>
+                    <dl>
+                        <?php if (!empty($weekDayTotals)) { ?>
+                            <dt style="font-weight: bold">
+                                <?= $this->translate('Shares') ?>:
+                            </dt>
+                            <dd>
+                                <ul>
+                                <?php foreach ($weekDayTotals as $weekDayTotal) { ?>
+                                    <li>
+                                        <?= $this->escape(
+                                            $this->translate(
+                                                '%s (%s) x %d',
+                                                $weekDayTotal['name'],
+                                                $weekDayTotal['size'],
+                                                $weekDayTotal['quantity']
+                                            )
+                                        )?>
+                                    </li>
+                                <?php } ?>
+                                </ul>
+                            </dd>
+                        <?php } ?>
+                        <?php if (!empty($weekDayAddonTotals)) { ?>
+                            <dt colspan="2" style="font-weight: bold">
+                                <?= $this->translate('Products') ?>:
+                            </dt>
+                            <dd>
+                                <ul>
+                                    <?php foreach ($weekDayAddonTotals as $weekDayAddonTotal) { ?>
+                                    <li>
+                                        <?= $this->escape(
+                                            $this->translate(
+                                                '%s x %d',
+                                                $weekDayAddonTotal['name'],
+                                                $weekDayAddonTotal['quantity']
+                                            )
+                                        )?>
+                                    </li>
+                                    <?php } ?>
+                                </ul>
+                            </dd>
+                        <?php } ?>
+                    </dl>
+                </dd>
+            </dl>
+        <?php } ?>
+        <?php
+            $daysOfWeek = $location->dayOfWeek;
+            $weekDayAddonTotals = array();
+            $weekDayTotals = array();
+        ?>
+    <?php } ?>
+    <table id="location-<?= (int) $location->id; ?>"
+           data-dayofweek="<?= $location->dayOfWeek ?>"
+           class="location break tablesorter">
+        <caption align="top" style="text-align: center; font-weight: bold">
+            <?= $this->escape($location->name) ?><br />
+            <?php
+                $customersDisplayed = array();
+
+                $addonTotals = $totals = array();
+
+                $date = new DateTime();
+                $date->setISODate($this->year, $this->week, $location->dayOfWeek);
+
+                $day = $dayFormatter->format((int) $date->format('U'));
+
+                echo $this->translate(
+                    '%s - %s to %s',
+                    $this->escape($day),
+                    $this->escape($location->timeStart),
+                    $this->escape($location->timeEnd)
+                );
+            ?>
+        </caption>
+        <thead>
+            <tr>
+                <th class="ui-corner-left">
+                    <?= $this->translate('Member') ?>
+                </th>
+                <th>
+                    <?= $this->translate('Phone') ?>
+                </th>
+                <th>
+                    <?= $this->translate('Shares') ?>
+                </th>
+                <th>
+                    <?= $this->translate('Products') ?>
+                </th>
+                <th class="ui-corner-right">
+                    <?= $this->translate('Notes') ?>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($this->customerShares as $customerShare) { ?>
+            <?php
+                if ($customerShare->locationId != $location->id || in_array($customerShare->customerId, $customersDisplayed)) {
+                    continue;
+                }
+
+                $customer = HHF_Domain_Customer::singleton($this->farm, $customerShare->customerId);
+
+                if ($customer->isEmpty() || $customer->enabled == 0) {
+                    continue;
+                }
+
+                $customersDisplayed[] = $customer->id;
+            ?>
+            <tr>
+                <td>
+                    <?= $this->escape($customer->lastName) ?>,
+                    <?= $this->escape($customer->firstName); ?>
+                    <?php if (stripos($location->name, 'delivery') !== false) { ?>
+                        <br />
+                        <?php if (!empty($customer->address)) { ?>
+                            <?= $this->escape($customer->address) ?><br />
+                        <?php } ?>
+                        <?php if (!empty($customer->address2)) { ?>
+                            <?= $this->escape($customer->address2) ?><br />
+                        <?php } ?>
+                        <?php if (!empty($customer->city)) { ?>
+                            <?= $this->escape($customer->city) ?>
+                        <?php } ?>
+                    <?php } ?>
+                </td>
+                <td>
+                    <?= $this->escape($customer->telephone) ?>
+                </td>
+                <td>
+                    <?php
+                        $share = HHF_Domain_Share::singleton(
+                            $this->farm,
+                            $customerShare->shareId
+                        );
+
+                    unset($vacaname);
+                    unset($vacation);
+                    unset($shareVacations);
+                    $shareVacations = array();
+                    $customerSharesLocation = array();
+
+                    $notes = array();
+
+                    $existingNote = HHF_Domain_Customer_Share_Note::fetchOne(
+                        $this->farm,
+                        array(
+                            'columns' => '*',
+                            'where' => array(
+                                'customerId' => $customerShare->customerId,
+                                'customerShareId' => $customerShare->id,
+                                'week' => $this->isoWeek
+                            )
+                        )
+                    );
+
+                    if (!$existingNote->isEmpty()){
+                        $notes[$customerShare->getShare()->name] = $existingNote->note;
+                    }
+
+                    $shareVac = HHF_Domain_Customer_Vacation::fetchWhere($this->farm, array(
+                        'customerId' => $customer->id,
+                        'shareId'    => $customerShare->id
+                    ));
+
+                    foreach($shareVac as $sv){
+                        if($sv->startWeek <= ($this->year . 'W' . $this->week) && $sv->endWeek >= ($this->year . 'W' . $this->week)){
+                            array_push($shareVacations, $sv);
+                        }
+                    }
+
+                    if (count($shareVacations) > 0){
+                        $vacation = end($shareVacations);
+
+                        $queryOptions = array(
+                            'id' => $vacation->vacationOptionId
+                        );
+
+                        $vacationOption = HHF_Domain_Share_VacationOption::fetchWhere($this->farm, $queryOptions);
+                        $vacaname = '*On Vacation ('.reset($vacationOption)->vacationOption.') : ' . $share->name;
+
+
+                        $customerShareLocationKey = (int) $vacation->vacationOptionId . '.' . $share->id . '.' . (int)
+                            ($share->getSizeById($customerShare->shareSizeId)->size * 100);
+                    } else {
+                        $customerShareLocationKey = (int) $share->id . '.' . (int) ($share->getSizeById($customerShare->shareSizeId)->size * 100);
+                    }
+
+                        if (!isset($totals[$customerShareLocationKey])) {
+                            $totals[$customerShareLocationKey] = array(
+                                'quantity' => $customerShare->quantity,
+                                'name' => isset($vacaname)?$vacaname:$share->name,
+                                'size' => $share->getSizeById($customerShare->shareSizeId)->name
+                            );
+                        } else {
+                            $totals[$customerShareLocationKey]['quantity'] += $customerShare->quantity;
+                        }
+
+                        if (!isset($weekDayTotals[$customerShareLocationKey])) {
+                            $weekDayTotals[$customerShareLocationKey] = array(
+                                'quantity' => $customerShare->quantity,
+                                'name' => isset($vacaname)?$vacaname:$share->name,
+                                'size' => $share->getSizeById($customerShare->shareSizeId)->name
+                            );
+                        } else {
+                            $weekDayTotals[$customerShareLocationKey]['quantity'] += $customerShare->quantity;
+                        }
+
+                        if (!isset($weekTotals[$customerShareLocationKey])) {
+                            $weekTotals[$customerShareLocationKey] = array(
+                                'quantity' => $customerShare->quantity,
+                                'name' => isset($vacaname)?$vacaname:$share->name,
+                                'size' => $share->getSizeById($customerShare->shareSizeId)->name
+                            );
+                        } else {
+                            $weekTotals[$customerShareLocationKey]['quantity'] += $customerShare->quantity;
+                        }
+
+                        if (!isset($customerSharesLocation[$customerShareLocationKey])) {
+                            $customerSharesLocation[$customerShareLocationKey] = array(
+                                'quantity' => $customerShare->quantity,
+                                'name' => isset($vacaname)?$vacaname:$share->name,
+                                'size' => $share->getSizeById($customerShare->shareSizeId)->name
+                            );
+                        } else {
+                            $customerSharesLocation[$customerShareLocationKey]['quantity'] += $customerShare->quantity;
+                        }
+
+                        foreach ($this->customerShares as $additionalShare) {
+                            if ($additionalShare->locationId != $location->id || $additionalShare->customerId != $customer->id || $additionalShare->id == $customerShare->id) {
+                                continue;
+                            }
+
+                            $share = HHF_Domain_Share::singleton(
+                                $this->farm,
+                                $additionalShare->shareId
+                            );
+
+                            $existingNote = HHF_Domain_Customer_Share_Note::fetchOne(
+                                $this->farm,
+                                array(
+                                    'columns' => '*',
+                                    'where' => array(
+                                        'customerId' => $additionalShare->customerId,
+                                        'customerShareId' => $additionalShare->id,
+                                        'week' => $this->isoWeek
+                                    )
+                                )
+                            );
+
+                            if (!$existingNote->isEmpty()){
+                                $notes[$additionalShare->getShare()->name]  = $existingNote->note;
+                            }
+
+                            $customerShareLocationKey = (int) $share->id . '.' . (int) ($share->getSizeById($additionalShare->shareSizeId)->size * 100);
+
+                            if (!isset($totals[$customerShareLocationKey])) {
+                                $totals[$customerShareLocationKey] = array(
+                                    'quantity' => $additionalShare->quantity,
+                                    'name' => isset($vacaname)?$vacaname:$share->name,
+                                    'size' => $share->getSizeById($additionalShare->shareSizeId)->name
+                                );
+                            } else {
+                                $totals[$customerShareLocationKey]['quantity'] += $additionalShare->quantity;
+                            }
+
+                            if (!isset($weekDayTotals[$customerShareLocationKey])) {
+                                $weekDayTotals[$customerShareLocationKey] = array(
+                                    'quantity' => $additionalShare->quantity,
+                                    'name' => isset($vacaname)?$vacaname:$share->name,
+                                    'size' => $share->getSizeById($additionalShare->shareSizeId)->name
+                                );
+                            } else {
+                                $weekDayTotals[$customerShareLocationKey]['quantity'] += $additionalShare->quantity;
+                            }
+
+                            if (!isset($weekTotals[$customerShareLocationKey])) {
+                                $weekTotals[$customerShareLocationKey] = array(
+                                    'quantity' => $additionalShare->quantity,
+                                    'name' => isset($vacaname)?$vacaname:$share->name,
+                                    'size' => $share->getSizeById($additionalShare->shareSizeId)->name
+                                );
+                            } else {
+                                $weekTotals[$customerShareLocationKey]['quantity'] += $additionalShare->quantity;
+                            }
+
+                            if (!isset($customerSharesLocation[$customerShareLocationKey])) {
+                                $customerSharesLocation[$customerShareLocationKey] = array(
+                                    'quantity' => $additionalShare->quantity,
+                                    'name' => isset($vacaname)?$vacaname:$share->name,
+                                    'size' => $share->getSizeById($additionalShare->shareSizeId)->name
+                                );
+                            } else {
+                                $customerSharesLocation[$customerShareLocationKey]['quantity'] += $additionalShare->quantity;
+                            }
+                        }
+
+                        ksort($customerSharesLocation, SORT_NUMERIC);
+
+                        if (count($customerSharesLocation) == 1) {
+                            $sl = array_shift($customerSharesLocation);
+                            echo $this->translate(
+                                    '%s (%s) x %s',
+                                    $this->escape($sl['name']),
+                                    $this->escape($sl['size']),
+                                    $this->escape($sl['quantity'])
+                                );
+                        } else {
+                            echo '<ul>';
+                            asort($customerSharesLocation);
+                            foreach ($customerSharesLocation as $sl) {
+                                echo '<li>' . $this->translate(
+                                        '%s (%s) x %s',
+                                        $this->escape($sl['name']),
+                                        $this->escape($sl['size']),
+                                        $this->escape($sl['quantity'])
+                                    ) . '</li>';
+                            }
+                            echo '</ul>';
+                        }
+                    ?>
+                </td>
+                <td>
+                    <?php
+                        $customerAddons = array();
+
+                        foreach ($this->customerAddons as $customerAddon) {
+                            if ($customerAddon->customerId != $customer->id || in_array($customerAddon->id, $addonsDisplayed)) {
+                                continue;
+                            }
+
+                            $addonsDisplayed[] = $customerAddon->id;
+
+                            $addon = HHF_Domain_Addon::singleton(
+                                $this->farm,
+                                $customerAddon->addonId
+                            );
+
+                            if ($addon->isEmpty()) {
+                                continue;
+                            }
+
+                            if (!isset($addonTotals[$addon->id])) {
+                                $addonTotals[$addon->id] = array(
+                                    'name' => $addon->name,
+                                    'quantity' => $customerAddon->quantity
+                                );
+                            } else {
+                                $addonTotals[$addon->id]['quantity'] += $customerAddon->quantity;
+                            }
+
+                            if (!isset($weekDayAddonTotals[$addon->id])) {
+                                $weekDayAddonTotals[$addon->id] = array(
+                                    'name' => $addon->name,
+                                    'quantity' => $customerAddon->quantity
+                                );
+                            } else {
+                                $weekDayAddonTotals[$addon->id]['quantity'] += $customerAddon->quantity;
+                            }
+
+                            if (!isset($weekAddonTotals[$addon->id])) {
+                                $weekAddonTotals[$addon->id] = array(
+                                    'name' => $addon->name,
+                                    'quantity' => $customerAddon->quantity
+                                );
+                            } else {
+                                $weekAddonTotals[$addon->id]['quantity'] += $customerAddon->quantity;
+                            }
+
+                            if (!isset($customerAddons[$addon->id])) {
+                                $customerAddons[$addon->id] = array(
+                                    'name' => $addon->name,
+                                    'quantity' => $customerAddon->quantity
+                                );
+                            } else {
+                                $customerAddons[$addon->id]['quantity'] += $customerAddon->quantity;
+                            }
+                        }
+                    ?>
+                    <?php if (count($customerAddons) == 1) { ?>
+                        <?php $a = array_shift($customerAddons); ?>
+                        <?= $this->translate(
+                            '%s x %s',
+                            $this->escape($a['name']),
+                            (int) $a['quantity']
+                        ) ?>
+                    <?php } else { ?>
+                    <ul>
+                        <?php
+                         ksort($customerAddons, SORT_NUMERIC);
+                            foreach ($customerAddons as $a) { ?>
+                        <li><?= $this->translate(
+                                '%s x %s',
+                                $this->escape($a['name']),
+                                (int) $a['quantity']
+                            ) ?></li>
+                        <?php } ?>
+                    </ul>
+                    <?php } ?>
+                </td>
+                <td>
+                    <?php
+                    if(count($notes) > 1){
+                        ksort($notes);
+                        echo '<ul>';
+                        foreach ($notes as $n){
+                            echo '<li>' . $this->translate($this->escape($n)) . '</li>';
+                        }
+                        echo '</ul>';
+                    } elseif(count($notes) == 1) {
+                        echo $this->translate($this->escape(reset($notes)));
+                    }
+                    ?>
+                </td>
+            </tr>
+            <?php } ?>
+        </tbody>
+        <?php if (!empty($totals) || !empty($addonTotals)) { ?>
+        <?php
+            ksort($totals, SORT_NUMERIC);
+            ksort($addonTotals, SORT_NUMERIC);
+        ?>
+        <tfoot>
+            <tr>
+                <th colspan="2">
+                    <?= $this->translate('Totals') ?>
+                </th>
+                <th>
+                    <?php
+                        if (count($totals) == 1) {
+                            $sl = array_shift($totals);
+                            echo $this->translate(
+                                    '%s (%s) x %s',
+                                    $this->escape($sl['name']),
+                                    $this->escape($sl['size']),
+                                    $this->escape($sl['quantity'])
+                                );
+                        } else {
+                            echo '<ul>';
+                            ksort($totals);
+                            foreach ($totals as $sl) {
+                                echo '<li>' . $this->translate(
+                                        '%s (%s) x %s',
+                                        $this->escape($sl['name']),
+                                        $this->escape($sl['size']),
+                                        $this->escape($sl['quantity'])
+                                    ) . '</li>';
+                            }
+                            echo '</ul>';
+                        }
+                    ?>
+                </th>
+                <th>
+                    <ul>
+                    <?php
+                    asort($addonTotals);
+                    foreach ($addonTotals as $a) { ?>
+                        <li><?= $this->translate(
+                                '%s x %s',
+                                $this->escape($a['name']),
+                                (int) $a['quantity']
+                            ) ?></li>
+                    <?php } ?>
+                    </ul>
+                </th>
+            </tr>
+        </tfoot>
+        <?php } ?>
+    </table>
+<?php } ?>
+<?php if (!empty($weekDayTotals) || !empty($weekDayAddonTotals)) { ?>
+    <dl class="weekDaySummary"
+        data-dayofweek="<?= $daysOfWeek ?>"
+        style="margin-bottom: 80px; border: 1px solid #502A00; padding: 10px 10px 0px 10px; -moz-border-radius: 6px; -webkit-border-radius: 6px; -khtml-border-radius: 6px; border-radius: 6px; background-color: #E2E4FF;">
+        <dt style="font-weight: bold">
+            <?php
+                $date = new DateTime();
+                $date->setISODate($this->year, $this->week, $daysOfWeek);
+
+                $day = $dayFormatter->format((int) $date->format('U'));
+
+                echo $this->translate(
+                    '%s Totals',
+                    $this->escape($day)
+                );
+
+                ksort($weekDayTotals, SORT_NUMERIC);
+                ksort($weekDayAddonTotals, SORT_NUMERIC);
+            ?>:
+        </dt>
+        <dd>
+            <dl>
+                <?php if (!empty($weekDayTotals)) { ?>
+                    <dt style="font-weight: bold">
+                        <?= $this->translate('Shares') ?>:
+                    </dt>
+                    <dd>
+                        <ul>
+                        <?php
+                        ksort($weekDayTotals);
+                        foreach ($weekDayTotals as $weekDayTotal) { ?>
+                            <li>
+                                <?= $this->escape(
+                                    $this->translate(
+                                        '%s (%s) x %d',
+                                        $weekDayTotal['name'],
+                                        $weekDayTotal['size'],
+                                        $weekDayTotal['quantity']
+                                    )
+                                )?>
+                            </li>
+                        <?php } ?>
+                        </ul>
+                    </dd>
+                <?php } ?>
+                <?php if (!empty($weekDayAddonTotals)) { ?>
+                    <dt colspan="2" style="font-weight: bold">
+                        <?= $this->translate('Products') ?>:
+                    </dt>
+                    <dd>
+                        <ul>
+                            <?php
+                            ksort($weekDayAddonTotals);
+                            foreach ($weekDayAddonTotals as $weekDayAddonTotal) { ?>
+                            <li>
+                                <?= $this->escape(
+                                    $this->translate(
+                                        '%s x %d',
+                                        $weekDayAddonTotal['name'],
+                                        $weekDayAddonTotal['quantity']
+                                    )
+                                )?>
+                            </li>
+                            <?php } ?>
+                        </ul>
+                    </dd>
+                <?php } ?>
+            </dl>
+        </dd>
+    </dl>
+<?php } ?>
+
+<?php if (!empty($weekTotals) || !empty($weekAddonTotals)) { ?>
+    <dl class="weekSummary"
+        style="margin-top: 80px; border: 2px solid #502A00; padding: 10px 10px 0px 10px; -moz-border-radius: 6px; -webkit-border-radius: 6px; -khtml-border-radius: 6px; border-radius: 6px; background-color: #E2E4FF;">
+        <dt style="font-weight: bold">
+            <?php
+
+                echo $this->translate('Grand Totals');
+
+                ksort($weekTotals, SORT_NUMERIC);
+                ksort($weekAddonTotals, SORT_NUMERIC);
+            ?>:
+        </dt>
+        <dd>
+            <dl>
+                <?php if (!empty($weekTotals)) { ?>
+                    <dt style="font-weight: bold">
+                        <?= $this->translate('Shares') ?>:
+                    </dt>
+                    <dd>
+                        <ul>
+                        <?php
+                        ksort($weekTotals);
+                        foreach ($weekTotals as $weekTotal) { ?>
+                            <li>
+                                <?= $this->escape(
+                                    $this->translate(
+                                        '%s (%s) x %d',
+                                        $weekTotal['name'],
+                                        $weekTotal['size'],
+                                        $weekTotal['quantity']
+                                    )
+                                )?>
+                            </li>
+                        <?php } ?>
+                        </ul>
+                    </dd>
+                <?php } ?>
+                <?php if (!empty($weekAddonTotals)) { ?>
+                    <dt colspan="2" style="font-weight: bold">
+                        <?= $this->translate('Products') ?>:
+                    </dt>
+                    <dd>
+                        <ul>
+                            <?php
+                            ksort($weekTotals);
+                            foreach ($weekAddonTotals as $weekAddonTotal) { ?>
+                            <li>
+                                <?= $this->escape(
+                                    $this->translate(
+                                        '%s x %d',
+                                        $weekAddonTotal['name'],
+                                        $weekAddonTotal['quantity']
+                                    )
+                                )?>
+                            </li>
+                            <?php } ?>
+                        </ul>
+                    </dd>
+                <?php } ?>
+            </dl>
+        </dd>
+    </dl>
+<?php } ?>

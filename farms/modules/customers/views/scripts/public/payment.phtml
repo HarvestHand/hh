@@ -1,0 +1,137 @@
+<?php
+    $this->headTitle($this->translate('Make Online Account Payment'));
+
+    $this->loader()->append('jquery_validate');
+    $this->loader(true, true)->append('payment')->init();
+    $this->loader()->append('jquery_qtip');
+	
+?>
+
+<style>
+    table.invoice td, table.invoice th {
+        padding: 5px;
+    }
+
+    table.invoice {
+        font-size: 12px;
+    }
+
+    .ui-tooltip,.qtip {
+        max-width: 380px;
+    }
+</style>
+
+<h2><?= $this->translate('Make An Online Account Payment') ?></h2>
+
+<form id="payment" action="/customers/payment" method="post" accept-charset="utf-8" class="cmxform large">
+
+    <section id="formError" class="error ui-widget ui-state-error ui-corner-all" style="<?= (!empty($this->errors)) ? '' : 'display:none;' ?>">
+        <div>
+            <i class="fa fa-exclamation-triangle"></i>
+            <strong><?= $this->translate('Oh No!'); ?></strong>
+            <?= $this->translate('Something is not right with what you entered.  Check below for hints on how to fix things up.'); ?>
+        </div>
+    </section>
+
+    <fieldset>
+        <legend><?= $this->translate('Payment') ?></legend>
+
+
+        <?php 
+        
+        if ($this->invoices->count() > 0) { ?>
+        <fieldset>
+            <legend><?= $this->translate('Choose Invoices') ?>:</legend>
+
+            <?php $invoices = $this->getFormValue('invoices'); ?>
+
+            <?php foreach ($this->invoices as $invoice) { ?>
+                <label>
+                    <input type="checkbox"
+                           name="invoices[]"
+                           class="invoice"
+                           value="<?= intval($invoice['id']) ?>"
+                           <?= (is_array($invoices) && in_array($invoice['id'], $invoices)) ? 'checked="checked"' : null; ?>
+                           data-outstandingamount="<?= floatval($invoice['outstandingAmount']) ?>" />
+
+                        <a href="../shares/purchase-history-invoice?id=<?= $invoice['id'];?>"><?= $this->translate(
+                        'Invoice %d for %s',
+                        $invoice['id'],
+                        $this->currency($invoice['outstandingAmount'])
+                    ) ?></a>
+                    <span class="tooltip"
+                          data-invoiceid="<?= $invoice['id'] ?>">
+                        [?]
+                    </span>
+                </label>
+            <?php } ?>
+        </fieldset>
+
+        <p>
+            <label for="amount" title="<?= $this->translate('If you are not paying an invoice, specify the amount to pay here'); ?>">
+                <?= $this->translate('Other'); ?>:
+            </label>
+            <input
+                id="amount"
+                name="amount"
+                type="text"
+                title="<?= $this->translate('If you are not paying an invoice, specify the amount to pay here'); ?>"
+                value="<?= $this->getFormValue('amount'); ?>"
+                class="number" />
+
+            <?php if (!empty($this->errors['amount'])) { ?>
+            <label for="amount" class="error">
+                <?= implode('; ', $this->errors['amount']) ?>
+            </label>
+            <?php } ?>
+        </p>
+<!--        <p>-->
+<!--        	<label for="note" title="--><?//= $this->translate('Add a note to go with the transaction'); ?><!--">-->
+<!--        		--><?//= $this->translate('Note'); ?><!--:-->
+<!--        	</label>-->
+<!--        	<input-->
+<!--        		id="note"-->
+<!--        		name="note"-->
+<!--        		type="text"-->
+<!--        		value="--><?//= $this->getFormValue('note'); ?><!--"-->
+<!--        		title="--><?//= $this->translate('Add a note to go with the transaction'); ?><!--"-->
+<!--        		class="text" />-->
+<!--        </p>-->
+        
+        <?php } else { ?>
+        <p>
+            <label for="amount" class="required" title="<?= $this->translate('Please enter an amount to pay'); ?>">
+                <?= $this->translate('Amount'); ?>:
+            </label>
+            <input
+                id="amount"
+                name="amount"
+                type="text"
+                title="<?= $this->translate('Please enter an amount to pay'); ?>"
+                value="<?= $this->getFormValue('amount'); ?>"
+                class="required number" />
+
+            <?php if (!empty($this->errors['amount'])) { ?>
+            <label for="amount" class="error">
+                <?= implode('; ', $this->errors['amount']) ?>
+            </label>
+            <?php } ?>
+        </p>
+        <?php } ?>
+
+        <p>
+            <label><?= $this->translate('Total'); ?>:</label>
+            <span id="total"><?= $this->currency(0) ?></span>
+        </p>
+
+    </fieldset>
+
+    <p>
+        <button type="submit" class="submit fieldset-align ui-button ui-widget ui-corner-all ui-button-text-only ui-state-default">
+            <span class="ui-button-text">
+                <i class="fa fa-shopping-cart"></i>
+                <?= $this->translate('Pay'); ?>
+            </span>
+        </button>
+    </p>
+</form>

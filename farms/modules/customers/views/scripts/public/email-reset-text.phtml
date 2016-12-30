@@ -1,0 +1,29 @@
+<?= $this->translate('Hi there,') ?>
+
+
+<?= $this->translate(
+    'Someone, hopefully you, asked that your password be reset for %s.',
+    $this->farm->name
+) ?>  <?= $this->translate('If you have no knowedge of this, please disregard this email.') ?>
+
+
+<?= $this->translate('If this is what you wish to do, please open the following link in your web browser:') ?>
+
+
+
+<?= $this->farm->getBaseUri() ?>customers/new_password/k/<?= $this->key ?>
+
+
+
+<?= $this->translate(
+    'You\'ll then be asked to supply a new password.  From there you can log in (your user name is %s, just in case you forgot).',
+    $this->farmer->userName
+) ?>
+
+
+<?= $this->translate('If you need any help resetting your password, please reply to this email.  We\'ll help you out.') ?>
+
+
+
+
+<p><?= $this->farm->name ?></p>

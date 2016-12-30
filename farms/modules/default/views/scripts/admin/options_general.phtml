@@ -1,0 +1,737 @@
+<?php
+    $this->loadDatejs(Bootstrap::$locale);
+
+    $this->loader()->append('jquery_validate')
+        ->append('jquery_dataTables')
+        ->append('hhf_modules_default_admin_options_general');
+
+    $this->headTitle($this->translate('General Options'));
+
+    $facebookAppId = Bootstrap::get('Zend_Config')
+        ->resources->facebook->client_id;
+
+    $facebookUrl = 'https://www.facebook.com/dialog/oauth?';
+$facebookParams = array('client_id' => $facebookAppId, 'redirect_uri' => 'http://' . $this->farm->subdomain . '.' . Bootstrap::$rootDomain . '/admin/default/facebook_grant/', 'scope' => 'manage_pages,publish_pages,publish_actions'
+    );
+
+    $facebookUrl .= http_build_query($facebookParams);
+
+    $paypalEnabledValue = $this->getFormValue('paypal-enabled');
+?>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+    hhf.modules.default.admin.options.general.init({
+        lang: {
+            validate: {
+                date: "<?= $this->translate('Date doesn\'t look right'); ?>"
+            },
+            add: "<?= $this->translate('Add'); ?>",
+            addNetwork: "<?= $this->translate('Add Distributor to My Network'); ?>",
+            pending: "<?= $this->translate('Pending'); ?>",
+            closed: "<?= $this->translate('Closed'); ?>",
+            approved: "<?= $this->translate('Approved'); ?>"
+        },
+        facebookUrl: '<?= $facebookUrl ?>'
+    });
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<h2>
+    <span class="icon-menu icon-menu-options" style="float: left; margin: -10px 7px 0 0;"></span>
+    <?= $this->translate('General Options') ?>
+</h2>
+
+<section class="container_12">
+    <article class="grid_11">
+
+        <?php if (!empty($this->messages)) { ?>
+            <section class="info ui-widget ui-state-highlight ui-corner-all">
+                <div>
+                    <i class="fa fa-info-circle"></i>
+                    <strong><?= $this->translate('Hey!'); ?></strong>
+                    <?= $this->escape(implode('; ', $this->messages)); ?>
+                </div>
+            </section>
+        <?php } ?>
+
+        <form id="options"
+                  action="/admin/default/options_general?<?= http_build_query($_GET) ?>"
+                  method="post"
+                  accept-charset="utf-8"
+                  class="cmxform large">
+
+            <section id="formError"
+                     class="error ui-widget ui-state-error ui-corner-all"
+                     style="<?= (!empty($this->errors)) ? '' : 'display:none;' ?>">
+
+                <div>
+                    <i class="fa fa-exclamation-triangle"></i>
+                    <strong><?= $this->translate('Oh No!'); ?></strong>
+                    <?= $this->translate('Something is not right with what you entered.  Check below for hints on how to fix things up.'); ?>
+                </div>
+            </section>
+
+
+            <div id="tabs">
+                <ul>
+                    <li><a href="#facebook"><?= $this->translate('Facebook') ?></a></li>
+                    <li><a href="#twitter"><?= $this->translate('Twitter') ?></a></li>
+                    <li><a href="#paypal"><?= $this->translate('PayPal') ?></a></li>
+                    <?php if ($this->farm->isType(HH_Domain_Farm::TYPE_DISTRIBUTOR)) { ?>
+                        <li><a href="#parent-network"><?= $this->translate('Distributor Network') ?></a></li>
+                    <?php } ?>
+                    <li><a href="#child-network"><?= $this->translate('My Network') ?></a></li>
+                </ul>
+
+                <div id="facebook">
+                    <legend><?= $this->translate('Facebook') ?></legend>
+
+                    <?php $accessToken = $this->getFormValue('facebook-accessToken'); ?>
+
+                    <?php if (empty($accessToken)) { ?>
+                    <p>
+                        <?= $this->translate('Setup HarvestHand integration with Facebook.  HarvestHand can then post updates to your Facebook page as you manage your CSA directly in HarvestHand.'); ?>
+                    </p>
+
+                    <p>
+                        <button type="button" class="submit fieldset-align facebook-new ui-button ui-widget ui-corner-all ui-button-text-icon-primary ui-state-default">
+                            <span class="ui-button-icon-primary ui-icon ui-icon-plus"></span>
+                            <span class="ui-button-text">
+                                <?= $this->translate('Set It Up!'); ?>
+                            </span>
+                        </button>
+                    </p>
+                    <?php } else { ?>
+
+                        <?php if (empty($this->facebookPages)) { ?>
+                            <p><?= $this->translate('Uh oh.  You don\'t seem to have any Facebook Pages set up yet.  <a href="http://www.facebook.com/pages/create.php">Go here</a> to create your Facebook Page'); ?></p>
+                        <?php } else { ?>
+
+                            <?php if (!$this->isEmpty($this->getFormValue('facebook-pageId'))) { ?>
+                            <p>
+                                <?= $this->translate(
+                                        'HarvestHand is set up to send updates to your Facebook page.'
+                                ); ?>
+                            </p>
+                            <?php } ?>
+
+                            <p>
+                                <label for="facebook-pageId" class="required" title="<?= $this->translate('Choose your Facebook Page to send posts to.'); ?>">
+                                    <?= $this->translate('Facebook Page'); ?>:
+                                    <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                                </label>
+
+                                <?=
+                                    $this->formSelect(
+                                        'facebook-pageId',
+                                        $this->getFormValue('facebook-pageId'),
+                                        array(
+                                            'id' => 'facebook-pageId',
+                                            'class' => 'required',
+                                            'title' => $this->translate('Choose your Facebook Page to send posts to.')
+                                        ),
+                                        $this->facebookPages
+                                    );
+                                ?>
+
+                                <?php if (!empty($this->errors['facebook-pageId'])) { ?>
+                                <label for="facebook-pageId" class="error">
+                                    <?= implode('; ', $this->errors['facebook-pageId']) ?>
+                                </label>
+                                <?php } ?>
+                            </p>
+
+                            <p>
+                                <label for="facebook-remove"title="<?= $this->translate('Remove Facebook access from HarvestHand'); ?>">
+                                    <?= $this->translate('Remove Facebook?'); ?>:
+                                </label>
+
+                                <input
+                                    id="facebook-remove"
+                                    type="checkbox"
+                                    name="facebook-remove"
+                                    value="1"
+                                    title="<?= $this->translate('Remove Facebook access from HarvestHand'); ?>" />
+
+                            </p>
+                        <?php } ?>
+                    <?php } ?>
+                    <p>
+                        <button type="submit" class="submit fieldset-align ui-button ui-widget ui-corner-all ui-button-text-only ui-state-default">
+                            <span class="ui-button-text">
+                                <i class="fa fa-check"></i>
+                                <?= $this->translate('Save!'); ?>
+                            </span>
+                        </button>
+                    </p>
+                </div>
+
+                <div id="twitter">
+                    <legend><?= $this->translate('Twitter') ?></legend>
+
+                    <?php
+                    $oauthToken = $this->getFormValue('twitter-oauthToken');
+                    $oauthTokenSecret = $this->getFormValue('twitter-oauthTokenSecret');
+                    ?>
+
+                    <?php if (empty($oauthToken) || empty($oauthTokenSecret)) { ?>
+                    <p>
+                        <?= $this->translate(
+                            'Setup HarvestHand integration with Twitter.  HarvestHand can then post updates to your Twitter page as you manage your CSA directly in HarvestHand.'
+                        ); ?>
+                    </p>
+
+                    <p>
+                        <button type="button" class="submit fieldset-align twitter-new ui-button ui-widget ui-corner-all ui-button-text-icon-primary ui-state-default">
+                            <span class="ui-button-icon-primary ui-icon ui-icon-plus"></span>
+                            <span class="ui-button-text">
+                                <?= $this->translate('Set It Up!'); ?>
+                            </span>
+                        </button>
+                    </p>
+                    <?php } else { ?>
+                    <p>
+                        <?= $this->translate(
+                            'HarvestHand is set up to send updates to your Twitter account.'
+                        ); ?>
+                    </p>
+
+                    <p>
+                        <label for="twitter-remove"title="<?= $this->translate('Remove Twitter access from HarvestHand'); ?>">
+                            <?= $this->translate('Remove Twitter?'); ?>:
+                        </label>
+
+                        <input
+                            id="twitter-remove"
+                            type="checkbox"
+                            name="twitter-remove"
+                            value="1"
+                            title="<?= $this->translate('Remove Twitter access from HarvestHand'); ?>" />
+
+                    </p>
+
+                    <?php } ?>
+                    <p>
+                        <button type="submit" class="submit fieldset-align ui-button ui-widget ui-corner-all ui-button-text-only ui-state-default">
+                            <span class="ui-button-text">
+                                <i class="fa fa-check"></i>
+                                <?= $this->translate('Save!'); ?>
+                            </span>
+                        </button>
+                    </p>
+                </div>
+
+                <div id="paypal">
+
+                    <p>
+                        <label for="paypal-enabled_1" class="required" title="<?= $this->translate('Should your HarvestHand website allow you to receive money through PayPal?'); ?>">
+                            <?= $this->translate('Enable PayPal?'); ?>:
+                            <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                        </label>
+
+                        <input
+                            id="paypal-enabled_0"
+                            type="radio"
+                            name="paypal-enabled"
+                            value="0"
+                            class="required"
+                            title="<?= $this->translate('Don\'t enabled PayPal for your HarvestHand website'); ?>"
+                            <?php echo (($paypalEnabledValue != '1') ? 'checked="checked"' : '') ?> />
+                            <label for="paypal-enabled_0" class="radio" title="<?= $this->translate('Don\'t enabled PayPal for your HarvestHand website'); ?>">
+                                <?= $this->translate('Disable'); ?>
+                            </label>
+                        <input
+                            id="paypal-enabled_1"
+                            type="radio"
+                            name="paypal-enabled"
+                            value="1"
+                            title="<?= $this->translate('HarvestHand website should offer PayPal'); ?>"
+                            <?php echo (($paypalEnabledValue == '1') ? 'checked="checked"' : '') ?> />
+                            <label for="paypal-enabled_1" class="radio" title="<?= $this->translate('HarvestHand website should offer PayPal'); ?>">
+                                <?= $this->translate('Enable'); ?>
+                            </label>
+
+                        <?php if (!empty($this->errors['paypal-enabled'])) { ?>
+                            <label for="enabled" class="error">
+                                <?= implode('; ', $this->errors['paypal-enabled']) ?>
+                            </label>
+                        <?php } ?>
+                    </p>
+
+                    <div class="paypal" style="<?= ($paypalEnabledValue != '1') ? 'display: none;' : '' ?>">
+
+                        <fieldset>
+                            <legend><?= $this->translate('General Info') ?></legend>
+
+                            <p>
+                                <?= $this->translate('Tell us about your business so we can integrate your PayPal account on your behalf.'); ?>
+                                <?= $this->translate('You should also read up on the <a id="paypal-agreement" title="PayPal User Agreement" href="/admin/default/paypal/a/agreement">PayPal User Agreement</a>'); ?>
+                            </p>
+
+                            <p>
+                                <label for="paypal-businessType" class="required" title="<?= $this->translate('How is your business incorporated?'); ?>">
+                                    <?= $this->translate('Type of Business'); ?>:
+                                    <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                                </label>
+
+                                <?php
+                                    $businessType = array(
+                                        'CORPORATION' => $this->translate('Corporation'),
+                                        'GOVERNMENT' => $this->translate('Government'),
+                                        'INDIVIDUAL' => $this->translate('Individual'),
+                                        'NONPROFIT' => $this->translate('Non Profit'),
+                                        'PARTNERSHIP' => $this->translate('Partnership'),
+                                        'PROPRIETORSHIP' => $this->translate('Proprietorship'),
+                                    );
+
+                                    echo $this->formSelect(
+                                        'paypal-businessType',
+                                        $this->getFormValue('paypal-businessType'),
+                                        array(
+                                            'id' => 'paypal-businessType',
+                                            'class' => 'required',
+                                            'title' => $this->translate('How is your business incorporated?')
+                                        ),
+                                        $businessType
+                                    );
+                                ?>
+
+                                <?php if (!empty($this->errors['paypal-businessType'])) { ?>
+                                <label for="paypal-businessType" class="error">
+                                    <?= implode('; ', $this->errors['paypal-businessType']) ?>
+                                </label>
+                                <?php } ?>
+                            </p>
+
+                            <p>
+                                <label for="paypal-averagePrice" class="required" title="<?= $this->translate('What is the average price that you expect for an online transaction?'); ?>">
+                                    <?= $this->translate('Average Sale Price'); ?>:
+                                    <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                                </label>
+                                <input
+                                    id="paypal-averagePrice"
+                                    name="paypal-averagePrice"
+                                    type="text"
+                                    title="<?= $this->translate('What is the average price that you expect for an online transaction?'); ?>"
+                                    value="<?= $this->getFormValue('paypal-averagePrice'); ?>"
+                                    class="number required"
+                                    maxlength="6" />
+
+                                <?php if (!empty($this->errors['paypal-averagePrice'])) { ?>
+                                <label for="paypal-averagePrice" class="error">
+                                    <?= implode('; ', $this->errors['paypal-averagePrice']) ?>
+                                </label>
+                                <?php } ?>
+                            </p>
+
+                            <p>
+                                <label for="paypal-averageMonthlyVolume" class="required" title="<?= $this->translate('What is the average number of sales that you expect for a month?'); ?>">
+                                    <?= $this->translate('Average Sales Per Month'); ?>:
+                                    <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                                </label>
+                                <input
+                                    id="paypal-averageMonthlyVolume"
+                                    name="paypal-averageMonthlyVolume"
+                                    type="text"
+                                    title="<?= $this->translate('What is the average number of sales that you expect for a month?'); ?>"
+                                    value="<?= $this->getFormValue('paypal-averageMonthlyVolume'); ?>"
+                                    class="digit required"
+                                    maxlength="4" />
+
+                                <?php if (!empty($this->errors['paypal-averageMonthlyVolume'])) { ?>
+                                <label for="paypal-averageMonthlyVolume" class="error">
+                                    <?= implode('; ', $this->errors['paypal-averageMonthlyVolume']) ?>
+                                </label>
+                                <?php } ?>
+                            </p>
+
+                            <p>
+                                <label for="paypal-percentageRevenueFromOnline" class="required" title="<?= $this->translate('What percent of sales do you expect to be online?'); ?>">
+                                    <?= $this->translate('% Online Sales Per Month'); ?>:
+                                    <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                                </label>
+                                <input
+                                    id="paypal-percentageRevenueFromOnline"
+                                    name="paypal-percentageRevenueFromOnline"
+                                    type="text"
+                                    title="<?= $this->translate('What percent of sales do you expect to be online?'); ?>"
+                                    value="<?= $this->getFormValue('paypal-percentageRevenueFromOnline'); ?>"
+                                    class="digit required"
+                                    maxlength="100" />
+
+                                <?php if (!empty($this->errors['paypal-percentageRevenueFromOnline'])) { ?>
+                                <label for="paypal-percentageRevenueFromOnline" class="error">
+                                    <?= implode('; ', $this->errors['paypal-percentageRevenueFromOnline']) ?>
+                                </label>
+                                <?php } ?>
+                            </p>
+
+                            <p>
+                                <label for="paypal-dateOfEstablishment" class="required" title="<?= $this->translate('What is the date that your business was established?'); ?>">
+                                    <?= $this->translate('Date Established'); ?>:
+                                    <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                                </label>
+                                <input
+                                    id="paypal-dateOfEstablishment"
+                                    name="paypal-dateOfEstablishment"
+                                    type="text"
+                                    title="<?= $this->translate('What is the date that your business was established?'); ?>"
+                                    value="<?= $this->getFormValue('paypal-dateOfEstablishment'); ?>"
+                                    class="required date"
+                                    maxlength="25" />
+
+                                <?php if (!empty($this->errors['paypal-dateOfEstablishment'])) { ?>
+                                <label for="paypal-dateOfEstablishment" class="error">
+                                    <?= implode('; ', $this->errors['paypal-dateOfEstablishment']) ?>
+                                </label>
+                                <?php } ?>
+                            </p>
+
+                            <p>
+                                <label for="paypal-dateOfBirth" class="required" title="<?= $this->translate('What\'s your B-Day?'); ?>">
+                                    <?= $this->translate('Your Birthday'); ?>:
+                                    <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                                </label>
+                                <input
+                                    id="paypal-dateOfBirth"
+                                    name="paypal-dateOfBirth"
+                                    type="text"
+                                    title="<?= $this->translate('What\'s your B-Day?'); ?>"
+                                    value="<?= $this->getFormValue('paypal-dateOfBirth'); ?>"
+                                    class="required date"
+                                    maxlength="25" />
+
+                                <?php if (!empty($this->errors['paypal-dateOfBirth'])) { ?>
+                                <label for="paypal-dateOfBirth" class="error">
+                                    <?= implode('; ', $this->errors['paypal-dateOfBirth']) ?>
+                                </label>
+                                <?php } ?>
+                            </p>
+                        </fieldset>
+
+                        <fieldset>
+                            <legend><?= $this->translate('General Website Payment Certificates') ?></legend>
+
+                            <p>
+                                <label for="paypal-business" class="required" title="<?= $this->translate('Your PayPal ID for Large Payments'); ?>">
+                                    <?= $this->translate('General Payments PayPal ID'); ?>:
+                                    <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                                </label>
+                                <input
+                                    id="paypal-business"
+                                    name="paypal-business"
+                                    type="text"
+                                    title="<?= $this->translate('Your PayPal ID for Large Payments'); ?>"
+                                    value="<?= $this->getFormValue('paypal-business'); ?>"
+                                    class="required" />
+
+                                <?php if (!empty($this->errors['paypal-business'])) { ?>
+                                <label for="paypal-business" class="error">
+                                    <?= implode('; ', $this->errors['paypal-business']) ?>
+                                </label>
+                                <?php } ?>
+                            </p>
+
+                            <p>
+                                <label for="paypal-cert"
+                                       class="required"
+                                       title="<?= $this->translate('The PayPal public certificate'); ?>">
+                                    <?= $this->translate('PayPal Public Certificate'); ?>:
+                                    <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                                </label>
+
+                                <textarea
+                                    id="paypal-cert"
+                                    name="paypal-cert"
+                                    title="<?= $this->translate('The PayPal public certificate'); ?>"
+                                    rows="10"
+                                    class="required"><?= $this->getFormValue('paypal-cert'); ?></textarea>
+
+                                <?php if (!empty($this->errors['paypal-cert'])) { ?>
+                                <label for="paypal-cert" class="error">
+                                    <?= implode('; ', $this->errors['paypal-cert']) ?>
+                                </label>
+                                <?php } ?>
+                            </p>
+
+                            <p>
+                                <label for="paypal-certId" class="required" title="<?= $this->translate('Your PayPal Certificate ID for Large Payments'); ?>">
+                                    <?= $this->translate('General Payments Certificate ID'); ?>:
+                                    <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                                </label>
+                                <input
+                                    id="paypal-certId"
+                                    name="paypal-certId"
+                                    type="text"
+                                    title="<?= $this->translate('Your PayPal Certificate ID for Large Payments'); ?>"
+                                    value="<?= $this->getFormValue('paypal-certId'); ?>"
+                                    class="required" />
+
+                                <?php if (!empty($this->errors['paypal-certId'])) { ?>
+                                <label for="paypal-certId" class="error">
+                                    <?= implode('; ', $this->errors['paypal-certId']) ?>
+                                </label>
+                                <?php } ?>
+                            </p>
+
+                            <p>
+                                <label for="paypal-privkey"
+                                       class="required"
+                                       title="<?= $this->translate('Your generated PayPal private key'); ?>">
+                                    <?= $this->translate('Your PayPal Private Key'); ?>:
+                                    <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                                </label>
+
+                                <textarea
+                                    id="paypal-privkey"
+                                    name="paypal-privkey"
+                                    title="<?= $this->translate('Your generated PayPal private key'); ?>"
+                                    rows="10"
+                                    class="required"><?= $this->getFormValue('paypal-privkey'); ?></textarea>
+
+                                <?php if (!empty($this->errors['paypal-privkey'])) { ?>
+                                <label for="paypal-privkey" class="error">
+                                    <?= implode('; ', $this->errors['paypal-privkey']) ?>
+                                </label>
+                                <?php } ?>
+                            </p>
+
+                            <p>
+                                <label for="paypal-signcert"
+                                       class="required"
+                                       title="<?= $this->translate('Your generated PayPal public certificate'); ?>">
+                                    <?= $this->translate('Your PayPal Public Certificate'); ?>:
+                                    <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                                </label>
+
+                                <textarea
+                                    id="paypal-signcert"
+                                    name="paypal-signcert"
+                                    title="<?= $this->translate('Your generated PayPal public certificate'); ?>"
+                                    rows="10"
+                                    class="required"><?= $this->getFormValue('paypal-signcert'); ?></textarea>
+
+                                <?php if (!empty($this->errors['paypal-signcert'])) { ?>
+                                <label for="paypal-signcert" class="error">
+                                    <?= implode('; ', $this->errors['paypal-signcert']) ?>
+                                </label>
+                                <?php } ?>
+                            </p>
+
+                        </fieldset>
+
+                        <fieldset>
+                            <legend><?= $this->translate('Micro Payments Website Payment Certificates') ?></legend>
+
+                            <p>
+                                <label for="paypal-microBusiness" title="<?= $this->translate('Your PayPal ID for Micro Payments'); ?>">
+                                    <?= $this->translate('Payments PayPal ID'); ?>:
+                                </label>
+                                <input
+                                    id="paypal-microBusiness"
+                                    name="paypal-microBusiness"
+                                    type="text"
+                                    title="<?= $this->translate('Your PayPal ID for Micro Payments'); ?>"
+                                    value="<?= $this->getFormValue('paypal-microBusiness'); ?>" />
+
+                                <?php if (!empty($this->errors['paypal-microBusiness'])) { ?>
+                                <label for="paypal-microBusiness" class="error">
+                                    <?= implode('; ', $this->errors['paypal-microBusiness']) ?>
+                                </label>
+                                <?php } ?>
+                            </p>
+
+                            <p>
+                                <label for="paypal-microCertId" title="<?= $this->translate('Your PayPal Certificate ID for Micro Payments'); ?>">
+                                    <?= $this->translate('Payments Certificate ID'); ?>:
+                                </label>
+                                <input
+                                    id="paypal-microCertId"
+                                    name="paypal-microCertId"
+                                    type="text"
+                                    title="<?= $this->translate('Your PayPal Certificate ID for Micro Payments'); ?>"
+                                    value="<?= $this->getFormValue('paypal-microCertId'); ?>" />
+
+                                <?php if (!empty($this->errors['paypal-microCertId'])) { ?>
+                                <label for="paypal-microCertId" class="error">
+                                    <?= implode('; ', $this->errors['paypal-microCertId']) ?>
+                                </label>
+                                <?php } ?>
+                            </p>
+
+                            <p>
+                                <label for="paypal-microPrivkey"
+                                       title="<?= $this->translate('Your generated PayPal private key for Micro Payments'); ?>">
+                                    <?= $this->translate('Your PayPal Private Key'); ?>:
+                                </label>
+
+                                <textarea
+                                    id="paypal-microPrivkey"
+                                    name="paypal-microPrivkey"
+                                    title="<?= $this->translate('Your generated PayPal private key for Micro Payments'); ?>"
+                                    rows="10"><?= $this->getFormValue('paypal-microPrivkey'); ?></textarea>
+
+                                <?php if (!empty($this->errors['paypal-microPrivkey'])) { ?>
+                                <label for="paypal-microPrivkey" class="error">
+                                    <?= implode('; ', $this->errors['paypal-microPrivkey']) ?>
+                                </label>
+                                <?php } ?>
+                            </p>
+
+                            <p>
+                                <label for="paypal-microSigncert"
+                                       title="<?= $this->translate('Your generated PayPal public certificate for Micro Payments'); ?>">
+                                    <?= $this->translate('Your PayPal Public Certificate'); ?>:
+                                </label>
+
+                                <textarea
+                                    id="paypal-microSigncert"
+                                    name="paypal-microSigncert"
+                                    title="<?= $this->translate('Your generated PayPal public certificate for Micro Payments'); ?>"
+                                    rows="10"><?= $this->getFormValue('paypal-microSigncert'); ?></textarea>
+
+                                <?php if (!empty($this->errors['paypal-microSigncert'])) { ?>
+                                <label for="paypal-microSigncert" class="error">
+                                    <?= implode('; ', $this->errors['paypal-microSigncert']) ?>
+                                </label>
+                                <?php } ?>
+                            </p>
+                        </fieldset>
+                    </div>
+                    <p>
+                        <button type="submit" class="submit fieldset-align ui-button ui-widget ui-corner-all ui-button-text-only ui-state-default">
+                            <span class="ui-button-text">
+                                <i class="fa fa-check"></i>
+                                <?= $this->translate('Save!'); ?>
+                            </span>
+                        </button>
+                    </p>
+                </div>
+
+                <?php if ($this->farm->isType(HH_Domain_Farm::TYPE_DISTRIBUTOR)) { ?>
+                    <div id="parent-network">
+                        <legend><?= $this->translate('Distributor Network') ?></legend>
+
+                        <p>
+                            <?= $this->translate('Your distributor network is your farms and vendors who are allowed to publish products to you.') ?>
+                        </p>
+
+                        <table id="parent-networks" class="display">
+                            <thead>
+                            <tr>
+                                <th>
+                                    <?= $this->translate('ID'); ?>
+                                </th>
+                                <th
+                                    width="50%"
+                                    title="<?= $this->translate('Vendor') ?>">
+                                    <?= $this->translate('Vendor'); ?>
+                                </th>
+                                <th
+                                    width="25%"
+                                    title="<?= $this->translate('Products Last Updated') ?>">
+                                    <?= $this->translate('Updated'); ?>
+                                </th>
+                                <th
+                                    width="25%"
+                                    title="<?= $this->translate('Relationship Status') ?>">
+                                    <?= $this->translate('Status') ?>
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+
+                    </div>
+                <?php } ?>
+                <div id="child-network">
+                    <legend><?= $this->translate('My Network') ?></legend>
+
+                    <p>
+                        <?= $this->translate('Your network are distributors who you are allowed to publish products to.') ?>
+                    </p>
+
+                    <?php if (!count($this->childNetworks)) { ?>
+                        <p>
+                            <?= $this->translate('You are not part of any HarvestHand distribution networks. Join one by clicking "Add".') ?>
+                        </p>
+                    <?php } ?>
+
+                    <table id="child-networks" class="display">
+                        <thead>
+                        <tr>
+                            <th
+                                width="75%"
+                                title="<?= $this->translate('Distributor') ?>">
+                                <?= $this->translate('Distributor'); ?>
+                            </th>
+                            <th
+                                width="25%"
+                                title="<?= $this->translate('Relationship Status') ?>">
+                                <?= $this->translate('Status') ?>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+        </form>
+    </article>
+</section>
+
+<div id="child-network-modal" title="<?= $this->translate('Add Distributor to My Network') ?>" style="display: none">
+    <section class="info ui-widget ui-state-highlight ui-corner-all">
+        <div>
+            <i class="fa fa-info-circle"></i>
+            <strong><?= $this->translate('Hey!'); ?></strong>
+            <?= $this->translate('No distributors are available for you to add.') ?>
+        </div>
+    </section>
+
+    <form action="/admin/default/options_general?a=add-distributor"
+          method="post"
+          accept-charset="utf-8"
+          class="cmxform large">
+
+        <section id="childFormError"
+                 class="error ui-widget ui-state-error ui-corner-all"
+                 style="display:none;">
+
+            <div>
+                <i class="fa fa-exclamation-triangle"></i>
+                <strong><?= $this->translate('Oh No!'); ?></strong>
+                <?= $this->translate('Something is not right with what you entered.  Check below for hints on how to fix things up.'); ?>
+            </div>
+        </section>
+
+        <fieldset>
+            <legend><?= $this->translate('Available Distributors') ?></legend>
+
+            <p>
+                <label for="parent-distributor">
+                    <?= $this->translate('Choose Distributor'); ?>:
+                </label>
+
+                <select id="parent-distributor" name="parent-distributor" required="required">
+                </select>
+            </p>
+
+        </fieldset>
+        <p>
+            <button type="submit" class="submit fieldset-align ui-button ui-widget ui-corner-all ui-button-text-only ui-state-default">
+                <span class="ui-button-text">
+                    <i class="fa fa-check"></i>
+                    <?= $this->translate('Add!'); ?>
+                </span>
+            </button>
+        </p>
+    </form>
+</div>

@@ -1,0 +1,1 @@
+(function(){var a=hh.namespace("hhf.modules.shares.admin.addon.category");a.config={};a.init=function(b){$.extend(a.config,b);$(document).ready(a.documentInit)};a.documentInit=function(){$("#item").validate()}})();

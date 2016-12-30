@@ -1,0 +1,127 @@
+<?php
+
+    if (empty($this->link)) {
+        $title = $this->translate('New Link');
+
+    } else {
+        $title = $this->translate('Edit Link');
+    }
+    
+    $this->headTitle($title);
+    
+    $this->loader()->append('jquery_validate')
+        ->append('jquery_metadata');
+?>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+
+    $(document).ready(function(){
+        $("#link").validate({
+            errorContainer: $("#formError")
+        });
+    });
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+<h2>
+    <span class="icon-menu icon-menu-website" style="float: left; margin: -10px 7px 0 0;"></span>
+    <?= $title ?>
+</h2>
+
+<section class="container_12">
+    <article class="grid_11">
+
+        <form id="link" 
+              action="/admin/website/link?<?= http_build_query($_GET) ?>" 
+              method="post" 
+              accept-charset="utf-8" 
+              class="cmxform large">
+
+            <section id="formError" 
+                     class="error ui-widget ui-state-error ui-corner-all"
+                     style="<?= (!empty($this->errors)) ? '' : 'display:none;' ?>">
+                <div>
+                    <i class="fa fa-exclamation-triangle"></i>
+                    <strong><?= $this->translate('Oh No!'); ?></strong>
+                    <?= $this->translate('Something is not right with what you entered.  Check below for hints on how to fix things up.'); ?>
+                </div>
+            </section>
+            
+            <fieldset>
+                <legend><?= $this->translate('Details') ?></legend>
+            
+                <p>
+                    <label for="name" class="required" title="<?= $this->translate('Please enter the name of your link'); ?>">
+                        <?= $this->translate('Name'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+                    <input
+                        id="name"
+                        name="name"
+                        type="text"
+                        title="<?= $this->translate('Please enter the name of your link'); ?>"
+                        value="<?= $this->getFormValue('name'); ?>"
+                        class="required large"
+                        maxlength="30" />
+
+                    <?php if (!empty($this->errors['name'])) { ?>
+                    <label for="name" class="error">
+                        <?= implode('; ', $this->errors['name']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="url" class="required" title="<?= $this->translate('Please enter the URL of the link'); ?>">
+                        <?= $this->translate('Web Address'); ?>:
+                        <abbr title="<?= $this->translate('This field is required'); ?>">*</abbr>
+                    </label>
+                    <input
+                        id="url"
+                        name="url"
+                        type="text"
+                        title="<?= $this->translate('Please enter the URL of the link'); ?>"
+                        value="<?= $this->getFormValue('url'); ?>"
+                        class="required large url"
+                        maxlength="254" />
+
+                    <?php if (!empty($this->errors['url'])) { ?>
+                    <label for="url" class="error">
+                        <?= implode('; ', $this->errors['url']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+                <p>
+                    <label for="description" title="<?= $this->translate('Please enter a description of your link'); ?>">
+                        <?= $this->translate('Description'); ?>:
+                    </label>
+                    <input
+                        id="description"
+                        name="description"
+                        type="text"
+                        title="<?= $this->translate('Please enter a description of your link'); ?>"
+                        value="<?= $this->getFormValue('description'); ?>"
+                        class="large"
+                        maxlength="255" />
+
+                    <?php if (!empty($this->errors['description'])) { ?>
+                    <label for="description" class="error">
+                        <?= implode('; ', $this->errors['description']) ?>
+                    </label>
+                    <?php } ?>
+                </p>
+
+            </fieldset>
+            <p>
+                <button type="submit" class="submit fieldset-align ui-button ui-widget ui-corner-all ui-button-text-only ui-state-default">
+                    <span class="ui-button-text">
+                        <i class="fa fa-check"></i>
+                        <?= $this->translate('Save!'); ?>
+                    </span>
+                </button>
+            </p>
+        </form>
+    </article>
+</section>

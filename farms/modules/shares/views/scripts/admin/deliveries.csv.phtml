@@ -1,0 +1,63 @@
+<?php
+    while (ob_get_level()) {
+        ob_end_clean();
+    }
+
+    header('Content-Type: application/vnd.ms-excel');
+    header('Content-Disposition: attachment; filename="deliveries-' . (int) $this->year . '.csv"');
+
+    $displayedHeader = false;
+
+    function filter (&$data) {
+        str_replace(
+            array(
+                "\t",
+                "\r\n",
+                "\r",
+                "\n",
+                '"'
+            ),
+            array(
+                '\t',
+                '\n',
+                '\n',
+                '\n',
+                '""'
+            ),
+            $data
+        );
+
+        $data = '"' . $data . '"';
+    };
+
+    foreach ($this->deliveries as $delivery) {
+
+        $row = array(
+            'id' => $delivery->id,
+            'shareName' => $delivery->shareId,
+            'shareName' => $delivery->shareName,
+            'week' => $delivery->week,
+            'enabled' => $delivery->enabled,
+            'item' => $delivery->item,
+            'source' => $delivery->source,
+            'certification' => $delivery->certification,
+            'quantity_1' => $delivery->quantity_1,
+            'quantity_0_5' => $delivery->quantity_0_5,
+            'quantity_2' => $delivery->quantity_2,
+            'addedDatetime' => $delivery->addedDatetime,
+            'updatedDatetime' => $delivery->updatedDatetime
+        );
+
+        if ($displayedHeader == false) {
+            $rowHeaderArray = array_keys($row);
+            array_walk($rowHeaderArray, 'filter');
+            echo implode(',', $rowHeaderArray) . "\r\n";
+            $displayedHeader = true;
+        }
+
+        array_walk($row, 'filter');
+
+        echo implode(',', $row) . "\r\n";
+    }
+
+    exit();

@@ -1,0 +1,276 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-09-28 18:14-0400\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Michael Caplan <michael@harvesthand.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: English\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: translate\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SearchPath-0: /home/michael/NetBeansProjects/farmnik/trunk/modules/default\n"
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/controllers/PublicController.php:38
+msgid "HarvestHand"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/controllers/PublicController.php:56
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/login.phtml:2
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/login.phtml:68
+msgid "Login"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/controllers/PublicController.php:85
+msgid "Login Failure"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/controllers/PublicController.php:86
+msgid "User name or password incorrect"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/controllers/PublicController.php:91
+msgid "Woops!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/controllers/PublicController.php:92
+msgid "Some of the information provided below is not right"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/login.phtml:32
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:416
+msgid "User Name"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/login.phtml:38
+msgid "Please enter your user name"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/login.phtml:49
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:437
+msgid "Password"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/login.phtml:55
+msgid "Please enter your password"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:2
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:133
+msgid "Sign Up"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:17
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:31
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:236
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:257
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:267
+msgid "Please enter the state your farm is located in"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:70
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:107
+msgid "Letters, numbers and dashes only please (no dashes at the beginning or end)"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:90
+msgid "A password needs to be at least 4 words or letters long"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:93
+msgid "That doesn't look like an email address"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:98
+msgid "The user name {0} is already in use"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:104
+msgid "Your passwords are not the same"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:110
+msgid "{0} is already in use"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:135
+msgid "Signing up with HarvestHand is your first step toward building your online presence.  <strong>It costs you nothing to try it out.</strong> After giving it a spin, we're confident you will find HarvestHand to be an indispensable part of your farm operations."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:142
+msgid "Oh No!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:143
+msgid "Something is not right with what you entered.  Check below for hints on how to fix things up."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:148
+msgid "Please supply us with some details about your farm"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:149
+msgid "About Your Farm"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:153
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:161
+msgid "Please enter the name of your farm"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:154
+msgid "Name"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:155
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:176
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:217
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:238
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:283
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:304
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:355
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:376
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:417
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:438
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:459
+msgid "This field is required"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:174
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:182
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:195
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:202
+msgid "Please enter the address of your farm"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:175
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:196
+msgid "Address"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:215
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:223
+msgid "Please enter the town that your farm is located in"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:216
+msgid "Town"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:237
+msgid "State"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:281
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:289
+msgid "Please enter your farm's zip code"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:282
+msgid "Zip Code"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:302
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:313
+msgid "Please enter your farm's country"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:303
+msgid "Country"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:326
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:334
+msgid "How do you want people to find you on HarvestHand?"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:327
+msgid "Your Address"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:348
+msgid "Please supply us with some details about you"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:349
+msgid "About You"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:353
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:361
+msgid "Please enter your given name"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:354
+msgid "First Name"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:374
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:382
+msgid "Please enter your family name"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:375
+msgid "Last Name"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:395
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:402
+msgid "Please enter your email address"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:396
+msgid "Email"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:415
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:423
+msgid "Please enter a user name to log in with"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:436
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:444
+msgid "Please enter a password to log in with"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:457
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:465
+msgid "Please confirm your password"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:458
+msgid "Confirm Password"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/public/signup.phtml:477
+msgid "Sign Up!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/error/500.phtml:2
+msgid "Smoked!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/error/500.phtml:5
+msgid "Something Wrong!"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/error/500.phtml:7
+msgid "Well, this is embarrassing.  Something went boom.  We've recorded what's happened and have just dispatched the clean up crew."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/error/404.phtml:2
+msgid "You seem to be lost..."
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/error/404.phtml:5
+msgid "Page not Found"
+msgstr ""
+
+#: /home/michael/NetBeansProjects/farmnik/trunk/modules/default/views/scripts/error/404.phtml:7
+msgid "While you where out, we probably reorganized a few things.  The page you are looking for is no longer where it was.  Or maybe it was never here in the first place.  If you typed it in by hand, check your spelling."
+msgstr ""
+

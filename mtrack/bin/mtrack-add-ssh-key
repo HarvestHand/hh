@@ -1,0 +1,89 @@
+#!/usr/bin/perl
+# vim:ts=2:sw=2:et:
+# This script demonstrates how to use the mtrack API to bootstrap an SSH key
+# for the current user.  This is useful when setting up a dev environment
+# for the first time.  The script will generate an SSH key if none already
+# exists, then register the public portion of that key with the mtrack server.
+#
+# A variation of this script is used at Message Systems when spinning up
+# fresh dev VMs (the version we use has the mtrack server hard-coded)
+
+# Usage: mtrack-add-ssh-key URL user pass
+
+use strict;
+use IO::File;
+
+my ($URL, $user, $pass) = @ARGV;
+
+# Do we need to generate a key?
+# Check the ssh config file to locate the key
+
+my $home = $ENV{HOME};
+
+sub find_keys {
+  my @keys;
+
+  my $fh = IO::File->new("$home/.ssh/config");
+  if ($fh) {
+    while (<$fh>) {
+      if (m/IdentityFile\s+(\S+)/) {
+        my $name = $1;
+        if ($name =~ m/id_[rd]sa/) {
+          $name =~ s/~/$home/;
+          if (-f $name) {
+            push @keys, $name;
+          }
+        }
+      }
+    }
+    undef $fh;
+  }
+
+  # May not have an ssh config, so speculatively look for common keys
+  foreach ('id_rsa', 'id_dsa') {
+    if (-f "$home/.ssh/$_") {
+      push @keys, "$home/.ssh/$_";
+    }
+  }
+
+  return @keys;
+}
+
+sub make_key {
+  system("ssh-keygen");
+}
+
+my @keys = find_keys();
+
+if (!@keys) {
+  make_key();
+  @keys = find_keys();
+  if (!@keys) {
+    exit(1);
+  }
+}
+
+foreach (@keys) {
+  my $fh = IO::File->new("$_.pub") or die "unable to open $_.pub: $!";
+  my $data;
+  {
+    local $/ = undef;
+    $data = <$fh>;
+  }
+  undef $fh;
+
+  my $keydata;
+  my $name;
+
+  next unless ($data =~ m/^(\S+\s+\S+)\s+(\S+)$/);
+  $keydata = $1;
+  $name = $2;
+
+  # Now use "curl" to invoke the API to add this key
+
+  system("curl", "-i", "--digest", "--user", "$user:$pass",
+    "$URL/api.php/user/$user/keys/$name", "-X", "PUT",
+    "--data-binary", "{\"id\":\"$name\",\"key\":\"$keydata\"}",
+    "-H", "Content-Type:application/json");
+}
+

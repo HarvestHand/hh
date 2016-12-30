@@ -1,0 +1,229 @@
+<!--A Design by W3layouts
+Author: W3layout
+Author URL: http://w3layouts.com
+License: Creative Commons Attribution 3.0 Unported
+License URL: http://creativecommons.org/licenses/by/3.0/
+-->
+
+<?php
+// Is the blog enabled?
+$blogEnabled = $this->farm->getPreferences()->get('blogEnabled', 'website', true);
+
+// If so, grab 3 posts to show on the home page.
+if($blogEnabled){
+    $posts = HHF_Domain_Post::fetch($this->farm, array(
+        'limit' => array(
+            'offset' => 0,
+            'rows'   => 3
+        ),
+        'order' => array(
+            array(
+                'column' => 'publishedDatetime',
+                'dir'    => 'DESC'
+            )
+        )
+    ));
+}
+
+// Grab 3 add-ons to show on the home page.
+$addons = HHF_Domain_Addon::fetchAddons($this->farm, array(
+    'fetch' => HHF_Domain_Addon::FETCH_PURCHASEABLE,
+    'limit' => array(
+        'offset' => 0,
+        'rows'   => 3
+    ),
+));
+
+// Grabbing 2 enabled shares to show on the home page.
+$shares = HHF_Domain_Share::fetch($this->farm, array(
+    'where' => array(
+        'enabled' => 1
+    ),
+    'limit' => array(
+        'offset' => 0,
+        'rows'   => 2
+    ),
+));
+
+?>
+
+<!DOCTYPE HTML>
+<html>
+<head>
+    <?php echo $this->headTitle() ?>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <?php echo $this->headLink(); ?>
+
+    <!--start slider -->
+    <script type='text/javascript' src="/_farms/js/themes/agro/jquery.min.js"></script>
+    <script type='text/javascript' src="/_farms/js/themes/agro/jquery.mobile.customized.min.js"></script>
+    <script type='text/javascript' src="/_farms/js/themes/agro/jquery.easing.1.3.js"></script>
+    <script type='text/javascript' src="/_farms/js/themes/agro/camera.min.js"></script>
+
+    <script>
+        jQuery(function () {
+            jQuery('#camera_wrap_1').camera({
+                height: '550px',
+                loader: 'bar',
+                pagination: false,
+                thumbnails: true
+            });
+        });
+    </script>
+</head>
+<body>
+<!-- start slider -->
+<div class="slider">
+    <!-- #camera_wrap_1 -->
+    <div class="fluid_container">
+
+        <?php $headerImage = $this->farm->getPreferences()->get('headerImage', 'website', false); ?>
+
+        <?php if(!empty($headerImage)){ ?>
+            <div class="header-img">
+                <img class="img-responsive"
+                     src="/default/file/id/<?= $this->escape($headerImage) ?>/s/<?= HHF_Domain_File::IMAGE_LARGE ?>">
+            </div>
+        <?php } else{ ?>
+            <h1><?= $this->escape($this->farm->name); ?></h1>
+        <?php } ?>
+        <!-- #camera_wrap_1 -->
+        <div class="clear"></div>
+    </div>
+    <!-- end #camera_wrap_1 -->
+</div>
+<!-- start header -->
+<div class="header_bg">
+    <div class="wrap">
+        <div class="menu">
+            <?= $this->navigation(Bootstrap::get('Zend_Navigation'))->menu()->renderMenu(null, array(
+                'ulClass'  => 'top-nav',
+                'maxDepth' => 0
+            )) ?>
+            <div class="clear"></div>
+        </div>
+    </div>
+</div>
+
+<!-- start main -->
+<div class="main_bg">
+    <div class="wrap">
+        <div class="wrapper">
+            <div class="main">
+                <div class="content">
+                    <a href="/"><h2><?= $this->escape($this->farm->name); ?></h2></a>
+                </div>
+                <?php if($this->layout()->content){ ?>
+                    <?php echo $this->layout()->content ?>
+                <?php } else{ ?>
+                    <?php if($blogEnabled){ ?>
+                        <div class="grids_of_3">
+
+                            <?php $image = 0; ?>
+                            <?php foreach($posts as $post){ ?>
+                                <?php $image++; ?>
+                                <div class="grid_1_of_3 images_1_of_3">
+                                    <a href="/blog/post/<?= $this->escape($post->token) ?>">
+                                        <?php if($post->getPicture()){ ?>
+                                            <img src="<?= $post->getPicture() ?>.jpg">
+                                        <?php } else{ ?>
+                                            <img src="_farms/css/themes/agro/images/pic<?= $image ?>.jpg">
+                                        <?php } ?>
+                                    </a>
+
+                                    <div class="grids">
+                                        <a href="/blog/post/<?= $this->escape($post->token) ?>">
+                                            <h3><?= $this->escape($post->title) ?></h3>
+                                        </a>
+
+                                        <p><?php echo substr(strip_tags($post->content), 0, 250); ?>...</p>
+
+                                        <div class="button"><span><a
+                                                    href="/blog/post/<?= $this->escape($post->token) ?>">More</a></span></div>
+                                    </div>
+                                </div>
+                            <?php } ?>
+                            <div class="clear"></div>
+                        </div>
+                    <?php } ?>
+
+                    <div class="cols_of_3">
+
+                        <div class="col_1_of_3 span_1_of_3">
+                            <h2 class="style"><?= $this->translate('Shares') ?></h2>
+                            <?php foreach($shares as $share){ ?>
+                                <div class="text_s">
+                                    <span><?= $share->name ?></span>
+
+                                    <p class="para top"><?php echo substr(strip_tags($share->details), 0, 180); ?>...</p>
+                                </div>
+                            <?php } ?>
+                            <div class="read_more"><a class="btn" href="/shares/register" class="btn">Sign-up</a></div>
+                        </div>
+
+                        <div class="col_1_of_3 span_1_of_3">
+                            <h2 class="style"><?= $this->translate('Add-ons') ?></h2>
+
+                            <?php $image = 0; ?>
+                            <?php foreach($addons as $addon){ ?>
+                                <?php $image++; ?>
+                                <div class="text_s">
+                                    <div class="text_img img_style">
+                                        <?php if($addon->image){ ?>
+                                            <a href=""><img src="/default/file/id/<?= $addon->image ?>/s/T" alt=""></a>
+                                        <?php } else{ ?>
+                                            <a href=""><img src="_farms/css/themes/agro/images/art-pic<?= $image ?>.jpg"
+                                                            alt=""></a>
+                                        <?php } ?>
+                                    </div>
+                                    <div class="text_para">
+                                        <span><?= $this->escape($addon->name); ?></span>
+
+                                        <p class="para"><?php echo substr(strip_tags($addon->details), 0, 80); ?>...</p>
+                                    </div>
+                                    <div class="clear"></div>
+                                </div>
+                            <?php } ?>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                <?php } ?>
+            </div>
+            <div class="clear"></div>
+        </div>
+    </div>
+    <!-- start footer -->
+    <div class="footer_bg">
+        <div class="wrap">
+            <div class="wrapper">
+                <div class="footer">
+                    <ul class="f_nav">
+                        <li><a href="#"><?= $this->farm->email ?></a></li>
+                    </ul>
+                    <div class="f_call">
+                        <h3><?= $this->farm->telephone ?></h3>
+                    </div>
+                    <div class="clear"></div>
+                    <h2><a href="/"><?= $this->farm->name ?></a></h2>
+
+                    <div class="copy">
+                        <p class="w3-link">&copy; All Rights Reserved | Powered by <a
+                                href="http://harvesthand.com">HarvestHand</a>
+                            | Design by&nbsp;<a href="http://w3layouts.com/">W3Layouts</a></p>
+                    </div>
+                </div>
+            </div>
+            <div class="clear"></div>
+        </div>
+    </div>
+    <script>
+        // This expands share details when 'More Details' is clicked.
+        $('.more-details').click(function () {
+            var $showing = $(this).parent().siblings('.details').css('display');
+            $showing = ($showing == 'block' ? 'none' : 'block');
+            $(this).parent().siblings('.details').css("display", $showing);
+        });
+    </script>
+</body>
+</html>

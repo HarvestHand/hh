@@ -1,0 +1,176 @@
+<?php $this->headTitle($this->translate('Shares')); ?>
+
+<?php $this->placeholder('foot')->captureStart() ?>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#shareStats').delegate('.more', 'click', function(e){
+            e.preventDefault();
+            
+            var $this = $(this),
+                dl = $this.siblings('dl');
+            
+            if (dl.is(':visible')) {
+                dl.hide('fast', function(){
+                    $this.text('<?= addslashes($this->translate('more...')) ?>');
+                });
+                
+            } else {
+                dl.show('fast', function (){
+                    $this.text('<?= addslashes($this->translate('less...')) ?>');
+                });
+                
+            }
+            
+        });
+    });
+</script>
+<?php $this->placeholder('foot')->captureEnd() ?>
+
+
+<h2>
+    <span class="icon-menu icon-menu-shares" style="float: left; margin: -10px 7px 0 0;"></span>
+    <?= $this->translate('Products & Shares'); ?>
+</h2>
+
+<section class="container_12">
+    <article class="grid_9" style="padding-bottom: 20px;">
+
+        <article class="<?= (empty($this->shareStats)) ? 'grid_9' : 'grid_4' ?>">
+            <div class="ui-widget-content ui-corner-all" style="padding: 0.4em; position: relative;">
+                <h3 class="ui-widget-header ui-corner-all" style="margin: 0 0 0.8em 0; padding: 0.4em; text-align: center;">
+                    <?= $this->translate('Summary') ?>
+                </h3>
+
+                <div style="height: 300px; overflow-y: auto">
+
+                    <dl>
+                        <dt style="font-weight: bold">
+                            <?= $this->translate('Shares On File'); ?>:
+                        </dt>
+                        <dd>
+                            <a href="/admin/shares/shares">
+                                <?= $this->escape($this->shares['count']); ?>
+                            </a>
+                        </dd>
+
+                        <dt style="font-weight: bold">
+                            <?= $this->translate('Delivery Locations On File'); ?>:
+                        </dt>
+                        <dd>
+                            <a href="/admin/shares/locations">
+                                <?= $this->escape($this->locations['count']); ?>
+                            </a>
+                        </dd>
+
+                        <dt style="font-weight: bold">
+                            <?= $this->translate('Share Deliveries On File'); ?>:
+                        </dt>
+                        <dd>
+                            <a href="/admin/shares/deliveries">
+                                <?= $this->escape($this->deliveries['count']); ?>
+                            </a>
+                        </dd>
+
+                        <dt style="font-weight: bold">
+                            <?= $this->translate('Products On File'); ?>:
+                        </dt>
+                        <dd>
+                            <a href="/admin/shares/addons">
+                                <?= $this->escape($this->addons['count']); ?>
+                            </a>
+                        </dd>
+
+                    </dl>
+                </div>
+            </div>
+        </article>
+
+        <?php if (!empty($this->shareStats)) { ?>
+        <article id="shareStats" class="grid_5" style="width: 360px;">
+            <div class="ui-widget-content ui-corner-all" 
+                style="padding: 0.4em; position: relative;">
+                <h3 class="ui-widget-header ui-corner-all" 
+                    style="margin: 0 0 0.8em 0; padding: 0.4em; text-align: center;">
+                    <?= $this->translate('%s Shares Purchased', date('Y')) ?>
+                </h3>
+
+                <div style="height: 300px; overflow-y: auto">
+                    <dl>
+                        <?php foreach ($this->shareStats as $shareId => $stat) { ?>
+                            <dt style="font-weight: bold">
+                                <?= $this->escape($stat['share']['name']) ?>:
+                            </dt>
+                            <dd>
+                                <?= $this->translate('%d Purchased', $stat['total']) ?>
+
+                                <?php if (count($stat['durations']) > 1 || count($stat['sizes']) > 1) { ?>
+                                    &nbsp;
+                                    <a href="#" class="more">
+                                        <?= $this->translate('more...') ?>
+                                    </a>
+                                    
+                                    <dl style="padding-top: 20px; display: none;">
+
+                                        <?php if (count($stat['durations']) > 1) { ?>
+                                            <dt style="font-weight: bold">
+                                                <?= $this->translate('By Durations') ?>:
+                                            </dt>
+                                            <dd>
+
+                                                <dl>
+
+                                                    <?php foreach ($stat['durations'] as $durationId => $duration) { ?>
+                                                    <dt>
+                                                        <?= $this->translate(
+                                                            'Starting Week %d With %d Deliveries',
+                                                            $duration['duration']['startWeek'],
+                                                            $duration['duration']['iterations']
+                                                        ) ?>
+                                                    </dt>
+
+                                                    <dd>
+                                                        <?= $this->translate('%d Purchased', $duration['total']) ?>
+                                                    </dd>
+                                                    <?php } ?>
+
+                                                </dl>
+
+                                            </dd>
+                                        <?php } ?>
+
+                                        <?php if (count($stat['sizes']) > 1) { ?>
+                                            <dt style="font-weight: bold">
+                                                <?= $this->translate('By Sizes') ?>:
+                                            </dt>
+                                            <dd>
+
+                                                <dl>
+
+                                                    <?php foreach ($stat['sizes'] as $sizeId => $size) { ?>
+                                                    <dt>
+                                                        <?= $this->escape($size['size']['name']) ?>
+                                                    </dt>
+
+                                                    <dd>
+                                                        <?= $this->translate('%d Purchased', $size['total']) ?>
+                                                    </dd>
+                                                    <?php } ?>
+
+                                                </dl>
+
+                                            </dd>
+                                        <?php } ?>
+
+                                    </dl>
+
+                                <?php } ?>
+                            </dd>
+                        <?php } ?>
+                    </dl>
+                </div>
+            </div>
+        </article>
+        <?php } ?>
+    </article>
+    <?= $this->render('admin-sub-nav.phtml'); ?>
+</section>
